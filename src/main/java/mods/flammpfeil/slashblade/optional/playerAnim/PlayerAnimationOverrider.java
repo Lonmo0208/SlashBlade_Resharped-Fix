@@ -59,7 +59,9 @@ public class PlayerAnimationOverrider {
         Map<String, VmdAnimation> map = Maps.newHashMap();
 
         map.put(Extra.EX_COMBO_A1.getName(), new VmdAnimation(MotionLocation, 1,41,false));
-        map.put(Extra.EX_COMBO_A2.getName(), new VmdAnimation(MotionLocation, 100,400,false));
+        map.put(Extra.EX_COMBO_A2.getName(), new VmdAnimation(MotionLocation, 100,151,false));
+        map.put(Extra.EX_COMBO_A3.getName(), new VmdAnimation(MotionLocation, 200,314,false));
+        map.put(Extra.EX_COMBO_A4.getName(), new VmdAnimation(MotionLocation, 500,608,false));
 
         return map;
     }
