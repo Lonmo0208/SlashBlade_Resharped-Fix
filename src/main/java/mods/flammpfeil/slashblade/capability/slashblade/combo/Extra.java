@@ -633,6 +633,14 @@ public class Extra {
                         FallHandler.spawnLandingParticle(e, 20);
                     });
                 }
+
+                if(elapsed == 1){
+                    e.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state)->{
+                        if(state.getComboSeq() == Extra.EX_AERIAL_CLEAVE){
+                            state.updateComboSeq(e,Extra.EX_AERIAL_CLEAVE_LOOP);
+                        }
+                    });
+                }
             })
             .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                     .put(0, (entityIn)->UserPoseOverrider.setRot(entityIn, 90, true))
@@ -940,7 +948,7 @@ public class Extra {
             ()->2200,()->2277,()->1.0f,()->false,()->0,
             ExMotionLocation, (a)-> Extra.EX_VOID_SLASH, ()->Extra.EX_VOID_SLASH_SHEATH)
             .addTickAction(ComboState.TimeLineTickAction.getBuilder().put(28, (living)->{
-                if(living.level().isClientSide){
+                if(living.level().isClientSide()){
                     Vec3 pos = living.position()
                             .add(0.0D, (double)living.getEyeHeight() * 0.75D, 0.0D)
                             .add(living.getLookAngle().scale(0.3f));

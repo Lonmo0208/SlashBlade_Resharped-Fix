@@ -30,7 +30,6 @@ public class StunManager {
     public void onEntityLivingUpdate(LivingEvent.LivingTickEvent event){
         LivingEntity target = event.getEntity();
         if(!(target instanceof PathfinderMob)) return;
-        if(target == null) return;
         if(target.level() == null) return;
 
         boolean onStun = target.getCapability(CapabilityMobEffect.MOB_EFFECT)
