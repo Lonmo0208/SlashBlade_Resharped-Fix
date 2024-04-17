@@ -1,10 +1,11 @@
 package mods.flammpfeil.slashblade.ability;
 
-import mods.flammpfeil.slashblade.capability.slashblade.ComboState;
-import mods.flammpfeil.slashblade.entity.IShootable;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
+import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import mods.flammpfeil.slashblade.util.TargetSelector;
 import mods.flammpfeil.slashblade.util.TimeValueHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -72,13 +73,16 @@ public class ArrowReflector {
 
             if(ticks == 0) return;
 
-            ComboState old = s.getComboSeq();
-            ComboState current = s.resolvCurrentComboState(attacker);
+            ResourceLocation old = s.getComboSeq();
+            ResourceLocation current = s.resolvCurrentComboState(attacker);
+            ComboState currentCS = ComboStateRegistry.REGISTRY.get().getValue(current) != null 
+                    ? ComboStateRegistry.REGISTRY.get().getValue(current) : ComboStateRegistry.NONE.get();
             if(old != current){
-                ticks -= TimeValueHelper.getTicksFromMSec(old.getTimeoutMS());
+                ComboState oldCS = ComboStateRegistry.REGISTRY.get().getValue(current);
+                ticks -= TimeValueHelper.getTicksFromMSec(oldCS.getTimeoutMS());
             }
 
-            double period = TimeValueHelper.getTicksFromFrames(current.getEndFrame() - current.getStartFrame()) * (1.0f / current.getSpeed());
+            double period = TimeValueHelper.getTicksFromFrames(currentCS.getEndFrame() - currentCS.getStartFrame()) * (1.0f / currentCS.getSpeed());
 
             if(ticks < period){
                 List<Entity> founds = TargetSelector.getReflectableEntitiesWithinAABB(attacker);

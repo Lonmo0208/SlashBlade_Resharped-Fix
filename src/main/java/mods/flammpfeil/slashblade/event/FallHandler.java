@@ -1,7 +1,8 @@
 package mods.flammpfeil.slashblade.event;
 
-import mods.flammpfeil.slashblade.capability.slashblade.ComboState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
+import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import mods.flammpfeil.slashblade.util.AdvancementHelper;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.state.BlockState;
@@ -47,16 +48,17 @@ public class FallHandler {
         user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state)->{
             state.setFallDecreaseRate(0);
 
-            ComboState combo = state.getComboSeq();
+            ComboState combo = ComboStateRegistry.REGISTRY.get().getValue(state.getComboSeq()) != null 
+                    ? ComboStateRegistry.REGISTRY.get().getValue(state.getComboSeq()) : ComboStateRegistry.NONE.get();
             if(combo.isAerial()){
-                state.setComboSeq(combo.getNextOfTimeout());
+                state.setComboSeq(combo.getNextOfTimeout(user));
             }
         });
 
     }
 
     public static void spawnLandingParticle(LivingEntity user , float fallFactor){
-        if (!user.level().isClientSide) {
+        if (!user.level().isClientSide()) {
             int x = Mth.floor(user.getX());
             int y = Mth.floor(user.getY() - (double)0.5F);
             int z = Mth.floor(user.getZ());
@@ -73,7 +75,7 @@ public class FallHandler {
         }
     }
     public static void spawnLandingParticle(Entity user, Vec3 targetPos, Vec3 normal, float fallFactor){
-        if (!user.level().isClientSide) {
+        if (!user.level().isClientSide()) {
 
             Vec3 blockPos = targetPos.add(normal.normalize().scale(0.5f));
 

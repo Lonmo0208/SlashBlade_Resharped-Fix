@@ -1,6 +1,5 @@
 package mods.flammpfeil.slashblade.event;
 
-import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;

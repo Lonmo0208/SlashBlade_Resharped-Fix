@@ -5,7 +5,6 @@ import mods.flammpfeil.slashblade.capability.mobeffect.CapabilityMobEffect;
 import mods.flammpfeil.slashblade.entity.EntityAbstractSummonedSword;
 import mods.flammpfeil.slashblade.event.InputCommandEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
-import mods.flammpfeil.slashblade.network.NetworkManager;
 import mods.flammpfeil.slashblade.util.AdvancementHelper;
 import mods.flammpfeil.slashblade.util.InputCommand;
 import mods.flammpfeil.slashblade.util.NBTHelper;
@@ -29,9 +28,6 @@ import net.minecraft.server.level.TicketType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.network.PacketDistributor;
-
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
@@ -57,10 +53,10 @@ public class SlayerStyleArts {
     final static EnumSet<InputCommand> move = EnumSet.of(InputCommand.FORWARD, InputCommand.BACK, InputCommand.LEFT, InputCommand.RIGHT);
 
 
-    static public final ResourceLocation ADVANCEMENT_AIR_TRICK = new ResourceLocation(SlashBlade.modid, "abilities/air_trick");
-    static public final ResourceLocation ADVANCEMENT_TRICK_DOWN = new ResourceLocation(SlashBlade.modid, "abilities/trick_down");
-    static public final ResourceLocation ADVANCEMENT_TRICK_DODGE = new ResourceLocation(SlashBlade.modid, "abilities/trick_dodge");
-    static public final ResourceLocation ADVANCEMENT_TRICK_UP = new ResourceLocation(SlashBlade.modid, "abilities/trick_up");
+    static public final ResourceLocation ADVANCEMENT_AIR_TRICK = new ResourceLocation(SlashBlade.MODID, "abilities/air_trick");
+    static public final ResourceLocation ADVANCEMENT_TRICK_DOWN = new ResourceLocation(SlashBlade.MODID, "abilities/trick_down");
+    static public final ResourceLocation ADVANCEMENT_TRICK_DODGE = new ResourceLocation(SlashBlade.MODID, "abilities/trick_dodge");
+    static public final ResourceLocation ADVANCEMENT_TRICK_UP = new ResourceLocation(SlashBlade.MODID, "abilities/trick_up");
 
     final static int TRICKACTION_UNTOUCHABLE_TIME = 10;
 
@@ -232,7 +228,7 @@ public class SlayerStyleArts {
                     AdvancementHelper.grantCriterion(sender,ADVANCEMENT_TRICK_DODGE);
 
                     sender.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
-                            .ifPresent(state->state.updateComboSeq(sender, state.getComboRootAir()));
+                            .ifPresent(state->state.updateComboSeq(sender, state.getComboRoot()));
                 }
 
                 isHandled = true;
@@ -268,7 +264,7 @@ public class SlayerStyleArts {
             player.playNotifySound(SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.75F, 1.25F);
 
             player.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
-                    .ifPresent(state -> state.updateComboSeq(player, state.getComboRootAir()));
+                    .ifPresent(state -> state.updateComboSeq(player, state.getComboRoot()));
 
             Untouchable.setUntouchable(player, TRICKACTION_UNTOUCHABLE_TIME);
         }
@@ -340,7 +336,6 @@ public class SlayerStyleArts {
     protected Vec3 maybeBackOffFromEdge(Vec3 vec, LivingEntity mover) {
         double d0 = vec.x;
         double d1 = vec.z;
-        double d2 = 0.05D;
 
         while(d0 != 0.0D && mover.level().noCollision(mover, mover.getBoundingBox().move(d0, (double)(-mover.maxUpStep()), 0.0D))) {
             if (d0 < 0.05D && d0 >= -0.05D) {

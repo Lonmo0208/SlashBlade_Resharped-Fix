@@ -6,14 +6,11 @@ import mods.flammpfeil.slashblade.entity.BladeStandEntity;
 import mods.flammpfeil.slashblade.init.SBItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemFrameRenderer;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import com.mojang.math.Axis;
 
-public class BladeStandEntityRenderer extends ItemFrameRenderer {
+public class BladeStandEntityRenderer extends ItemFrameRenderer<BladeStandEntity> {
     private final net.minecraft.client.renderer.entity.ItemRenderer itemRenderer;
 
     public BladeStandEntityRenderer(EntityRendererProvider.Context context) {
@@ -32,10 +29,8 @@ public class BladeStandEntityRenderer extends ItemFrameRenderer {
     }
 
     @Override
-    public void render(ItemFrame entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-        if (entity instanceof BladeStandEntity) {
-            doRender((BladeStandEntity) entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-        }
+    public void render(BladeStandEntity entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+        doRender(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
     public void doRender(BladeStandEntity entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {

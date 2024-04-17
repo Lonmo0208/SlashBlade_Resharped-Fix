@@ -2,9 +2,7 @@ package mods.flammpfeil.slashblade.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
-import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.entity.PlacePreviewEntity;
-import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.util.VectorHelper;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.RandomSource;
@@ -23,11 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.ForgeHooksClient;
-
 import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.Random;
 
 public class PlacePreviewEntityRenderer extends EntityRenderer<PlacePreviewEntity> {
 
@@ -53,8 +47,9 @@ public class PlacePreviewEntityRenderer extends EntityRenderer<PlacePreviewEntit
                 BlockPos blockpos = new BlockPos(VectorHelper.f2i(entityIn.getX(), entityIn.getBoundingBox().maxY, entityIn.getZ()));
                 matrixStackIn.translate(0.5D, 0.5D, 0.0D);
                 BlockRenderDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();
-                Iterator var11 = RenderType.chunkBufferLayers().iterator();
                 /*
+                Iterator var11 = RenderType.chunkBufferLayers().iterator();
+                
                 while(var11.hasNext()) {
                     RenderType type = (RenderType)var11.next();
                     if (RenderTypeLookup.canRenderInLayer(blockstate, type)) {

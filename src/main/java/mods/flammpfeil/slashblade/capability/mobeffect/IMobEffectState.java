@@ -1,6 +1,5 @@
 package mods.flammpfeil.slashblade.capability.mobeffect;
 
-import com.google.common.collect.Maps;
 import net.minecraft.world.effect.MobEffect;
 
 import java.util.*;

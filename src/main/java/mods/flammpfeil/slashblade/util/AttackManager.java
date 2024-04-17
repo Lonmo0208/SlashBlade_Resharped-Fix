@@ -56,7 +56,7 @@ public class AttackManager {
     }
     static public EntitySlashEffect doSlash(LivingEntity playerIn, float roll, int colorCode, Vec3 centerOffset, boolean mute, boolean critical, double damage, KnockBacks knockback) {
 
-        if(playerIn.level().isClientSide) return null;
+        if(playerIn.level().isClientSide()) return null;
 
         Vec3 pos = playerIn.position()
                 .add(0.0D, (double)playerIn.getEyeHeight() * 0.75D, 0.0D)
@@ -215,5 +215,13 @@ public class AttackManager {
 
         ArrowReflector.doReflect(target, attacker);
         TNTExtinguisher.doExtinguishing(target,attacker);
+    }
+    
+    public static void playQuickSheathSoundAction(LivingEntity entity) {
+        entity.playSound(SoundEvents.CHAIN_HIT, 1.0F,1.0F);
+    }
+    
+    public static Vec3 genRushOffset(LivingEntity entityIn){
+        return new Vec3(entityIn.getRandom().nextFloat()-0.5f,entityIn.getRandom().nextFloat()-0.5f,0).scale(2.0);
     }
 }

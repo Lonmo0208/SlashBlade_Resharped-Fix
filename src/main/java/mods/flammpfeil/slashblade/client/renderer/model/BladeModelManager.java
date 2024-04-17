@@ -10,9 +10,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
-import java.util.stream.Stream;
 
 /**
  * Created by Furia on 2016/02/06.

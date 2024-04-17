@@ -23,8 +23,8 @@ import java.awt.*;
 @OnlyIn(Dist.CLIENT)
 public class JudgementCutRenderer<T extends EntityJudgementCut> extends EntityRenderer<T> {
 
-    static private final ResourceLocation modelLocation = new ResourceLocation(SlashBlade.modid, "model/util/slashdim.obj");
-    static private final ResourceLocation textureLocation = new ResourceLocation(SlashBlade.modid, "model/util/slashdim.png");
+    static private final ResourceLocation modelLocation = new ResourceLocation(SlashBlade.MODID, "model/util/slashdim.obj");
+    static private final ResourceLocation textureLocation = new ResourceLocation(SlashBlade.MODID, "model/util/slashdim.png");
 
     @Nullable
     @Override

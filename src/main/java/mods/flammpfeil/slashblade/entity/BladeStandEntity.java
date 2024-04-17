@@ -14,11 +14,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
@@ -111,7 +108,7 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
         InteractionResult result = InteractionResult.PASS;
-        if(!this.level().isClientSide && hand == InteractionHand.MAIN_HAND){
+        if(!this.level().isClientSide() && hand == InteractionHand.MAIN_HAND){
             ItemStack itemstack = player.getItemInHand(hand);
             if(player.isShiftKeyDown() && !this.getItem().isEmpty()){
                 Pose current = this.getPose();

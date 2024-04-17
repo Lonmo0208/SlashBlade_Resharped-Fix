@@ -75,7 +75,7 @@ public class RefineHandler {
         event.setOutput(result);
     }
 
-    static private final ResourceLocation REFINE = new ResourceLocation(SlashBlade.modid, "tips/refine");
+    static private final ResourceLocation REFINE = new ResourceLocation(SlashBlade.MODID, "tips/refine");
 
     static private final TagKey<Item> soul = ItemTags.create(new ResourceLocation("slashblade","proudsouls"));
 

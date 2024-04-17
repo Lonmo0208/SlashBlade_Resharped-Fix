@@ -198,7 +198,7 @@ public class EntitySlashEffect extends Projectile implements IShootable {
     }
 
     private void refreshFlags(){
-        if(this.level().isClientSide){
+        if(this.level().isClientSide()){
             int newValue = this.entityData.get(FLAGS).intValue();
             if(intFlags != newValue){
                 intFlags = newValue;
@@ -357,7 +357,7 @@ public class EntitySlashEffect extends Projectile implements IShootable {
     }
 
     protected void tryDespawn() {
-        if(!this.level().isClientSide){
+        if(!this.level().isClientSide()){
             if (getLifetime() < this.tickCount)
                 this.remove(RemovalReason.DISCARDED);
         }
@@ -438,8 +438,8 @@ public class EntitySlashEffect extends Projectile implements IShootable {
 
     @Nullable
     public EntityHitResult getRayTrace(Vec3 p_213866_1_, Vec3 p_213866_2_) {
-        return ProjectileUtil.getEntityHitResult(this.level(), this, p_213866_1_, p_213866_2_, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), (p_213871_1_) -> {
-            return !p_213871_1_.isSpectator() && p_213871_1_.isAlive() && p_213871_1_.isPickable() && (p_213871_1_ != this.getShooter());
+        return ProjectileUtil.getEntityHitResult(this.level(), this, p_213866_1_, p_213866_2_, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), (entity) -> {
+            return !entity.isSpectator() && entity.isAlive() && entity.isPickable() && (entity != this.getShooter());
         });
     }
 }

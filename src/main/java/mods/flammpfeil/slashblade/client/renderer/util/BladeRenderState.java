@@ -1,6 +1,5 @@
 package mods.flammpfeil.slashblade.client.renderer.util;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -16,14 +15,10 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
 import java.awt.*;
-import java.util.Optional;
 import java.util.function.Function;
-
-import net.minecraft.client.renderer.RenderStateShard.TextureStateShard;
 
 import net.minecraft.client.renderer.entity.ItemRenderer;
 

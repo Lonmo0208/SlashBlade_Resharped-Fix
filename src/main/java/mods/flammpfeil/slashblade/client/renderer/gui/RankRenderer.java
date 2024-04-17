@@ -16,10 +16,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
 public class RankRenderer {
@@ -39,7 +37,7 @@ public class RankRenderer {
     }
     
 
-    static ResourceLocation RankImg = new ResourceLocation(SlashBlade.modid,"textures/gui/rank.png");
+    static ResourceLocation RankImg = new ResourceLocation(SlashBlade.MODID,"textures/gui/rank.png");
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
@@ -54,7 +52,6 @@ public class RankRenderer {
                 return;
         }
 
-        Level world = mc.level;
         LocalPlayer player= mc.player;
         long time = System.currentTimeMillis();
 

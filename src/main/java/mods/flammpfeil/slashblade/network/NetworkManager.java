@@ -10,7 +10,7 @@ public class NetworkManager {
     private static final String PROTOCOL_VERSION = "1";
 
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(SlashBlade.modid, "main"),
+            new ResourceLocation(SlashBlade.MODID, "main"),
             () -> PROTOCOL_VERSION,
             PROTOCOL_VERSION::equals,
             PROTOCOL_VERSION::equals

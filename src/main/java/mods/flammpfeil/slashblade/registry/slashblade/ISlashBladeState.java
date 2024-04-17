@@ -17,16 +17,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package mods.flammpfeil.slashblade.capability.slashblade;
+package mods.flammpfeil.slashblade.registry.slashblade;
 
 import com.google.common.collect.ImmutableRangeMap;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
-import mods.flammpfeil.slashblade.capability.slashblade.combo.Extra;
+
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
 import mods.flammpfeil.slashblade.event.BladeMotionEvent;
 import mods.flammpfeil.slashblade.network.ActiveStateSyncMessage;
 import mods.flammpfeil.slashblade.network.NetworkManager;
+import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
+import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
+import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import mods.flammpfeil.slashblade.specialattack.SlashArts;
 import mods.flammpfeil.slashblade.util.AdvancementHelper;
 import mods.flammpfeil.slashblade.util.NBTHelper;
@@ -37,7 +40,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.stats.Stats;
 import net.minecraft.resources.ResourceLocation;
@@ -55,15 +57,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
- * An slashblade state is the unit of interaction with Energy inventories.
+ * TODO: Write DOC for this.
  * <p>
- * A reference implementation can be found at {@link SlashBladeState}.
+ * 
  *
- * Derived from the Redstone Flux power system designed by King Lemming and originally utilized in Thermal Expansion and related mods.
- * Created with consent and permission of King Lemming and Team CoFH. Released with permission under LGPL 2.1 when bundled with Forge.
  *
  */
 public interface ISlashBladeState {
@@ -73,7 +72,7 @@ public interface ISlashBladeState {
     default long getElapsedTime(LivingEntity user){
         long ticks = (Math.max(0, user.level().getGameTime() - this.getLastActionTime()));
 
-        if(user.level().isClientSide)
+        if(user.level().isClientSide())
             ticks = Math.max(0, ticks + 1);
 
         return ticks;
@@ -92,20 +91,11 @@ public interface ISlashBladeState {
 	void setAttackAmplifier(float attackAmplifier);
 
 	@Nonnull
-    ComboState getComboSeq();
-	void setComboSeq(ComboState comboSeq);
-
-    String getLastPosHash();
-	void setLastPosHash(String lastPosHash);
-
-    boolean hasShield();
-	void setHasShield(boolean hasShield);
+    ResourceLocation getComboSeq();
+	void setComboSeq(ResourceLocation comboSeq);
 
     boolean isBroken();
 	void setBroken(boolean broken);
-
-    boolean isNoScabbard();
-	void setNoScabbard(boolean noScabbard);
 
     boolean isSealed();
 	void setSealed(boolean sealed);
@@ -126,33 +116,25 @@ public interface ISlashBladeState {
     void setUniqueId(UUID id);
 
     @Nonnull
-    RangeAttack getRangeAttackType();
-	void setRangeAttackType(RangeAttack rangeAttackType);
-
-    @Nonnull
     default SlashArts getSlashArts(){
-        String key = getSlashArtsKey();
+        ResourceLocation key = getSlashArtsKey();
         SlashArts result = null;
         if(key != null)
-            result = SlashArts.NONE.valueOf(key);
+            result = SlashArtsRegistry.JUDGEMENT_CUT.get();
 
-        if(result == SlashArts.NONE)
+        if(key == SlashArtsRegistry.NONE.getId())
             result = null;
 
-        return result != null ? result : SlashArts.JUDGEMENT_CUT;
+        return result != null ? result : SlashArtsRegistry.JUDGEMENT_CUT.get();
     }
-	void setSlashArtsKey(String slashArts);
-	String getSlashArtsKey();
+	void setSlashArtsKey(ResourceLocation slashArts);
+	ResourceLocation getSlashArtsKey();
 
     boolean isDestructable();
 	void setDestructable(boolean destructable);
 
     boolean isDefaultBewitched();
 	void setDefaultBewitched(boolean defaultBewitched);
-
-	@Nonnull
-    Rarity getRarity();
-	void setRarity(Rarity rarity);
 
     @Nonnull
 	String getTranslationKey();
@@ -218,17 +200,18 @@ public interface ISlashBladeState {
     }
 
 
-    default ComboState progressCombo(LivingEntity user, boolean isVirtual){
-        ComboState current = resolvCurrentComboState(user);
+    default ResourceLocation progressCombo(LivingEntity user, boolean isVirtual){
+        ResourceLocation currentloc = resolvCurrentComboState(user);
+        ComboState current = ComboStateRegistry.REGISTRY.get().getValue(currentloc);
+        ResourceLocation next = current.getNext(user);
+        if(!next.equals(ComboStateRegistry.NONE.getId()) && next.equals(currentloc))
+            return ComboStateRegistry.NONE.getId();
 
-        ComboState next = current.getNext(user);
-
-        if(next != ComboState.NONE && next == current)
-            return ComboState.NONE;
-
-        ComboState rootNext = getComboRoot().getNext(user);
-
-        ComboState resolved = next.getPriority() <= rootNext.getPriority()
+        
+        ResourceLocation rootNext = ComboStateRegistry.REGISTRY.get().getValue(getComboRoot()).getNext(user);
+        ComboState nextCS = ComboStateRegistry.REGISTRY.get().getValue(next);
+        ComboState rootNextCS = ComboStateRegistry.REGISTRY.get().getValue(rootNext);
+        ResourceLocation resolved = nextCS.getPriority() <= rootNextCS.getPriority()
                 ? next : rootNext;
 
         if(!isVirtual) {
@@ -237,19 +220,20 @@ public interface ISlashBladeState {
 
         return resolved;
     }
-    default ComboState progressCombo(LivingEntity user){
+    default ResourceLocation progressCombo(LivingEntity user){
         return progressCombo(user, false);
     }
 
-    default ComboState doChargeAction(LivingEntity user, int elapsed){
-        Map.Entry<Integer, ComboState> current = resolvCurrentComboStateTicks(user);
-
+    default ResourceLocation doChargeAction(LivingEntity user, int elapsed){
+        Map.Entry<Integer, ResourceLocation> currentloc = resolvCurrentComboStateTicks(user);
+        
         if (elapsed <= 2)
-            return ComboState.NONE;
-
+            return ComboStateRegistry.NONE.getId();
+        ComboState current = ComboStateRegistry.REGISTRY.get().getValue(currentloc.getValue());
         //Uninterrupted
-        if(current.getValue() != ComboState.NONE && current.getValue().getNext(user) == current.getValue())
-            return ComboState.NONE;
+        if(currentloc.getValue() != ComboStateRegistry.NONE.getId() && 
+                current.getNext(user) == currentloc.getValue())
+            return ComboStateRegistry.NONE.getId();
 
         int fullChargeTicks = getFullChargeTicks(user);
         int justReceptionSpan = SlashArts.getJustReceptionSpan(user);
@@ -265,87 +249,76 @@ public interface ISlashBladeState {
 
         if(type != SlashArts.ArtsType.Jackpot){
             //quick charge
-            SlashArts.ArtsType result = current.getValue().releaseAction(user, current.getKey());
+            SlashArts.ArtsType result = current.releaseAction(user, currentloc.getKey());
 
             if(result != SlashArts.ArtsType.Fail)
                 type = result;
         }
 
-        ComboState cs = this.getSlashArts().doArts(type, user);
-        if(current.getValue() != cs && cs != ComboState.NONE){
-            if(current.getValue().getPriority() > cs.getPriority()) {
+        ResourceLocation csloc = this.getSlashArts().doArts(type, user);
+        ComboState cs = ComboStateRegistry.REGISTRY.get().getValue(csloc);
+        if(current != cs && csloc != ComboStateRegistry.NONE.getId()){
+            if(current.getPriority() > cs.getPriority()) {
                 if(type == SlashArts.ArtsType.Jackpot)
                     AdvancementHelper.grantedIf(Enchantments.SOUL_SPEED,user);
 
-                updateComboSeq(user, cs);
+                updateComboSeq(user, csloc);
             }
         }
-        return cs;
+        return csloc;
     }
 
-    default ComboState doBrokenAction(LivingEntity user){
-        Map.Entry<Integer, ComboState> current = resolvCurrentComboStateTicks(user);
-
+    default ResourceLocation doBrokenAction(LivingEntity user){
+        Map.Entry<Integer, ResourceLocation> currentloc = resolvCurrentComboStateTicks(user);
+        ComboState current = ComboStateRegistry.REGISTRY.get().getValue(currentloc.getValue());
         //Uninterrupted
-        if(current.getValue() != ComboState.NONE && current.getValue().getNext(user) == current.getValue())
-            return ComboState.NONE;
+        if(!currentloc.getValue().equals(ComboStateRegistry.NONE.getId()) && current.getNext(user) == currentloc)
+            return ComboStateRegistry.NONE.getId();
 
         SlashArts.ArtsType type = SlashArts.ArtsType.Broken;
 
-        ComboState cs = this.getSlashArts().doArts(type, user);
-        if(current.getValue() != cs && cs != ComboState.NONE){
-            if(current.getValue().getPriority() > cs.getPriority())
-                updateComboSeq(user, cs);
+        ResourceLocation csloc = this.getSlashArts().doArts(type, user);
+        ComboState cs = ComboStateRegistry.REGISTRY.get().getValue(csloc);
+        if(currentloc != csloc && !csloc.equals(ComboStateRegistry.NONE.getId())){
+            if(current.getPriority() > cs.getPriority())
+                updateComboSeq(user, csloc);
         }
-        return cs;
+        return csloc;
     }
 
-    default void updateComboSeq(LivingEntity entity, ComboState cs){
-        this.setComboSeq(cs);
+    default void updateComboSeq(LivingEntity entity, ResourceLocation loc){
+        this.setComboSeq(loc);
         this.setLastActionTime(entity.level().getGameTime());
-
+        ComboState cs = ComboStateRegistry.REGISTRY.get().getValue(loc);
         cs.clickAction(entity);
 
         MinecraftForge.EVENT_BUS.post(new BladeMotionEvent(entity, cs));
     }
 
-    default ComboState resolvCurrentComboState(LivingEntity user){
+    default ResourceLocation resolvCurrentComboState(LivingEntity user){
         return resolvCurrentComboStateTicks(user).getValue();
     }
 
-    default Map.Entry<Integer, ComboState> resolvCurrentComboStateTicks(LivingEntity user){
-        ComboState current = getComboSeq();
-
+    default Map.Entry<Integer, ResourceLocation> resolvCurrentComboStateTicks(LivingEntity user){
+        ResourceLocation current =ComboStateRegistry.REGISTRY.get().containsKey(getComboSeq())
+                ? getComboSeq() : ComboStateRegistry.NONE.getId();
+        ComboState currentCS = ComboStateRegistry.REGISTRY.get().getValue(current) != null
+                ? ComboStateRegistry.REGISTRY.get().getValue(current): ComboStateRegistry.NONE.get();
         int time = (int)TimeValueHelper.getMSecFromTicks(getElapsedTime(user));
+        
+        while(!current.equals(ComboStateRegistry.NONE.getId()) && currentCS.getTimeoutMS() < time){
+            time -= currentCS.getTimeoutMS();
 
-        while(current != ComboState.NONE && current.getTimeoutMS() < time){
-            time -= current.getTimeoutMS();
-
-            current = current.getNextOfTimeout();
+            current = currentCS.getNextOfTimeout(user);
+            this.updateComboSeq(user, current);
         }
-
+        
         int ticks = (int)TimeValueHelper.getTicksFromMSec(time);
-
-        return new AbstractMap.SimpleImmutableEntry(ticks, current);
+        return new AbstractMap.SimpleImmutableEntry<>(ticks, current);
     }
 
-    default boolean hasEnergy(){
-        return true;
-    }
-
-    String getComboRootName();
-    void setComboRootName(String comboRootName);
-
-    default ComboState getComboRoot(){
-        return Optional.ofNullable(ComboState.NONE.valueOf(this.getComboRootName())).orElseGet(()-> Extra.STANDBY_EX);
-    }
-
-    String getComboRootAirName();
-    void setComboRootAirName(String comboRootName);
-
-    default ComboState getComboRootAir(){
-        return Optional.ofNullable(ComboState.NONE.valueOf(this.getComboRootAirName())).orElseGet(()-> Extra.STANDBY_INAIR);
-    }
+    ResourceLocation getComboRoot();
+    void setComboRoot(ResourceLocation resourceLocation);
 
     CompoundTag getShareTag();
     void setShareTag(CompoundTag shareTag);
@@ -388,7 +361,7 @@ public interface ISlashBladeState {
     void setHasChangedActiveState(boolean isChanged);
 
     default void sendChanges(Entity entityIn){
-        if(!entityIn.level().isClientSide && this.hasChangedActiveState()){
+        if(!entityIn.level().isClientSide() && this.hasChangedActiveState()){
             ActiveStateSyncMessage msg = new ActiveStateSyncMessage();
             msg.activeTag = this.getActiveState();
             msg.id = entityIn.getId();
@@ -396,23 +369,6 @@ public interface ISlashBladeState {
 
             this.setHasChangedActiveState(false);
         }
-    }
-
-    static void removeActiveState(CompoundTag tag){
-        NBTHelper.getNBTCoupler(tag)
-                .remove("lastActionTime")
-                .remove("TargetEntity")
-                .remove("_onClick")
-                .remove("fallDecreaseRate")
-                .remove("isCharged")
-                .remove("AttackAmplifier")
-                .remove("currentCombo")
-                .remove("lastPosHash")
-                .remove("HasShield")
-
-                .remove("killCount")
-
-                .remove("Damage");
     }
 
     default CompoundTag getActiveState(){
@@ -427,9 +383,7 @@ public interface ISlashBladeState {
                 .put("fallDecreaseRate", this.getFallDecreaseRate())
                 .put("isCharged", this.isCharged())
                 .put("AttackAmplifier", this.getAttackAmplifier())
-                .put("currentCombo", this.getComboSeq().getName())
-                .put("lastPosHash", this.getLastPosHash())
-                .put("HasShield", this.hasShield())
+                .put("currentCombo", this.getComboSeq().toString())
 
                 .put("killCount", this.getKillCount())
 
@@ -450,9 +404,7 @@ public interface ISlashBladeState {
                 .get("fallDecreaseRate", this::setFallDecreaseRate)
                 .get("isCharged", this::setCharged)
                 .get("AttackAmplifier", this::setAttackAmplifier)
-                .get("currentCombo", ((String s) -> this.setComboSeq(ComboState.NONE.valueOf(s))))
-                .get("lastPosHash", this::setLastPosHash)
-                .get("HasShield", this::setHasShield)
+                .get("currentCombo", ((String s) -> this.setComboSeq(ResourceLocation.tryParse(s))))
 
                 .get("killCount", this::setKillCount)
 

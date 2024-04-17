@@ -6,7 +6,6 @@ import mods.flammpfeil.slashblade.util.KnockBacks;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,8 +16,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PlayMessages;
-
-import java.util.List;
 
 public class EntityStormSwords extends EntityAbstractSummonedSword{
     private static final EntityDataAccessor<Boolean> IT_FIRED = SynchedEntityData.defineId(EntityStormSwords.class, EntityDataSerializers.BOOLEAN);
@@ -111,7 +108,7 @@ public class EntityStormSwords extends EntityAbstractSummonedSword{
 
         long cycle = 5 + this.tickCount;
         long tickOffset = 0;
-        if(this.level().isClientSide)
+        if(this.level().isClientSide())
             tickOffset = 1;
 
         //int ticks = (int)((this.level().getGameTime() + tickOffset) % cycle);

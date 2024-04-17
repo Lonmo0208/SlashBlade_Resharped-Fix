@@ -4,18 +4,11 @@ import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.concentrationrank.CapabilityConcentrationRank;
 import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank;
 import mods.flammpfeil.slashblade.capability.inputstate.CapabilityInputState;
-import mods.flammpfeil.slashblade.capability.inputstate.InputStateCapabilityProvider;
 import mods.flammpfeil.slashblade.entity.*;
 import mods.flammpfeil.slashblade.event.InputCommandEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.*;
-import net.minecraft.client.player.Input;
-import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
-import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
-import net.minecraft.network.protocol.game.VecDeltaCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -54,11 +47,11 @@ public class SummonedSwordArts {
     }
 
 
-    static public final ResourceLocation ADVANCEMENT_SUMMONEDSWORDS = new ResourceLocation(SlashBlade.modid, "arts/shooting/summonedswords");
-    static public final ResourceLocation ADVANCEMENT_SPIRAL_SWORDS = new ResourceLocation(SlashBlade.modid, "arts/shooting/spiral_swords");
-    static public final ResourceLocation ADVANCEMENT_STORM_SWORDS = new ResourceLocation(SlashBlade.modid, "arts/shooting/storm_swords");
-    static public final ResourceLocation ADVANCEMENT_BLISTERING_SWORDS = new ResourceLocation(SlashBlade.modid, "arts/shooting/blistering_swords");
-    static public final ResourceLocation ADVANCEMENT_HEAVY_RAIN_SWORDS = new ResourceLocation(SlashBlade.modid, "arts/shooting/heavy_rain_swords");
+    static public final ResourceLocation ADVANCEMENT_SUMMONEDSWORDS = new ResourceLocation(SlashBlade.MODID, "arts/shooting/summonedswords");
+    static public final ResourceLocation ADVANCEMENT_SPIRAL_SWORDS = new ResourceLocation(SlashBlade.MODID, "arts/shooting/spiral_swords");
+    static public final ResourceLocation ADVANCEMENT_STORM_SWORDS = new ResourceLocation(SlashBlade.MODID, "arts/shooting/storm_swords");
+    static public final ResourceLocation ADVANCEMENT_BLISTERING_SWORDS = new ResourceLocation(SlashBlade.MODID, "arts/shooting/blistering_swords");
+    static public final ResourceLocation ADVANCEMENT_HEAVY_RAIN_SWORDS = new ResourceLocation(SlashBlade.MODID, "arts/shooting/heavy_rain_swords");
 
     @SubscribeEvent
     public void onInputChange(InputCommandEvent event) {
@@ -381,7 +374,7 @@ public class SummonedSwordArts {
                                     .filter(r->r.getType() == HitResult.Type.ENTITY)
                                     .filter(r->{
                                         EntityHitResult er = (EntityHitResult)r;
-                                        Entity target = ((EntityHitResult) r).getEntity();
+                                        Entity target = er.getEntity();
 
                                         boolean isMatch = true;
                                         if(target instanceof LivingEntity)

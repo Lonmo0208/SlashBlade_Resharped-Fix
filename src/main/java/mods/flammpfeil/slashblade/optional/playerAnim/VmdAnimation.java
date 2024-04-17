@@ -31,7 +31,7 @@ public class VmdAnimation implements IAnimation {
      static final LazyOptional<MmdPmdModelMc> alex =
             LazyOptional.of(() -> {
                 try {
-                    return new MmdPmdModelMc(new ResourceLocation(SlashBlade.modid, "model/pa/alex.pmd"));
+                    return new MmdPmdModelMc(new ResourceLocation(SlashBlade.MODID, "model/pa/alex.pmd"));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (MmdException e) {
@@ -202,6 +202,8 @@ public class VmdAnimation implements IAnimation {
                     tmp.add(blend);
                     return new Vec3f((float) tmp.x, (float) tmp.y, (float) tmp.z);
                 }
+            default:
+                break;
             }
         }
         /**/
@@ -252,12 +254,12 @@ public class VmdAnimation implements IAnimation {
         double a_x_y = 2 * (qt.x * qt.y + qt.w * qt.z);
         double a_x_z = 2 * (qt.x * qt.z - qt.w * qt.y);
 
-        double a_y_x = 2 * (qt.x * qt.y - qt.w * qt.z);
-        double a_y_y = Math.pow(qt.w, 2) - Math.pow(qt.x, 2) + Math.pow(qt.y, 2) - Math.pow(qt.z, 2);
+//        double a_y_x = 2 * (qt.x * qt.y - qt.w * qt.z);
+//        double a_y_y = Math.pow(qt.w, 2) - Math.pow(qt.x, 2) + Math.pow(qt.y, 2) - Math.pow(qt.z, 2);
         double a_y_z = 2 * (qt.y * qt.z + qt.w * qt.x);
 
-        double a_z_x = 2 * (qt.x * qt.z + qt.w * qt.y);
-        double a_z_y = 2 * (qt.y * qt.z - qt.w * qt.x);
+//        double a_z_x = 2 * (qt.x * qt.z + qt.w * qt.y);
+//        double a_z_y = 2 * (qt.y * qt.z - qt.w * qt.x);
         double a_z_z = Math.pow(qt.w, 2) - Math.pow(qt.x, 2) - Math.pow(qt.y, 2) + Math.pow(qt.z, 2);
 
         //Quaternion to Euler zyx

@@ -14,7 +14,6 @@ import mods.flammpfeil.slashblade.item.SwordType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.Item;
@@ -39,7 +38,6 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
     public void renderByItem(ItemStack itemStackIn, ItemDisplayContext type, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
     //public void render(ItemStack itemStackIn, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         if(!(itemStackIn.getItem() instanceof ItemSlashBlade)) return;
-        ItemSlashBlade item = (ItemSlashBlade)itemStackIn.getItem();
 
         if(itemStackIn.hasTag() && itemStackIn.getTag().contains(ItemSlashBlade.ICON_TAG_KEY)){
             itemStackIn.readShareTag(itemStackIn.getTag());
@@ -79,12 +77,10 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
             EnumSet<SwordType> types = SwordType.from( stack);
 
             boolean handle = false;
-
-            if(!types.contains(SwordType.NoScabbard)) {
-                handle = BladeModel.user.getMainArm() == HumanoidArm.RIGHT ?
-                        transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND :
-                        transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
-            }
+            
+            handle = BladeModel.user.getMainArm() == HumanoidArm.RIGHT ?
+                    transformType == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND :
+                    transformType == ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
 
             if(handle){
                 BladeFirstPersonRender.getInstance().render(matrixStack, bufferIn, combinedLightIn);
@@ -157,11 +153,13 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
         String renderTarget;
         if(types.contains(SwordType.Broken))
             renderTarget = "item_damaged";
-        else if(!types.contains(SwordType.NoScabbard)){
+        else 
             renderTarget = "item_blade";
-        }else{
-            renderTarget = "item_bladens";
-        }
+//        if(!types.contains(SwordType.NoScabbard)) {
+//                renderTarget = "item_blade";
+//        } else{
+//            renderTarget = "item_bladens";
+//        }
 
         BladeRenderState.renderOverrided(stack, model, renderTarget, textureLocation, matrixStack, bufferIn, lightIn);
         BladeRenderState.renderOverridedLuminous(stack, model, renderTarget + "_luminous", textureLocation, matrixStack, bufferIn, lightIn);
@@ -226,7 +224,7 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
         float sheathOffsetBaseRot = -3;
         boolean vFlip = false;
         boolean hFlip = false;
-        boolean hasScabbard = !types.contains(SwordType.NoScabbard);
+        boolean hasScabbard = true;
 
         if(stack.isFramed()){
             if(stack.getFrame() instanceof BladeStandEntity){

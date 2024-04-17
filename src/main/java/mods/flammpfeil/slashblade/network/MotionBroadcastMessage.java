@@ -3,8 +3,9 @@ package mods.flammpfeil.slashblade.network;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.concentrationrank.CapabilityConcentrationRank;
 import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank;
-import mods.flammpfeil.slashblade.capability.slashblade.ComboState;
 import mods.flammpfeil.slashblade.event.BladeMotionEvent;
+import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
+import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -65,7 +66,7 @@ public class MotionBroadcastMessage {
         if(target == null) return;
         if(!(target instanceof AbstractClientPlayer)) return;
 
-        ComboState state = ComboState.NONE.valueOf(combo);
+        ComboState state = ComboStateRegistry.REGISTRY.get().getValue(ResourceLocation.tryParse(combo));
         if(state == null) return;
 
         MinecraftForge.EVENT_BUS.post(new BladeMotionEvent(target, state));

@@ -1,12 +1,11 @@
 package mods.flammpfeil.slashblade.ability;
 
 import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.capability.slashblade.ComboState;
 import mods.flammpfeil.slashblade.event.InputCommandEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.util.AdvancementHelper;
 import mods.flammpfeil.slashblade.util.InputCommand;
-import mods.flammpfeil.slashblade.util.NBTHelper;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
@@ -15,7 +14,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
@@ -48,7 +46,7 @@ public class EnemyStep {
             .ignoreLineOfSight()
             .ignoreInvisibilityTesting();
 
-    static public final ResourceLocation ADVANCEMENT_ENEMY_STEP = new ResourceLocation(SlashBlade.modid, "abilities/enemy_step");
+    static public final ResourceLocation ADVANCEMENT_ENEMY_STEP = new ResourceLocation(SlashBlade.MODID, "abilities/enemy_step");
 
     @SubscribeEvent
     public void onInputChange(InputCommandEvent event) {
@@ -77,7 +75,7 @@ public class EnemyStep {
         sender.playNotifySound(SoundEvents.PLAYER_SMALL_FALL, SoundSource.PLAYERS, 0.5f, 1.2f);
 
         sender.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s->{
-            s.updateComboSeq(sender, ComboState.NONE);
+            s.updateComboSeq(sender, ComboStateRegistry.NONE.getId());
         });
 
         if(worldIn instanceof ServerLevel){

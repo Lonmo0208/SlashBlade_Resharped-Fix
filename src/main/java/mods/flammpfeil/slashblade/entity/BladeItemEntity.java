@@ -10,7 +10,6 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
@@ -18,8 +17,6 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PlayMessages;
 
 public class BladeItemEntity extends ItemEntity {
     public BladeItemEntity(EntityType<? extends BladeItemEntity> p_i50217_1_, Level p_i50217_2_) {
@@ -56,7 +53,7 @@ public class BladeItemEntity extends ItemEntity {
         }
 
 
-        if(this.level().isClientSide){
+        if(this.level().isClientSide()){
             if (random.nextInt(5) == 0 && getAirSupply() < 0) {
                 Direction direction = Direction.UP;
                 double d0 = (double)this.getX() - (double)(random.nextFloat() * 0.1F);

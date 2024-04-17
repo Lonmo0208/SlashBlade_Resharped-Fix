@@ -15,7 +15,7 @@ public class TNTExtinguisher {
     public static void doExtinguishing(Entity target, LivingEntity attacker) {
         if(!(target instanceof PrimedTnt)) return;
 
-        if(attacker.level().isClientSide) return;
+        if(attacker.level().isClientSide()) return;
 
         target.remove(Entity.RemovalReason.KILLED);
 

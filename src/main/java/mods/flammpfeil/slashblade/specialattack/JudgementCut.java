@@ -15,8 +15,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.LazyOptional;
-
 import java.util.Optional;
 
 public class JudgementCut {
@@ -60,6 +58,8 @@ public class JudgementCut {
                     case BLOCK:
                         Vec3 hitVec = rtr.getLocation();
                         pos = hitVec;
+                        break;
+                    default:
                         break;
                 }
                 return pos;

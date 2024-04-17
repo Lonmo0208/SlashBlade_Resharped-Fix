@@ -1,15 +1,10 @@
 package mods.flammpfeil.slashblade.mixin;
 
-import io.netty.buffer.ByteBuf;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -26,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BlockBehaviour.BlockStateBase.class)
 public class MixinBlockBehaviour {
 
+    @SuppressWarnings("deprecation")
     @Inject(at = @At("HEAD")
             , method="getCollisionShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;"
             , cancellable = true
@@ -44,6 +40,7 @@ public class MixinBlockBehaviour {
         callback.setReturnValue(Blocks.SCAFFOLDING.getCollisionShape(Blocks.SCAFFOLDING.defaultBlockState(), p_60743_, p_60744_, p_60745_));
         callback.cancel();
     }
+    @SuppressWarnings("deprecation")
     @Inject(at = @At("HEAD")
             , method="getVisualShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;"
             , cancellable = true

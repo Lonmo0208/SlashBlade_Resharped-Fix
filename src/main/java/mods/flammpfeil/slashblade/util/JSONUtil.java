@@ -1,11 +1,8 @@
 package mods.flammpfeil.slashblade.util;
 
-import com.google.common.collect.Lists;
 import net.minecraft.nbt.*;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.regex.Pattern;
 
 public class JSONUtil {

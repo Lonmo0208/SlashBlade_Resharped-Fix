@@ -103,7 +103,7 @@ public class Untouchable {
     public void onLivingTicks(LivingEvent.LivingTickEvent event){
         LivingEntity entity = event.getEntity();
 
-        if(entity.level().isClientSide) return;
+        if(entity.level().isClientSide()) return;
 
         entity.getCapability(CapabilityMobEffect.MOB_EFFECT).ifPresent(ef->{
             if(ef.hasUntouchableWorked()) {

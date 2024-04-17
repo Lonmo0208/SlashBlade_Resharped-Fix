@@ -7,14 +7,15 @@ import dev.kosmx.playerAnim.impl.IAnimatedPlayer;
 import jp.nyatla.nymmd.*;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.CapabilitySlashBlade;
-import mods.flammpfeil.slashblade.capability.slashblade.ComboState;
-import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeMotionManager;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.event.client.UserPoseOverrider;
+import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
+import mods.flammpfeil.slashblade.registry.combo.ComboState;
+import mods.flammpfeil.slashblade.registry.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.util.TimeValueHelper;
 import mods.flammpfeil.slashblade.util.VectorHelper;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -44,7 +45,7 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
     final LazyOptional<MmdPmdModelMc> bladeholder =
             LazyOptional.of(() -> {
                 try {
-                    return new MmdPmdModelMc(new ResourceLocation(SlashBlade.modid, "model/bladeholder.pmd"));
+                    return new MmdPmdModelMc(new ResourceLocation(SlashBlade.MODID, "model/bladeholder.pmd"));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (MmdException e) {
@@ -57,7 +58,7 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
 
     final LazyOptional<MmdMotionPlayerGL2> motionPlayer =
             LazyOptional.of(() -> {
-                MmdMotionPlayerGL2 mmp = new MmdMotionPlayerGL2();;
+                MmdMotionPlayerGL2 mmp = new MmdMotionPlayerGL2();
 
                 bladeholder.ifPresent(pmd -> {
                     try {
@@ -71,7 +72,7 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
             });
 
 
-    private float modifiedSpeed(float baseSpeed, LivingEntity entity) {
+    public float modifiedSpeed(float baseSpeed, LivingEntity entity) {
         float modif = 6.0f;
         if (MobEffectUtil.hasDigSpeed(entity)) {
             modif = 6 - (1 + MobEffectUtil.getDigSpeedAmplification(entity));
@@ -100,17 +101,18 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
 
             motionPlayer.ifPresent(mmp ->
             {
-                ComboState combo = s.getComboSeq();
+                ComboState combo = ComboStateRegistry.REGISTRY.get().getValue(s.getComboSeq()) != null 
+                        ? ComboStateRegistry.REGISTRY.get().getValue(s.getComboSeq()) : ComboStateRegistry.NONE.get();
                 //tick to msec
                 double time = TimeValueHelper.getMSecFromTicks(Math.max(0, entity.level().getGameTime() - s.getLastActionTime()) + partialTicks);
 
-                while(combo != ComboState.NONE && combo.getTimeoutMS() < time){
+                while(combo != ComboStateRegistry.NONE.get() && combo.getTimeoutMS() < time){
                     time -= combo.getTimeoutMS();
 
-                    combo = combo.getNextOfTimeout();
+                    combo = ComboStateRegistry.REGISTRY.get().getValue(combo.getNextOfTimeout(entity));
                 }
-                if(combo == ComboState.NONE){
-                    combo = s.getComboRoot();
+                if(combo == ComboStateRegistry.NONE.get()){
+                    combo = ComboStateRegistry.REGISTRY.get().getValue(s.getComboRoot());
                 }
 
                 MmdVmdMotionMc motion = BladeMotionManager.getInstance().getMotion(combo.getMotionLoc());
@@ -238,7 +240,7 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
                         BladeRenderState.renderOverridedLuminous(stack, obj, "sheath_luminous", textureLocation, matrixStack, bufferIn, lightIn);
 
                         if(s.isCharged(entity)){
-                            //todo : charge effect
+                            //TODO : charge effect
                         }
                     }
                     /*

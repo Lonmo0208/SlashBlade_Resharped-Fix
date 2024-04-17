@@ -7,9 +7,7 @@ import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.item.SwordType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -125,7 +123,7 @@ public class BladeItemEntityRenderer extends ItemEntityRenderer {
                 BladeRenderState.renderOverridedLuminous(current, model, renderTarget + "_luminous", textureLocation, matrixStackIn, bufferIn, packedLightIn);
             }
 
-            if((itemIn.isInWater() || itemIn.onGround()) && !types.contains(SwordType.NoScabbard)) {
+            if(itemIn.isInWater() || itemIn.onGround()) {
 
                 try (MSAutoCloser msac2 = MSAutoCloser.pushMatrix(matrixStackIn)) {
 

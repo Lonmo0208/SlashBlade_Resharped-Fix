@@ -1,12 +1,7 @@
 package mods.flammpfeil.slashblade.capability.concentrationrank;
 
-import com.google.common.collect.ImmutableRangeMap;
-import com.google.common.collect.Range;
-import com.google.common.collect.RangeMap;
-import mods.flammpfeil.slashblade.capability.slashblade.ComboState;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
-
-import javax.annotation.Nonnull;
 
 public class ConcentrationRank implements IConcentrationRank{
 
@@ -62,7 +57,7 @@ public class ConcentrationRank implements IConcentrationRank{
     }
 
     @Override
-    public float getRankPointModifier(ComboState combo) {
+    public float getRankPointModifier(ResourceLocation combo) {
         return 0.1f;
     }
 

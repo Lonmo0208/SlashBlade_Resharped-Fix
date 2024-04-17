@@ -1,7 +1,6 @@
 package mods.flammpfeil.slashblade.entity;
 
 import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.event.KnockBackHandler;
 import mods.flammpfeil.slashblade.util.*;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.Entity;
@@ -27,16 +26,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.UUID;
-
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
-
-import net.minecraft.world.entity.Entity.RemovalReason;
 
 public class EntityJudgementCut extends Projectile implements IShootable {
     private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.<Integer>defineId(EntityJudgementCut.class, EntityDataSerializers.INT);
@@ -166,7 +161,7 @@ public class EntityJudgementCut extends Projectile implements IShootable {
     }
 
     private void refreshFlags(){
-        if(this.level().isClientSide){
+        if(this.level().isClientSide()){
             int newValue = this.entityData.get(FLAGS).intValue();
             if(intFlags != newValue){
                 intFlags = newValue;
@@ -260,7 +255,7 @@ public class EntityJudgementCut extends Projectile implements IShootable {
     }
 
     protected void tryDespawn() {
-        if(!this.level().isClientSide){
+        if(!this.level().isClientSide()){
             if (getLifetime() < this.tickCount) {
                 this.burst();
             }
@@ -369,7 +364,7 @@ public class EntityJudgementCut extends Projectile implements IShootable {
     public void burst(){
         //this.playSound(SoundEvents.BLOCK_GLASS_BREAK, 1.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
 
-        if(!this.level().isClientSide){
+        if(!this.level().isClientSide()){
             if(this.level() instanceof ServerLevel)
                 ((ServerLevel)this.level()).sendParticles(ParticleTypes.CRIT, this.getX(), this.getY(), this.getZ(), 16, 0.5, 0.5,0.5,0.25f);
 

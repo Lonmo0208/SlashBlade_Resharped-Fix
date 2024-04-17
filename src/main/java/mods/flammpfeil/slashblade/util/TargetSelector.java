@@ -1,7 +1,6 @@
 package mods.flammpfeil.slashblade.util;
 
 import com.google.common.collect.Lists;
-import mods.flammpfeil.slashblade.entity.EntityAbstractSummonedSword;
 import mods.flammpfeil.slashblade.entity.IShootable;
 import mods.flammpfeil.slashblade.event.InputCommandEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -10,6 +9,7 @@ import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -81,7 +81,8 @@ public class TargetSelector {
                     return true;
                 else
                     return false;
-
+//            if (livingentity.hasPassenger(entity->entity instanceof Player))
+//                return false;
             if (livingentity instanceof Enemy)
                 return true;
 
@@ -100,7 +101,7 @@ public class TargetSelector {
             if(livingentity.getTeam() != null)
                 return true;
 
-            return false;
+            return true;
         }
     }
 
@@ -152,8 +153,8 @@ public class TargetSelector {
                     boolean result = false;
                     if(t instanceof LivingEntity){
                         result = predicate.test(attacker, (LivingEntity) t);
-                    }else if(t instanceof PartEntity && ((PartEntity) t).getParent() instanceof LivingEntity){
-                        result = predicate.test(attacker, (LivingEntity) ((PartEntity) t).getParent()) && t.distanceToSqr(attacker) < (reach * reach);
+                    }else if(t instanceof PartEntity && ((PartEntity<?>) t).getParent() instanceof LivingEntity){
+                        result = predicate.test(attacker, (LivingEntity) ((PartEntity<?>) t).getParent()) && t.distanceToSqr(attacker) < (reach * reach);
                     }
                     return result;
                 })

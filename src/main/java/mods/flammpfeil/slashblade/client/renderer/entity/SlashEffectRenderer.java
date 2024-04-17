@@ -2,7 +2,6 @@ package mods.flammpfeil.slashblade.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank;
 import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank.ConcentrationRanks;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.Face;
@@ -13,7 +12,6 @@ import mods.flammpfeil.slashblade.entity.EntitySlashEffect;
 import mods.flammpfeil.slashblade.init.SBItems;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.LazyLoadedValue;
@@ -28,8 +26,8 @@ import javax.annotation.Nullable;
 @OnlyIn(Dist.CLIENT)
 public class SlashEffectRenderer<T extends EntitySlashEffect> extends EntityRenderer<T> {
 
-    static private final ResourceLocation modelLocation = new ResourceLocation(SlashBlade.modid, "model/util/slash.obj");
-    static private final ResourceLocation textureLocation = new ResourceLocation(SlashBlade.modid, "model/util/slash.png");
+    static private final ResourceLocation modelLocation = new ResourceLocation(SlashBlade.MODID, "model/util/slash.obj");
+    static private final ResourceLocation textureLocation = new ResourceLocation(SlashBlade.MODID, "model/util/slash.png");
 
     static private LazyLoadedValue<ItemStack> enchantedItem = new LazyLoadedValue<ItemStack>(() -> new ItemStack(SBItems.proudsoul));
 

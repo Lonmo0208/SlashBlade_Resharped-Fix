@@ -24,6 +24,9 @@ import mods.flammpfeil.slashblade.item.ItemTierSlashBlade;
 import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.network.NetworkManager;
 import mods.flammpfeil.slashblade.optional.playerAnim.PlayerAnimationOverrider;
+import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
+import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
+import mods.flammpfeil.slashblade.registry.combo.ComboCommands;
 import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -83,18 +86,22 @@ import java.util.stream.Collectors;
 // The value here should match an entry in the META-INF/mods.toml file
 
 
-@Mod(SlashBlade.modid)
+@Mod(SlashBlade.MODID)
 public class SlashBlade
 {
-    public static final String modid = "slashblade";
+    public static final String MODID = "slashblade";
+    
+    public static ResourceLocation prefix(String path) {
+        return new ResourceLocation(SlashBlade.MODID, path);
+    }
 
     public static final CreativeModeTab SLASHBLADE = CreativeModeTab.builder()
-            .title(Component.translatable(modid))
+            .title(Component.translatable(MODID))
             .icon(()->{
                 ItemStack stack = new ItemStack(SBItems.slashblade);
                 stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s->{
-                    s.setModel(new ResourceLocation(modid,"model/named/yamato.obj"));
-                    s.setTexture(new ResourceLocation(modid,"model/named/yamato.png"));
+                    s.setModel(new ResourceLocation(MODID,"model/named/yamato.obj"));
+                    s.setTexture(new ResourceLocation(MODID,"model/named/yamato.png"));
                 });
                 return stack;
             })
@@ -125,7 +132,7 @@ public class SlashBlade
                     if(rm == null) return;
 
                     Set<ResourceLocation> keys =rm.getRecipeIds()
-                            .filter((loc)->loc.getNamespace().equals(SlashBlade.modid)
+                            .filter((loc)->loc.getNamespace().equals(SlashBlade.MODID)
                                     && (!(
                                     loc.getPath().startsWith("material")
                                             || loc.getPath().startsWith("bladestand")
@@ -175,11 +182,13 @@ public class SlashBlade
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
         NetworkManager.register();
+        ComboStateRegistry.COMBO_STATE.register(FMLJavaModLoadingContext.get().getModEventBus());
+        SlashArtsRegistry.SLASH_ARTS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     private void setup(final FMLCommonSetupEvent event)
     {
-
+        
         MinecraftForge.EVENT_BUS.addListener(KnockBackHandler::onLivingKnockBack);
 
         FallHandler.getInstance().register();
@@ -188,7 +197,7 @@ public class SlashBlade
 
         MinecraftForge.EVENT_BUS.register(new CapabilityAttachHandler());
         MinecraftForge.EVENT_BUS.register(new StunManager());
-        AnvilCrafting.getInstance().register();
+
         RefineHandler.getInstance().register();
         KillCounter.getInstance().register();
         RankPointHandler.getInstance().register();
@@ -204,7 +213,7 @@ public class SlashBlade
 
         PlacePreviewEntryPoint.getInstance().register();
 
-
+        ComboCommands.initDefaultStandByCommands();
         // some preinit code
         //LOGGER.info("HELLO FROM PREINIT");
         //LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
@@ -228,7 +237,7 @@ public class SlashBlade
             UserPoseOverrider.getInstance().register();
         }
         LockonCircleRender.getInstance().register();
-        BladeComponentTooltips.getInstance().register();
+//        BladeComponentTooltips.getInstance().register();
         BladeMaterialTooltips.getInstance().register();
         AdvancementsRecipeRenderer.getInstance().register();
         BladeMotionEventBroadcaster.getInstance().register();
@@ -279,40 +288,40 @@ public class SlashBlade
     @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents {
 
-        public static final ResourceLocation BladeItemEntityLoc = new ResourceLocation(SlashBlade.modid, classToString(BladeItemEntity.class));
+        public static final ResourceLocation BladeItemEntityLoc = new ResourceLocation(SlashBlade.MODID, classToString(BladeItemEntity.class));
         public static EntityType<BladeItemEntity> BladeItem;
 
-        public static final ResourceLocation BladeStandEntityLoc = new ResourceLocation(SlashBlade.modid, classToString(BladeStandEntity.class));
+        public static final ResourceLocation BladeStandEntityLoc = new ResourceLocation(SlashBlade.MODID, classToString(BladeStandEntity.class));
         public static EntityType<BladeStandEntity> BladeStand;
 
 
-        public static final ResourceLocation SummonedSwordLoc = new ResourceLocation(SlashBlade.modid, classToString(EntityAbstractSummonedSword.class));
+        public static final ResourceLocation SummonedSwordLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntityAbstractSummonedSword.class));
         public static EntityType<EntityAbstractSummonedSword> SummonedSword;
-        public static final ResourceLocation SpiralSwordsLoc = new ResourceLocation(SlashBlade.modid, classToString(EntitySpiralSwords.class));
+        public static final ResourceLocation SpiralSwordsLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntitySpiralSwords.class));
         public static EntityType<EntitySpiralSwords> SpiralSwords;
 
-        public static final ResourceLocation StormSwordsLoc = new ResourceLocation(SlashBlade.modid, classToString(EntityStormSwords.class));
+        public static final ResourceLocation StormSwordsLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntityStormSwords.class));
         public static EntityType<EntityStormSwords> StormSwords;
-        public static final ResourceLocation BlisteringSwordsLoc = new ResourceLocation(SlashBlade.modid, classToString(EntityBlisteringSwords.class));
+        public static final ResourceLocation BlisteringSwordsLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntityBlisteringSwords.class));
         public static EntityType<EntityBlisteringSwords> BlisteringSwords;
-        public static final ResourceLocation HeavyRainSwordsLoc = new ResourceLocation(SlashBlade.modid, classToString(EntityHeavyRainSwords.class));
+        public static final ResourceLocation HeavyRainSwordsLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntityHeavyRainSwords.class));
         public static EntityType<EntityHeavyRainSwords> HeavyRainSwords;
 
-        public static final ResourceLocation JudgementCutLoc = new ResourceLocation(SlashBlade.modid, classToString(EntityJudgementCut.class));
+        public static final ResourceLocation JudgementCutLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntityJudgementCut.class));
         public static EntityType<EntityJudgementCut> JudgementCut;
 
-        public static final ResourceLocation SlashEffectLoc = new ResourceLocation(SlashBlade.modid, classToString(EntitySlashEffect.class));
+        public static final ResourceLocation SlashEffectLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntitySlashEffect.class));
         public static EntityType<EntitySlashEffect> SlashEffect;
 
 
-        public static final ResourceLocation PlacePreviewEntityLoc = new ResourceLocation(SlashBlade.modid, classToString(PlacePreviewEntity.class));
+        public static final ResourceLocation PlacePreviewEntityLoc = new ResourceLocation(SlashBlade.MODID, classToString(PlacePreviewEntity.class));
         public static EntityType<PlacePreviewEntity> PlacePreview;
 
         @SubscribeEvent
         public static void register(RegisterEvent event){
             event.register(ForgeRegistries.Keys.ITEMS,
                 helper -> {
-                    helper.register(new ResourceLocation(modid,"slashblade"), new ItemSlashBlade(
+                    helper.register(new ResourceLocation(MODID,"slashblade"), new ItemSlashBlade(
                         new ItemTierSlashBlade(() -> {
                             TagKey<Item> tags = ItemTags.create(new ResourceLocation("slashblade","proudsouls"));
                             return Ingredient.of(tags);
@@ -323,7 +332,7 @@ public class SlashBlade
                         (new Item.Properties())));
 
 
-                    helper.register(new ResourceLocation(modid,"proudsoul"), new Item((new Item.Properties())){
+                    helper.register(new ResourceLocation(MODID,"proudsoul"), new Item((new Item.Properties())){
                         @Override
                         public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
 
@@ -355,7 +364,7 @@ public class SlashBlade
                     });
 
 
-                    helper.register(new ResourceLocation(modid,"proudsoul_ingot"),
+                    helper.register(new ResourceLocation(MODID,"proudsoul_ingot"),
                             new Item((new Item.Properties())){
                                 @Override
                                 public boolean isFoil(ItemStack stack) {
@@ -365,7 +374,7 @@ public class SlashBlade
                                 public int getEnchantmentValue(ItemStack stack) {return 100;}
                             });
 
-                    helper.register(new ResourceLocation(modid,"proudsoul_tiny"),
+                    helper.register(new ResourceLocation(MODID,"proudsoul_tiny"),
                             new Item((new Item.Properties())){
                                 @Override
                                 public boolean isFoil(ItemStack stack) {
@@ -375,7 +384,7 @@ public class SlashBlade
                                 public int getEnchantmentValue(ItemStack stack) {return 10;}
                             });
 
-                    helper.register(new ResourceLocation(modid,"proudsoul_sphere"),
+                    helper.register(new ResourceLocation(MODID,"proudsoul_sphere"),
                             new Item((new Item.Properties()).rarity(Rarity.UNCOMMON)){
                                 @Override
                                 public boolean isFoil(ItemStack stack) {
@@ -385,7 +394,7 @@ public class SlashBlade
                                 public int getEnchantmentValue(ItemStack stack) {return 150;}
                             });
 
-                    helper.register(new ResourceLocation(modid,"proudsoul_crystal"),
+                    helper.register(new ResourceLocation(MODID,"proudsoul_crystal"),
                             new Item((new Item.Properties()).rarity(Rarity.RARE)){
                                 @Override
                                 public boolean isFoil(ItemStack stack) {
@@ -395,7 +404,7 @@ public class SlashBlade
                                 public int getEnchantmentValue(ItemStack stack) {return 200;}
                             });
 
-                    helper.register(new ResourceLocation(modid,"proudsoul_trapezohedron"),
+                    helper.register(new ResourceLocation(MODID,"proudsoul_trapezohedron"),
                             new Item((new Item.Properties()).rarity(Rarity.EPIC)){
                                 @Override
                                 public boolean isFoil(ItemStack stack) {
@@ -417,7 +426,7 @@ public class SlashBlade
                                 }
                             });
 
-                    helper.register(new ResourceLocation(modid,"proudsoul_activated"),
+                    helper.register(new ResourceLocation(MODID,"proudsoul_activated"),
                             new ItemSoulActivated((new Item.Properties()).stacksTo(1).rarity(Rarity.EPIC)){
                                 @Override
                                 public boolean isFoil(ItemStack stack) {
@@ -427,7 +436,7 @@ public class SlashBlade
                                 public int getEnchantmentValue(ItemStack stack) {return Integer.MAX_VALUE;}
                             });
 
-                    helper.register(new ResourceLocation(modid,"proudsoul_awakened"),
+                    helper.register(new ResourceLocation(MODID,"proudsoul_awakened"),
                             new Item((new Item.Properties()).stacksTo(1).rarity(Rarity.EPIC)){
                                 @Override
                                 public boolean isFoil(ItemStack stack) {
@@ -446,18 +455,18 @@ public class SlashBlade
                             });
 
 
-                    helper.register(new ResourceLocation(modid,"bladestand_1"),
+                    helper.register(new ResourceLocation(MODID,"bladestand_1"),
                             new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
-                    helper.register(new ResourceLocation(modid,"bladestand_2"),
+                    helper.register(new ResourceLocation(MODID,"bladestand_2"),
                             new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
-                    helper.register(new ResourceLocation(modid,"bladestand_v"),
+                    helper.register(new ResourceLocation(MODID,"bladestand_v"),
                             new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
-                    helper.register(new ResourceLocation(modid,"bladestand_s"),
+                    helper.register(new ResourceLocation(MODID,"bladestand_s"),
                             new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
-                    helper.register(new ResourceLocation(modid,"bladestand_1w"),
+                    helper.register(new ResourceLocation(MODID,"bladestand_1w"),
                             new BladeStandItem((new Item.Properties())
                                     .rarity(Rarity.COMMON),true));
-                    helper.register(new ResourceLocation(modid,"bladestand_2w"),
+                    helper.register(new ResourceLocation(MODID,"bladestand_2w"),
                             new BladeStandItem((new Item.Properties())
                                     .rarity(Rarity.COMMON),true));
                 }
@@ -587,7 +596,7 @@ public class SlashBlade
             });
 
 
-            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(SlashBlade.modid, "slashblade"), SLASHBLADE);
+            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(SlashBlade.MODID, "slashblade"), SLASHBLADE);
         }
 
         private static String classToString(Class<? extends Entity> entityClass) {
@@ -620,7 +629,7 @@ public class SlashBlade
         public static ResourceLocation SWORD_SUMMONED;
 
         private static ResourceLocation registerCustomStat(String name) {
-            ResourceLocation resourcelocation = new ResourceLocation(modid, name);
+            ResourceLocation resourcelocation = new ResourceLocation(MODID, name);
             Registry.register(BuiltInRegistries.CUSTOM_STAT, name, resourcelocation);
             Stats.CUSTOM.get(resourcelocation, StatFormatter.DEFAULT);
             return resourcelocation;

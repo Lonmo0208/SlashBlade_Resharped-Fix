@@ -109,7 +109,7 @@ public class PlacePreviewEntity extends ItemFrame implements IEntityAdditionalSp
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
         InteractionResult result = InteractionResult.PASS;
-        if(!this.level().isClientSide){
+        if(!this.level().isClientSide()){
             ItemStack itemstack = player.getItemInHand(hand);
             if(player.isShiftKeyDown() && !this.getItem().isEmpty()){
                 Pose current = this.getPose();

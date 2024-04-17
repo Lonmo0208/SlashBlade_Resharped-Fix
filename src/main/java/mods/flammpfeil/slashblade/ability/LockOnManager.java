@@ -27,7 +27,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 public class LockOnManager {
     private static final class SingletonHolder {
@@ -68,7 +67,7 @@ public class LockOnManager {
                     .filter(r->r.getType() == HitResult.Type.ENTITY)
                     .filter(r->{
                         EntityHitResult er = (EntityHitResult)r;
-                        Entity target = ((EntityHitResult) r).getEntity();
+                        Entity target = er.getEntity();
 
                         if(target instanceof PartEntity){
                             target = ((PartEntity) target).getParent();
@@ -129,7 +128,7 @@ public class LockOnManager {
 
             LivingEntity entity = player;
 
-            if(!entity.level().isClientSide) return;
+            if(!entity.level().isClientSide()) return;
             if(!entity.getCapability(CapabilityInputState.INPUT_STATE).filter(input->input.getCommands().contains(InputCommand.SNEAK)).isPresent()) return;
 
 

@@ -44,7 +44,7 @@ public class EntitySpiralSwords extends EntityAbstractSummonedSword{
     @Override
     public void tick() {
         if(!itFired()){
-            if(level().isClientSide){
+            if(level().isClientSide()){
                 if(getVehicle() == null){
                     startRiding(this.getOwner(),true);
                 }
@@ -119,7 +119,7 @@ public class EntitySpiralSwords extends EntityAbstractSummonedSword{
 
         long cycle = 30;
         long tickOffset = 0;
-        if(this.level().isClientSide)
+        if(this.level().isClientSide())
             tickOffset = 1;
         int ticks = (int)((this.level().getGameTime() + tickOffset) % cycle);
         /*

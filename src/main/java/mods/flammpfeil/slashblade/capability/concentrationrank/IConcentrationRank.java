@@ -3,11 +3,12 @@ package mods.flammpfeil.slashblade.capability.concentrationrank;
 import com.google.common.collect.ImmutableRangeMap;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
-import mods.flammpfeil.slashblade.capability.slashblade.ComboState;
+
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.network.NetworkManager;
 import mods.flammpfeil.slashblade.network.RankSyncMessage;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.damagesource.DamageSource;
@@ -32,7 +33,7 @@ public interface IConcentrationRank {
         final Range<Float> pointRange;
         public final int level;
 
-        ConcentrationRanks(int level ,Range pointRange) {
+        ConcentrationRanks(int level, Range<Float> pointRange) {
             this.pointRange = pointRange;
             this.level = level;
         }
@@ -131,7 +132,7 @@ public interface IConcentrationRank {
 
         ItemStack stack = user.getMainHandItem();
 
-        Optional<ComboState> combo = stack
+        Optional<ResourceLocation> combo = stack
                 .getCapability(ItemSlashBlade.BLADESTATE)
                 .map(s->s.resolvCurrentComboState(user));
 
@@ -143,5 +144,5 @@ public interface IConcentrationRank {
     }
 
     float getRankPointModifier(DamageSource ds);
-    float getRankPointModifier(ComboState combo);
+    float getRankPointModifier(ResourceLocation combo);
 }

@@ -3,7 +3,6 @@ package mods.flammpfeil.slashblade.capability.mobeffect;
 import mods.flammpfeil.slashblade.util.NBTHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;

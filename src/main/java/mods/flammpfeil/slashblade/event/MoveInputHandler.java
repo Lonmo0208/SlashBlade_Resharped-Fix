@@ -126,16 +126,6 @@ public class MoveInputHandler {
                 if(tag.contains("ForgeCaps"))
                     nbt.put("ForgeCaps", tag.get("ForgeCaps"));
 
-                if(KeyModifier.ALT.isActive(KeyConflictContext.UNIVERSAL)){
-                    //add anvilcrafting recipe template
-                    AnvilCraftingRecipe acr = new AnvilCraftingRecipe();
-
-                    ItemStack result = player.getOffhandItem();
-                    acr.setResult(result);
-
-                    nbt.put("RequiredBlade",acr.writeNBT());
-                }
-
                 if(KeyModifier.CONTROL.isActive(KeyConflictContext.UNIVERSAL)){
                     //add anvilcrafting recipe template
                     ItemStack result = player.getMainHandItem();

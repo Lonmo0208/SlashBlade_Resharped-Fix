@@ -6,10 +6,10 @@ import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRan
 import mods.flammpfeil.slashblade.capability.inputstate.CapabilityInputState;
 import mods.flammpfeil.slashblade.capability.inputstate.IInputState;
 import mods.flammpfeil.slashblade.capability.slashblade.CapabilitySlashBlade;
-import mods.flammpfeil.slashblade.capability.slashblade.ComboState;
-import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
-import mods.flammpfeil.slashblade.capability.slashblade.combo.Extra;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
+import mods.flammpfeil.slashblade.registry.combo.ComboState;
+import mods.flammpfeil.slashblade.registry.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.util.AdvancementHelper;
 import mods.flammpfeil.slashblade.util.InputCommand;
 import net.minecraft.resources.ResourceLocation;
@@ -47,8 +47,8 @@ public class Guard {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    static public final ResourceLocation ADVANCEMENT_GUARD = new ResourceLocation(SlashBlade.modid, "abilities/guard");
-    static public final ResourceLocation ADVANCEMENT_GUARD_JUST = new ResourceLocation(SlashBlade.modid, "abilities/guard_just");
+    static public final ResourceLocation ADVANCEMENT_GUARD = new ResourceLocation(SlashBlade.MODID, "abilities/guard");
+    static public final ResourceLocation ADVANCEMENT_GUARD_JUST = new ResourceLocation(SlashBlade.MODID, "abilities/guard_just");
 
     final static EnumSet<InputCommand> move = EnumSet.of(InputCommand.FORWARD, InputCommand.BACK, InputCommand.LEFT, InputCommand.RIGHT);
 
@@ -119,8 +119,9 @@ public class Guard {
             if(!isHighRank && source.is(DamageTypeTags.BYPASSES_ARMOR)) return;
 
             boolean inMotion = slashBlade.filter(s->{
-                ComboState current = s.resolvCurrentComboState(victim);
-                if(current != ComboState.NONE && current == current.getNext(victim))
+                ResourceLocation current = s.resolvCurrentComboState(victim);
+                ComboState currentCS = ComboStateRegistry.REGISTRY.get().getValue(current);
+                if(!current.equals(ComboStateRegistry.NONE.getId())  && current == currentCS.getNext(victim))
                     return true;
                 else
                     return false;
@@ -137,9 +138,9 @@ public class Guard {
 
         //Motion
         if(isJust){
-            slashBlade.ifPresent(s->s.updateComboSeq(victim, Extra.EX_COMBO_A1));
+            slashBlade.ifPresent(s->s.updateComboSeq(victim, ComboStateRegistry.COMBO_A1.getId()));
         }else{
-            slashBlade.ifPresent(s->s.updateComboSeq(victim, Extra.EX_COMBO_A1_END2));
+            slashBlade.ifPresent(s->s.updateComboSeq(victim, ComboStateRegistry.COMBO_A1_END2.getId()));
         }
 
         //DirectAttack knockback

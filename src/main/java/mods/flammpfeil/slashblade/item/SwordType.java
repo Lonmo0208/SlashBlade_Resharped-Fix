@@ -1,10 +1,11 @@
 package mods.flammpfeil.slashblade.item;
 
-import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.EnumSet;
+
+import mods.flammpfeil.slashblade.registry.slashblade.ISlashBladeState;
 
 public enum SwordType{
     None,
@@ -15,12 +16,11 @@ public enum SwordType{
     Bewitched,
     SoulEeater,
     FiercerEdge,
-    NoScabbard,
     Sealed,
     Cursed,
     ;
 
-    static public EnumSet<SwordType> from(ItemStack itemStackIn){
+    public static EnumSet<SwordType> from(ItemStack itemStackIn){
         EnumSet<SwordType> types = EnumSet.noneOf(SwordType.class);
 
         LazyOptional<ISlashBladeState> state = itemStackIn.getCapability(ItemSlashBlade.BLADESTATE);
@@ -30,9 +30,6 @@ public enum SwordType{
                 if(s.isBroken())
                     types.add(Broken);
 
-                if(s.isNoScabbard())
-                    types.add(NoScabbard);
-
                 if(s.isSealed())
                     types.add(Cursed);
 
@@ -40,7 +37,6 @@ public enum SwordType{
                     types.add(Bewitched);
             });
         }else{
-            types.add(NoScabbard);
             types.add(EdgeFragment);
         }
 

@@ -1,0 +1,21 @@
+translationKey
+
+TextureName
+ModelName
+SummonedSwordColor
+SummonedSwordColorInverse
+StandbyRenderType
+
+ComboRoot
+SpecialAttackType
+baseAttackModifier
+AttackAmplifier
+defaultType：Bewitched / *DEL NoScabbard / Broken / Sealed
+
+maxDamage
+Enchantments
+
+// DEL isDestructable
+// isSealed
+// DEL isNoScabbard
+// isDefaultBewitched

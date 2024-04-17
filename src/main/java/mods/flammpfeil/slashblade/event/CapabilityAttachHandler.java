@@ -5,8 +5,8 @@ import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRank
 import mods.flammpfeil.slashblade.capability.inputstate.InputStateCapabilityProvider;
 import mods.flammpfeil.slashblade.capability.mobeffect.MobEffectCapabilityProvider;
 import mods.flammpfeil.slashblade.capability.slashblade.BladeStateCapabilityProvider;
-import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.registry.slashblade.ISlashBladeState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -17,9 +17,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CapabilityAttachHandler {
 
-    static public final ResourceLocation MOBEFFECT_KEY = new ResourceLocation(SlashBlade.modid, "mobeffect");
-    static public final ResourceLocation INPUTSTATE_KEY = new ResourceLocation(SlashBlade.modid, "inputstate");
-    static public final ResourceLocation RANK_KEY = new ResourceLocation(SlashBlade.modid, "concentration");
+    static public final ResourceLocation MOBEFFECT_KEY = new ResourceLocation(SlashBlade.MODID, "mobeffect");
+    static public final ResourceLocation INPUTSTATE_KEY = new ResourceLocation(SlashBlade.MODID, "inputstate");
+    static public final ResourceLocation RANK_KEY = new ResourceLocation(SlashBlade.MODID, "concentration");
     @SubscribeEvent
     public void AttachCapabilities_Entity(AttachCapabilitiesEvent<Entity> event) {
         if(!(event.getObject() instanceof LivingEntity)) return;
@@ -29,7 +29,7 @@ public class CapabilityAttachHandler {
         event.addCapability(RANK_KEY, new ConcentrationRankCapabilityProvider());
     }
 
-    static public final ResourceLocation BLADESTATE_KEY = new ResourceLocation(SlashBlade.modid, "bladestate");
+    static public final ResourceLocation BLADESTATE_KEY = new ResourceLocation(SlashBlade.MODID, "bladestate");
     @SubscribeEvent
     public void AttachCapabilities_ItemStack(AttachCapabilitiesEvent<ItemStack> event){
 
