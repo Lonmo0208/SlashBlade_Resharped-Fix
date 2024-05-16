@@ -9,7 +9,7 @@ import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.entity.EntitySlashEffect;
-import mods.flammpfeil.slashblade.init.SBItems;
+import mods.flammpfeil.slashblade.init.SBItemRegistry;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -29,7 +29,7 @@ public class SlashEffectRenderer<T extends EntitySlashEffect> extends EntityRend
     static private final ResourceLocation modelLocation = new ResourceLocation(SlashBlade.MODID, "model/util/slash.obj");
     static private final ResourceLocation textureLocation = new ResourceLocation(SlashBlade.MODID, "model/util/slash.png");
 
-    static private LazyLoadedValue<ItemStack> enchantedItem = new LazyLoadedValue<ItemStack>(() -> new ItemStack(SBItems.proudsoul));
+    static private LazyLoadedValue<ItemStack> enchantedItem = new LazyLoadedValue<ItemStack>(() -> new ItemStack(SBItemRegistry.proudsoul));
 
     @Nullable
     @Override

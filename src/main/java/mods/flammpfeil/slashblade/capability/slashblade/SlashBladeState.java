@@ -21,13 +21,15 @@ package mods.flammpfeil.slashblade.capability.slashblade;
 
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
-import mods.flammpfeil.slashblade.registry.slashblade.ISlashBladeState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
+
+import org.joml.Math;
+
 import java.awt.*;
 import java.util.Optional;
 import java.util.UUID;
@@ -238,16 +240,6 @@ public class SlashBladeState implements ISlashBladeState{
     }
 
     @Override
-    public boolean isDestructable() {
-        return isDestructable;
-    }
-
-    @Override
-    public void setDestructable(boolean destructable) {
-        isDestructable = destructable;
-    }
-
-    @Override
     public boolean isDefaultBewitched() {
         return isDefaultBewitched;
     }
@@ -374,22 +366,6 @@ public class SlashBladeState implements ISlashBladeState{
         this.shareTag = shareTag;
     }
 
-    private float damage = 0;
-    @Override
-    public float getDamage() {
-        return this.damage;
-    }
-
-    @Override
-    public void setDamage(float damage) {
-        if(!this.isSealed() && damage <= 0.0f)
-            this.setBroken(false);
-
-        this.damage = Math.max(0.0f,Math.min(damage,1.0f));
-
-        setHasChangedActiveState(true);
-    }
-
     boolean isChangedActiveState = false;
     @Override
     public boolean hasChangedActiveState() {
@@ -409,5 +385,29 @@ public class SlashBladeState implements ISlashBladeState{
     @Override
     public void setUniqueId(UUID uniqueId) {
         this.uniqueId = uniqueId;
+    }
+    
+    private int maxDamage = 40;
+    private int damage = 0;
+
+    @Override
+    public int getMaxDamage() {
+        return this.maxDamage;
+    }
+
+    @Override
+    public void setMaxDamage(int damage) {
+        this.maxDamage = damage;
+    }
+
+    @Override
+    public int getDamage() {
+        return this.damage;
+    }
+
+    @Override
+    public void setDamage(int damage) {
+        this.damage = Math.max(0, damage);
+        setHasChangedActiveState(true);
     }
 }

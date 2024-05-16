@@ -1,19 +1,13 @@
 package mods.flammpfeil.slashblade.event;
 
-import mods.flammpfeil.slashblade.init.SBItems;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.Entity;
+import mods.flammpfeil.slashblade.init.SBItemRegistry;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-
-import java.util.Optional;
 
 
 public class PlacePreviewEntryPoint {
@@ -36,7 +30,7 @@ public class PlacePreviewEntryPoint {
 
         ItemStack stack = event.getItemStack();
         if(stack.isEmpty()) return;
-        if(stack.getItem() != SBItems.proudsoul) return;
+        if(stack.getItem() != SBItemRegistry.proudsoul) return;
 
         Level worldIn = trueSource.getCommandSenderWorld();
 

@@ -1,0 +1,11 @@
+{
+  "name": "slashblade:muramasa",
+  "properties": {
+    "attack_base": 10.0,
+    "max_damage": 50
+  },
+  "render": {
+    "model": "slashblade:model/named/muramasa/muramasa.obj",
+    "texture": "slashblade:model/named/muramasa/muramasa.png"
+  }
+}

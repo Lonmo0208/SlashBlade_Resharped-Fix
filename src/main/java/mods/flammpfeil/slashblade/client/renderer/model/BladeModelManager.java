@@ -4,6 +4,10 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.init.DefaultResources;
+import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -26,17 +30,16 @@ public class BladeModelManager {
         return SingletonHolder.instance;
     }
 
+    public static Registry<SlashBladeDefinition> getClientSlashBladeRegistry() {
+        return Minecraft.getInstance().getConnection().registryAccess().registryOrThrow(SlashBladeDefinition.REGISTRY_KEY);
+    }
+    
     WavefrontObject defaultModel;
-    public static final ResourceLocation resourceDefaultModel = new ResourceLocation("slashblade","model/blade.obj");
-    public static final ResourceLocation resourceDefaultTexture = new ResourceLocation("slashblade","model/blade.png");
-
-    public static final ResourceLocation resourceDurabilityModel = new ResourceLocation("slashblade","model/util/durability.obj");
-    public static final ResourceLocation resourceDurabilityTexture = new ResourceLocation("slashblade","model/util/durability.png");
 
     LoadingCache<ResourceLocation, WavefrontObject> cache;
 
     private BladeModelManager() {
-        defaultModel = new WavefrontObject(resourceDefaultModel);
+        defaultModel = new WavefrontObject(DefaultResources.resourceDefaultModel);
 
         cache = CacheBuilder.newBuilder()
                 .build(
@@ -58,7 +61,7 @@ public class BladeModelManager {
     public void reload(TextureStitchEvent.Post event){
         cache.invalidateAll();
 
-        defaultModel = new WavefrontObject(resourceDefaultModel);
+        defaultModel = new WavefrontObject(DefaultResources.resourceDefaultModel);
     }
 
     public WavefrontObject getModel(ResourceLocation loc) {

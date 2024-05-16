@@ -3,7 +3,6 @@ package mods.flammpfeil.slashblade.entity;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.ability.StunManager;
-import mods.flammpfeil.slashblade.util.CustomDamageSource;
 import mods.flammpfeil.slashblade.util.EnumSetConverter;
 import mods.flammpfeil.slashblade.util.NBTHelper;
 import mods.flammpfeil.slashblade.util.TargetSelector;
@@ -52,9 +51,6 @@ import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-
-import net.minecraft.world.entity.Entity.RemovalReason;
 
 public class EntityAbstractSummonedSword extends Projectile implements IShootable {
     private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.<Integer>defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.INT);
@@ -219,7 +215,7 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
     }
 
     private void refreshFlags(){
-        if(this.level().isClientSide){
+        if(this.level().isClientSide()){
             int newValue = this.entityData.get(FLAGS).intValue();
             if(intFlags != newValue){
                 intFlags = newValue;
@@ -279,7 +275,7 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
                 delay--;
                 setDelay(delay);
 
-                if(!this.level().isClientSide && delay < 0)
+                if(!this.level().isClientSide() && delay < 0)
                     this.burst();
             }
 
@@ -310,7 +306,7 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
             if (this.inBlockState != blockstate && this.level().noCollision(this.getBoundingBox().inflate(0.06D))) {
                 //block breaked
                 this.burst();
-            } else if (!this.level().isClientSide) {
+            } else if (!this.level().isClientSide()) {
                 //onBlock
                 this.tryDespawn();
             }
@@ -399,10 +395,8 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
             this.setXRot(Mth.lerp(0.2F, this.xRotO, this.getXRot()));
             this.setYRot(Mth.lerp(0.2F, this.yRotO, this.getYRot()));
             float f1 = 0.99F;
-            float f2 = 0.05F;
             if (this.isInWater()) {
                 for(int j = 0; j < 4; ++j) {
-                    float f3 = 0.25F;
                     this.level().addParticle(ParticleTypes.BUBBLE, this.getX() - mx * 0.25D, this.getY() - my * 0.25D, this.getZ() - mz * 0.25D, mx, my, mz);
                 }
             }
@@ -418,7 +412,7 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
         }
 
 
-        if(!this.level().isClientSide && ticksInGround <= 0 && 100 < this.tickCount)
+        if(!this.level().isClientSide() && ticksInGround <= 0 && 100 < this.tickCount)
             this.remove(RemovalReason.DISCARDED);
 
     }
@@ -440,6 +434,8 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
             case BLOCK:
                 this.onHitBlock((BlockHitResult)raytraceResultIn);
                 break;
+        default:
+            break;
         }
     }
     protected void onHitBlock(BlockHitResult blockraytraceresult) {
@@ -490,7 +486,7 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
             if (shooter instanceof LivingEntity) {
                 Entity hits = targetEntity;
                 if(targetEntity instanceof PartEntity){
-                    hits = ((PartEntity) targetEntity).getParent();
+                    hits = ((PartEntity<?>) targetEntity).getParent();
                 }
                 ((LivingEntity)shooter).setLastHurtMob(hits);
             }
@@ -506,7 +502,7 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
         if (targetEntity.hurt(damagesource, (float)i)) {
             Entity hits = targetEntity;
             if(targetEntity instanceof PartEntity){
-                hits = ((PartEntity) targetEntity).getParent();
+                hits = ((PartEntity<?>) targetEntity).getParent();
             }
 
             if (hits instanceof LivingEntity) {
@@ -514,11 +510,11 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
 
                 StunManager.setStun(targetLivingEntity);
 
-                if (!this.level().isClientSide && this.getPierce() <= 0) {
+                if (!this.level().isClientSide() && this.getPierce() <= 0) {
                     setHitEntity(hits);
                 }
 
-                if (!this.level().isClientSide && shooter instanceof LivingEntity) {
+                if (!this.level().isClientSide() && shooter instanceof LivingEntity) {
                     EnchantmentHelper.doPostHurtEffects(targetLivingEntity, shooter);
                     EnchantmentHelper.doPostDamageEffects((LivingEntity)shooter, targetLivingEntity);
                 }
@@ -542,7 +538,7 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
             //this.setYRot(this.getYRot() + 180.0F);
             //this.yRotO += 180.0F;
             this.ticksInAir = 0;
-            if (!this.level().isClientSide && this.getDeltaMovement().lengthSqr() < 1.0E-7D) {
+            if (!this.level().isClientSide() && this.getDeltaMovement().lengthSqr() < 1.0E-7D) {
                 if(getPierce() <= 1)
                     this.burst();
                 else
@@ -603,7 +599,7 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
     public void burst(){
         this.playSound(SoundEvents.GLASS_BREAK, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 
-        if(!this.level().isClientSide){
+        if(!this.level().isClientSide()){
             if(this.level() instanceof ServerLevel)
                 ((ServerLevel)this.level()).sendParticles(ParticleTypes.CRIT, this.getX(), this.getY(), this.getZ(), 16, 0.5, 0.5,0.5,0.25f);
 
@@ -615,7 +611,7 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
 
 
     public void burst(List<MobEffectInstance> effects, @Nullable Entity focusEntity) {
-        AABB axisalignedbb = this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
+        //        AABB axisalignedbb = this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
         List<Entity> list = TargetSelector.getTargettableEntitiesWithinAABB(
                 this.level(),
                 2,

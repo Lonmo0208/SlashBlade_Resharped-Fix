@@ -20,15 +20,15 @@
   
   "item.slashblade.slashblade": "無銘「無名」",
   "item.slashblade.slashblade.desc": "ニコイチ修理\n無垢の器",
-  "item.slashblade.simple.wood": "無銘刀「木偶」",
+  "item.slashblade.slashblade_wood": "無銘刀「木偶」",
   "item.slashblade.simple.wood.desc": "鞘付きの木刀",
-  "item.slashblade.simple.white": "利刀「白鞘」",
+  "item.slashblade.slashblade_white": "利刀「白鞘」",
   "item.slashblade.simple.white.desc": "鉄の刀身",
   "item.slashblade.simple.white.material": "刀剣の材料箱「白」",
-  "item.slashblade.simple.bamboo": "無銘刀「竹光」",
+  "item.slashblade.slashblade_bamboo": "無銘刀「竹光」",
   "item.slashblade.simple.bamboo.desc": "未完成の模造刀",
   "item.slashblade.simple.bamboo.material": "刀剣の材料箱「竹」",
-  "item.slashblade.simple.silverbamboo": "名刀「銀紙竹光」",
+  "item.slashblade.slashblade_silverbamboo": "名刀「銀紙竹光」",
   "item.slashblade.simple.silverbamboo.desc": "模造刀",
   "item.slashblade.simple.silverbamboo.material": "刀剣の材料箱「見栄」",
   "item.slashblade.simple.iron": "抜刀剣「」",
@@ -46,14 +46,16 @@
   "item.slashblade.ex.fox.black.desc": "安寧の標",
   "item.slashblade.ex.fox.black.material": "刀剣の材料箱「黒狐」",
 
-  "item.slashblade.ex.tukumo": "宝刀「付喪」結月",
+  "item.slashblade.yuzukitukumo": "宝刀「付喪」結月",
   "item.slashblade.ex.tukumo.desc": "結月刀「付喪」\n鉄の木刀の軌跡",
   "item.slashblade.ex.tukumo.material": "刀剣の材料箱「付喪」",
 
-  "item.slashblade.ex.muramasa": "「千鶴」村正",
+  "item.slashblade.muramasa": "「千鶴」村正",
   "item.slashblade.ex.muramasa.desc": "幻想の村正が一つ",
   "item.slashblade.ex.muramasa.material": "刀剣の材料箱「村正」",
 
+  "item.slashblade.yamato": "魔剣「閻魔刀」",
+  "item.slashblade.sange": "サンゲ",
 
   "item.slashblade.proudsoul": "刀の魂片",
   "item.slashblade.proudsoul_tiny":"刀の薄魂片",

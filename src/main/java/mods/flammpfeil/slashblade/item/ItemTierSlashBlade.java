@@ -2,22 +2,22 @@ package mods.flammpfeil.slashblade.item;
 
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.util.LazyLoadedValue;
-
 import java.util.function.Supplier;
+
+import mods.flammpfeil.slashblade.data.tag.SlashBladeItemTags;
 
 public class ItemTierSlashBlade implements Tier {
 
-
-    private final LazyLoadedValue<Ingredient> repairMaterial;
-
-    public ItemTierSlashBlade(Supplier<Ingredient> repairMaterialIn){
-        repairMaterial = new LazyLoadedValue<>(repairMaterialIn);
+    private final int uses;
+    private final float attack;
+    public ItemTierSlashBlade(int uses, float attack){
+        this.attack = attack;
+        this.uses = uses;
     }
 
     @Override
     public int getUses() {
-        return 100;
+        return uses;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class ItemTierSlashBlade implements Tier {
 
     @Override
     public float getAttackDamageBonus() {
-        return 0;
+        return attack;
     }
 
     @Override
@@ -42,6 +42,6 @@ public class ItemTierSlashBlade implements Tier {
 
     @Override
     public Ingredient getRepairIngredient() {
-        return repairMaterial.get();
+        return Ingredient.of(SlashBladeItemTags.PROUD_SOULS);
     }
 }

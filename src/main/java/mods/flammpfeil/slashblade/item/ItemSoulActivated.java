@@ -1,18 +1,14 @@
 package mods.flammpfeil.slashblade.item;
 
-import mods.flammpfeil.slashblade.init.SBItems;
-import net.minecraft.client.renderer.EffectInstance;
-import net.minecraft.nbt.CompoundTag;
+import mods.flammpfeil.slashblade.init.SBItemRegistry;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -35,14 +31,14 @@ public class ItemSoulActivated extends Item {
 
     @Override
     public void inventoryTick(ItemStack itemStack, Level level, Entity entity, int slot, boolean selected) {
-        if(entity != null && entity instanceof Player && ((Player)entity).getInventory().isHotbarSlot(slot)){
+        if(entity != null && entity instanceof Player && Inventory.isHotbarSlot(slot)){
             Player player = (Player) entity;
 
             MobEffectInstance effect = new MobEffectInstance(MobEffects.HUNGER, 200, 1, false, false);
             player.addEffect(effect);
 
             if(itemStack.getMaxDamage() <= itemStack.getDamageValue()){
-                createFilledResult(itemStack, player, new ItemStack(SBItems.proudsoul_awakened));
+                createFilledResult(itemStack, player, new ItemStack(SBItemRegistry.proudsoul_awakened));
                 level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_CLUSTER_BREAK, SoundSource.NEUTRAL, 2.0F, 0.25F);
 
             }else if(player.hasEffect(MobEffects.HUNGER) && 0 < player.getFoodData().getFoodLevel()){

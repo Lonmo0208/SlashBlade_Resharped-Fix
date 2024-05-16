@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import mods.flammpfeil.slashblade.item.SwordType;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import net.minecraft.resources.ResourceLocation;
@@ -17,25 +18,22 @@ public class PropertiesDefinition {
             ResourceLocation.CODEC.optionalFieldOf("slash_art", SlashArtsRegistry.JUDGEMENT_CUT.getId())
                     .forGetter(PropertiesDefinition::getSpecialAttackType),
             Codec.FLOAT.optionalFieldOf("attack_base", 4.0F).forGetter(PropertiesDefinition::getBaseAttackModifier),
-            Codec.FLOAT.optionalFieldOf("attack_amplifier", 1.0F).forGetter(PropertiesDefinition::getAttackAmplifier),
             Codec.INT.optionalFieldOf("max_damage", 40).forGetter(PropertiesDefinition::getMaxDamage),
-            DefaultSwordType.CODEC.listOf().optionalFieldOf("carry_type", Lists.newArrayList())
+            SwordType.CODEC.listOf().optionalFieldOf("sword_type", Lists.newArrayList())
                     .forGetter(PropertiesDefinition::getDefaultType))
             .apply(instance, PropertiesDefinition::new));
 
     private final ResourceLocation comboRoot;
     private final ResourceLocation specialAttackType;
     private final float baseAttackModifier;
-    private final float attackAmplifier;
     private final int maxDamage;
-    private final List<DefaultSwordType> defaultType;
+    private final List<SwordType> defaultType;
 
     private PropertiesDefinition(ResourceLocation comboRoot, ResourceLocation specialAttackType, float baseAttackModifier,
-            float AttackAmplifier, int damage, List<DefaultSwordType> defaultType) {
+            int damage, List<SwordType> defaultType) {
         this.comboRoot = comboRoot;
         this.specialAttackType = specialAttackType;
         this.baseAttackModifier = baseAttackModifier;
-        this.attackAmplifier = AttackAmplifier;
         this.maxDamage = damage;
         this.defaultType = defaultType;
     }
@@ -52,15 +50,11 @@ public class PropertiesDefinition {
         return baseAttackModifier;
     }
 
-    public float getAttackAmplifier() {
-        return attackAmplifier;
-    }
-
     public int getMaxDamage() {
         return maxDamage;
     }
 
-    public List<DefaultSwordType> getDefaultType() {
+    public List<SwordType> getDefaultType() {
         return defaultType;
     }
     
@@ -69,17 +63,19 @@ public class PropertiesDefinition {
         private ResourceLocation comboRoot;
         private ResourceLocation specialAttackType;
         private float baseAttackModifier;
-        private float attackAmplifier;
         private int maxDamage;
-        private List<DefaultSwordType> defaultType;
+        private List<SwordType> defaultType;
         
-        public Builder() {
+        private Builder() {
             this.comboRoot = ComboStateRegistry.STANDBY.getId();
             this.specialAttackType = SlashArtsRegistry.JUDGEMENT_CUT.getId();
             this.baseAttackModifier = 4.0F;
-            this.attackAmplifier = 1.0F;
             this.maxDamage = 40;
             this.defaultType = Lists.newArrayList();
+        }
+        
+        public static Builder newInstance() {
+            return new Builder();
         }
 
         public Builder rootComboState(ResourceLocation comboRoot) {
@@ -97,31 +93,19 @@ public class PropertiesDefinition {
             return this;
         }
 
-        public Builder attackAmplifier(float attackAmplifier) {
-            this.attackAmplifier = attackAmplifier;
-            return this;
-        }
-
         public Builder maxDamage(int maxDamage) {
             this.maxDamage = maxDamage;
             return this;
         }
 
-        public Builder defaultSwordType(List<DefaultSwordType> defaultType) {
+        public Builder defaultSwordType(List<SwordType> defaultType) {
             this.defaultType = defaultType;
             return this;
         }
 
         public PropertiesDefinition build() {
-            return new PropertiesDefinition(comboRoot, specialAttackType, baseAttackModifier, attackAmplifier, maxDamage, defaultType);
+            return new PropertiesDefinition(comboRoot, specialAttackType, baseAttackModifier, maxDamage, defaultType);
         }
-    }
-
-    public static enum DefaultSwordType {
-        BEWITCHED, BROKEN, SEALED;
-
-        public static final Codec<DefaultSwordType> CODEC = Codec.STRING.xmap(
-                string -> DefaultSwordType.valueOf(string.toUpperCase()), instance -> instance.name().toLowerCase());
     }
 
 }

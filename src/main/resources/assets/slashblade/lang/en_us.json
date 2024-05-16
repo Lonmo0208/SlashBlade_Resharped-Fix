@@ -20,20 +20,21 @@
   
   "item.slashblade.slashblade": "Anonymity -Nameless-",
   "item.slashblade.slashblade.desc": "Cannibalism maintenance\nA pure vessel.",
-  "item.slashblade.simple.wood": "Anonymity -Wood-",
+  "item.slashblade.slashblade_wood": "Anonymity -Wood-",
   "item.slashblade.simple.wood.desc": "Wooden sword with scabbard.",
-  "item.slashblade.simple.white": "Sharpness -White-",
+  "item.slashblade.slashblade_white": "Sharpness -White-",
   "item.slashblade.simple.white.desc": "Iron Edge",
   "item.slashblade.simple.white.material": "Blade Component -White-",
-  "item.slashblade.simple.bamboo": "Anonymity -Bamboo Light-",
+  "item.slashblade.slashblade_bamboo": "Anonymity -Bamboo Light-",
   "item.slashblade.simple.bamboo.desc": "Unfinished Imitation Blade",
   "item.slashblade.simple.bamboo.material": "Blade Component -Bamboo-",
-  "item.slashblade.simple.silverbamboo": "Noted -Silver Bamboo Light-",
-  "item.slashblade.simple.silverbamboo.desc": "Imitation",
-  "item.slashblade.simple.silverbamboo.material": "Blade Component -Imitation-",
+  "item.slashblade.slashblade_silverbamboo": "Noted -Silver Bamboo Light-",
   "item.slashblade.simple.iron": "SlashBlade --",
   "item.slashblade.simple.iron.desc": "Basic Blade",
   "item.slashblade.simple.iron.material": "Blade Component -Iron-",
+  
+  "item.slashblade.yamato": "Yamato",
+  "item.slashblade.sange": "Sange",
 
   "item.slashblade.ex.ruby": "Sharpness -nameless- Ruby",
   "item.slashblade.ex.ruby.desc": "Superior One",
@@ -46,11 +47,11 @@
   "item.slashblade.ex.fox.black.desc": "Blade against ill‐fated.",
   "item.slashblade.ex.fox.black.material": "Blade Component -BlackFox-",
 
-  "item.slashblade.ex.tukumo": "Noble -Tukumo- Violet",
+  "item.slashblade.yuzukitukumo": "Noble -Tukumo- Violet",
   "item.slashblade.ex.tukumo.desc": "Article of The Iron Wooden Sword",
   "item.slashblade.ex.tukumo.material": "Blade Component -Tukumo-",
 
-  "item.slashblade.ex.muramasa": "-Chizuru- Muramasa",
+  "item.slashblade.muramasa": "-Chizuru- Muramasa",
   "item.slashblade.ex.muramasa.desc": "One of the lost muramasa swords.",
   "item.slashblade.ex.muramasa.material": "Blade Component -Muramasa-",
 

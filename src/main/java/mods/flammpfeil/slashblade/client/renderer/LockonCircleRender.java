@@ -42,8 +42,9 @@ public class LockonCircleRender {
     static final ResourceLocation textureLoc = new ResourceLocation("slashblade","model/util/lockon.png");
 
     @SubscribeEvent
-    public void onRenderLiving(RenderLivingEvent event){
-        Player player = Minecraft.getInstance().player;
+    public void onRenderLiving(RenderLivingEvent<?, ?> event){
+        final Minecraft minecraftInstance = Minecraft.getInstance();
+        Player player = minecraftInstance.player;
         if(player == null) return;
         if(!player.getCapability(CapabilityInputState.INPUT_STATE).filter(input->input.getCommands().contains(InputCommand.SNEAK)).isPresent()) return;
 
@@ -55,7 +56,7 @@ public class LockonCircleRender {
 
         if(effectColor.isEmpty()) return;
 
-        LivingEntityRenderer renderer = event.getRenderer();
+        LivingEntityRenderer<?, ?> renderer = event.getRenderer();
         LivingEntity livingEntity = event.getEntity();
 
 

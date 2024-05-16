@@ -9,11 +9,12 @@ StandbyRenderType
 ComboRoot
 SpecialAttackType
 baseAttackModifier
-AttackAmplifier
 defaultType：Bewitched / *DEL NoScabbard / Broken / Sealed
-
 maxDamage
+
 Enchantments
+
+AttackAmplifier ：Active
 
 // DEL isDestructable
 // isSealed

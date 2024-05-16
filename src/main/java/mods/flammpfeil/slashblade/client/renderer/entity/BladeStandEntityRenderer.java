@@ -3,7 +3,7 @@ package mods.flammpfeil.slashblade.client.renderer.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.entity.BladeStandEntity;
-import mods.flammpfeil.slashblade.init.SBItems;
+import mods.flammpfeil.slashblade.init.SBItemRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -59,18 +59,18 @@ public class BladeStandEntityRenderer extends ItemFrameRenderer<BladeStandEntity
 
                 matrixStackIn.scale(2,2,2);
                 Item type = entity.currentType;
-                if(type == SBItems.bladestand_1) {
+                if(type == SBItemRegistry.bladestand_1) {
                     matrixStackIn.mulPose(Axis.XP.rotationDegrees(-90f));
-                }else if(type == SBItems.bladestand_2){
+                }else if(type == SBItemRegistry.bladestand_2){
                     matrixStackIn.mulPose(Axis.XP.rotationDegrees(-90f));
-                }else if(type == SBItems.bladestand_v){
+                }else if(type == SBItemRegistry.bladestand_v){
                     matrixStackIn.mulPose(Axis.XP.rotationDegrees(-90f));
-                }else if(type == SBItems.bladestand_s){
+                }else if(type == SBItemRegistry.bladestand_s){
                     matrixStackIn.mulPose(Axis.XP.rotationDegrees(-90f));
-                }else if(type == SBItems.bladestand_1w){
+                }else if(type == SBItemRegistry.bladestand_1w){
                     matrixStackIn.mulPose(Axis.YP.rotationDegrees(180f));
                     matrixStackIn.translate(0,0,-0.15f);
-                }else if(type == SBItems.bladestand_2w){
+                }else if(type == SBItemRegistry.bladestand_2w){
                     matrixStackIn.mulPose(Axis.YP.rotationDegrees(180f));
                     matrixStackIn.translate(0,0,-0.15f);
                 }
@@ -83,9 +83,9 @@ public class BladeStandEntityRenderer extends ItemFrameRenderer<BladeStandEntity
                 this.renderItem(entity, entity.currentTypeStack, matrixStackIn, bufferIn, packedLightIn);
                 matrixStackIn.popPose();
 
-                if(entity.currentType == SBItems.bladestand_1w || type == SBItems.bladestand_2w){
+                if(entity.currentType == SBItemRegistry.bladestand_1w || type == SBItemRegistry.bladestand_2w){
                     matrixStackIn.translate(0,0,-0.19f);
-                }else if(entity.currentType == SBItems.bladestand_1){
+                }else if(entity.currentType == SBItemRegistry.bladestand_1){
                 }
                 //blade render
                 matrixStackIn.mulPose(Axis.YP.rotationDegrees(-180f));

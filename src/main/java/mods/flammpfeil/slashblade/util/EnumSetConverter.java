@@ -1,8 +1,5 @@
 package mods.flammpfeil.slashblade.util;
 
-import net.minecraft.core.Direction;
-
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -22,7 +19,7 @@ public class EnumSetConverter {
         return set;
     }
 
-    public static <T extends Enum> T fromOrdinal(T[] values, int ordinal ,T def){
+    public static <T extends Enum<?>> T fromOrdinal(T[] values, int ordinal ,T def){
         return Arrays.stream(values)
                      .skip(ordinal)
                      .findFirst()

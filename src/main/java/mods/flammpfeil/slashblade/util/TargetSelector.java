@@ -1,6 +1,8 @@
 package mods.flammpfeil.slashblade.util;
 
 import com.google.common.collect.Lists;
+
+import mods.flammpfeil.slashblade.data.tag.SlashBladeEntityTypeTagProvider.EntityTypeTags;
 import mods.flammpfeil.slashblade.entity.IShootable;
 import mods.flammpfeil.slashblade.event.InputCommandEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -9,7 +11,6 @@ import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -75,23 +76,19 @@ public class TargetSelector {
     }
 
     static public class AttackablePredicate implements Predicate<LivingEntity> {
+        
         public boolean test(LivingEntity livingentity) {
             if (livingentity instanceof ArmorStand)
                 if (((ArmorStand) livingentity).isMarker())
                     return true;
                 else
                     return false;
-//            if (livingentity.hasPassenger(entity->entity instanceof Player))
-//                return false;
-            if (livingentity instanceof Enemy)
-                return true;
+            
+            if (livingentity.hasPassenger(entity -> true))
+                return false;
 
             if (livingentity.isCurrentlyGlowing())
                 return true;
-
-            if (livingentity instanceof Wolf)
-                if (((Wolf) livingentity).isAngry()/*isAngry()*/)
-                    return true;
 
             if (livingentity.getTags().contains(AttackableTag)){
                 livingentity.removeTag(AttackableTag);
@@ -101,7 +98,7 @@ public class TargetSelector {
             if(livingentity.getTeam() != null)
                 return true;
 
-            return true;
+            return !livingentity.getType().is(EntityTypeTags.ATTACKABLE_BLACKLIST);
         }
     }
 

@@ -6,10 +6,10 @@ import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRan
 import mods.flammpfeil.slashblade.capability.inputstate.CapabilityInputState;
 import mods.flammpfeil.slashblade.capability.inputstate.IInputState;
 import mods.flammpfeil.slashblade.capability.slashblade.CapabilitySlashBlade;
+import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.registry.combo.ComboState;
-import mods.flammpfeil.slashblade.registry.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.util.AdvancementHelper;
 import mods.flammpfeil.slashblade.util.InputCommand;
 import net.minecraft.resources.ResourceLocation;
@@ -161,7 +161,7 @@ public class Guard {
 
         //play sound
         if(victim instanceof Player){
-            victim.playSound(SoundEvents.TRIDENT_HIT_GROUND, 1.0F, 1.0F + victim.level().random.nextFloat() * 0.4F);
+            victim.playSound(SoundEvents.TRIDENT_HIT_GROUND, 1.0F, 1.0F + victim.level().getRandom().nextFloat() * 0.4F);
         }
 
         //advancement
@@ -171,7 +171,8 @@ public class Guard {
         //cost-------------------------
         if(!isJust && !isHighRank){
             slashBlade.ifPresent(s->{
-                s.damageBlade(stack, 1, victim, ItemSlashBlade.getOnBroken(stack));
+//                s.damageBlade(stack, 1, victim, ItemSlashBlade.getOnBroken(stack));
+                stack.hurtAndBreak(1, victim, ItemSlashBlade.getOnBroken(stack));
             });
         }
 

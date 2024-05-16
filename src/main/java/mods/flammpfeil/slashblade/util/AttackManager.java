@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.ability.ArrowReflector;
 import mods.flammpfeil.slashblade.ability.TNTExtinguisher;
-import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRank;
 import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRankCapabilityProvider;
 import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank;
 import mods.flammpfeil.slashblade.entity.EntityAbstractSummonedSword;
@@ -20,7 +19,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -133,7 +131,7 @@ public class AttackManager {
     static public <E extends Entity & IShootable> List<Entity> areaAttack(E owner, Consumer<LivingEntity> beforeHit, double reach, boolean forceHit, boolean resetHit, List<Entity> exclude) {
         List<Entity> founds = Lists.newArrayList();
 
-        AABB bb = owner.getBoundingBox();
+        //AABB bb = owner.getBoundingBox();
         //bb = bb.grow(3.0D, 3D, 3.0D);
 
         if (!owner.level().isClientSide()) {

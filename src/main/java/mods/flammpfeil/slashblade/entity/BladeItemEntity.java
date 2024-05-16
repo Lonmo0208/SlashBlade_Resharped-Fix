@@ -1,12 +1,17 @@
 package mods.flammpfeil.slashblade.entity;
 
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.init.DefaultResources;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -19,8 +24,33 @@ import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
 
 public class BladeItemEntity extends ItemEntity {
+    private static final EntityDataAccessor<String> DATA_MODEL = SynchedEntityData.defineId(BladeItemEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> DATA_TEXTURE = SynchedEntityData.defineId(BladeItemEntity.class, EntityDataSerializers.STRING);
     public BladeItemEntity(EntityType<? extends BladeItemEntity> p_i50217_1_, Level p_i50217_2_) {
         super(p_i50217_1_, p_i50217_2_);
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.getEntityData().define(DATA_MODEL, DefaultResources.resourceDefaultModel.toString());
+        this.getEntityData().define(DATA_TEXTURE, DefaultResources.resourceDefaultTexture.toString());
+    }
+    
+    public ResourceLocation getModel() {
+        return ResourceLocation.tryParse(this.getEntityData().get(DATA_MODEL));
+    }
+
+    public void setModel(ResourceLocation model) {
+        this.getEntityData().set(DATA_MODEL, model.toString());
+    }
+
+    public ResourceLocation getTexture() {
+        return ResourceLocation.tryParse(this.getEntityData().get(DATA_TEXTURE));
+    }
+
+    public void setTexture(ResourceLocation texture) {
+        this.getEntityData().set(DATA_TEXTURE, texture.toString());
     }
 
     public void init(){
@@ -104,6 +134,7 @@ public class BladeItemEntity extends ItemEntity {
         return false;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public float getLightLevelDependentMagicValue() {
         if(getAirSupply() < 0)

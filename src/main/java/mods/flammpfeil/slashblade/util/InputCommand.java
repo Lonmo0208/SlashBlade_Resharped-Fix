@@ -16,7 +16,6 @@ public enum InputCommand {
     L_CLICK,
     ON_GROUND,
     ON_AIR,
-    SAVE_TOOLBAR,
     SPRINT,
     JUMP;
 

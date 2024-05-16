@@ -7,15 +7,16 @@ import dev.kosmx.playerAnim.impl.IAnimatedPlayer;
 import jp.nyatla.nymmd.*;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.CapabilitySlashBlade;
+import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeMotionManager;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.event.client.UserPoseOverrider;
+import mods.flammpfeil.slashblade.init.DefaultResources;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.registry.combo.ComboState;
-import mods.flammpfeil.slashblade.registry.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.util.TimeValueHelper;
 import mods.flammpfeil.slashblade.util.VectorHelper;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -177,7 +178,7 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
                     matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 
 
-                    ResourceLocation textureLocation = s.getTexture().orElseGet(() -> BladeModelManager.resourceDefaultTexture);
+                    ResourceLocation textureLocation = s.getTexture().orElseGet(() -> DefaultResources.resourceDefaultTexture);
                     //bindTexture(textureLocation);
 
                     WavefrontObject obj = BladeModelManager.getInstance().getModel(s.getModel().orElse(null));

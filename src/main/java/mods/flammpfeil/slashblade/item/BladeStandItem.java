@@ -15,8 +15,6 @@ import net.minecraft.world.item.HangingEntityItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 
-import net.minecraft.world.item.Item.Properties;
-
 public class BladeStandItem extends HangingEntityItem {
     private boolean isWallType;
     public BladeStandItem(Properties builder) {

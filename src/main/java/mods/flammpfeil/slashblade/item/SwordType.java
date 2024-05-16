@@ -5,21 +5,27 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.EnumSet;
 
-import mods.flammpfeil.slashblade.registry.slashblade.ISlashBladeState;
+import com.mojang.serialization.Codec;
+
+import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 
 public enum SwordType{
-    None,
-    EdgeFragment,
-    Broken,
-    Perfect,
-    Enchanted,
-    Bewitched,
-    SoulEeater,
-    FiercerEdge,
-    Sealed,
-    Cursed,
+    NONE,
+    EDGEFRAGMENT,
+    BROKEN,
+    PERFECT,
+    ENCHANTED,
+    BEWITCHED,
+    SOULEATER,
+    FIERCEREDGE,
+    NOSCABBARD,
+    SEALED,
+    CURSED,
     ;
-
+    
+    public static final Codec<SwordType> CODEC = Codec.STRING.xmap(
+            string -> SwordType.valueOf(string.toUpperCase()), instance -> instance.name().toLowerCase());
+    
     public static EnumSet<SwordType> from(ItemStack itemStackIn){
         EnumSet<SwordType> types = EnumSet.noneOf(SwordType.class);
 
@@ -28,21 +34,22 @@ public enum SwordType{
         if(state.isPresent()){
             itemStackIn.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s->{
                 if(s.isBroken())
-                    types.add(Broken);
+                    types.add(BROKEN);
 
                 if(s.isSealed())
-                    types.add(Cursed);
+                    types.add(CURSED);
 
                 if(!s.isSealed() && itemStackIn.isEnchanted() && (itemStackIn.hasCustomHoverName() || s.isDefaultBewitched()))
-                    types.add(Bewitched);
+                    types.add(BEWITCHED);
             });
         }else{
-            types.add(EdgeFragment);
+            types.add(NOSCABBARD);
+            types.add(EDGEFRAGMENT);
         }
 
 
         if(itemStackIn.isEnchanted())
-            types.add(Enchanted);
+            types.add(ENCHANTED);
 
         return types;
     }

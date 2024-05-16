@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
+import mods.flammpfeil.slashblade.entity.BladeItemEntity;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.item.SwordType;
@@ -45,109 +46,101 @@ public class BladeItemEntityRenderer extends ItemEntityRenderer {
     }
 
     private void renderBlade(ItemEntity itemIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-
-        try (MSAutoCloser msac = MSAutoCloser.pushMatrix(matrixStackIn)) {
-            matrixStackIn.mulPose(Axis.YP.rotationDegrees(entityYaw));
-
-            ItemStack current = itemIn.getItem();
-
-            EnumSet<SwordType> types = SwordType.from(current);
-            ResourceLocation modelLocation =
-                    current.getCapability(ItemSlashBlade.BLADESTATE)
-                            .map((state) -> state.getModel().orElseGet(() -> BladeModelManager.resourceDefaultModel))
-                            .orElseGet(()->{
-                                if(current.hasTag() && current.getTag().contains("Model"))
-                                    return new ResourceLocation(current.getTag().getString("Model"));
-                                else
-                                    return  BladeModelManager.resourceDefaultModel;
-                            });
-            ResourceLocation textureLocation =
-                    current.getCapability(ItemSlashBlade.BLADESTATE)
-                            .map((state) -> state.getTexture().orElseGet(() -> BladeModelManager.resourceDefaultTexture))
-                            .orElseGet(()->{
-                                if(current.hasTag() && current.getTag().contains("Texture"))
-                                    return new ResourceLocation(current.getTag().getString("Texture"));
-                                else
-                                    return  BladeModelManager.resourceDefaultTexture;
-                            });
-            WavefrontObject model = BladeModelManager.getInstance().getModel(modelLocation);
-
-            float scale = 0.00625f;
-
-            try (MSAutoCloser msac2 = MSAutoCloser.pushMatrix(matrixStackIn)) {
-
-                float heightOffset;
-                float xOffset = 0;
-                String renderTarget;
-                if (types.contains(SwordType.EdgeFragment)) {
-                    heightOffset = 225;
-                    xOffset = 200;
-                    renderTarget = "blade_fragment";
-                }else if (types.contains(SwordType.Broken)) {
-                    heightOffset = 100;
-                    xOffset = 30;
-                    renderTarget = "blade_damaged";
-                }else {
-                    heightOffset = 225;
-                    xOffset = 120;
-                    renderTarget = "blade";
-                }
-
-
-                if(itemIn.isInWater()){
-
-                    matrixStackIn.translate(0, 0.025f, 0);
-                    matrixStackIn.mulPose(Axis.YP.rotationDegrees(itemIn.bobOffs));
-
-                    matrixStackIn.scale(scale, scale, scale);
-
-                    matrixStackIn.mulPose(Axis.XP.rotationDegrees(90));
-
-                }else if(!itemIn.onGround())
-                {
-                    matrixStackIn.scale(scale, scale, scale);
-
-                    float speed = -81f;
-                    matrixStackIn.mulPose(Axis.ZP.rotationDegrees(speed * (itemIn.tickCount + partialTicks)));
-                    matrixStackIn.translate(xOffset, 0 , 0);
-                }else{
-                    matrixStackIn.scale(scale, scale, scale);
-
-                    matrixStackIn.mulPose(Axis.ZP.rotationDegrees(60 + (float)Math.toDegrees(itemIn.bobOffs / 6.0)));
-                    matrixStackIn.translate(heightOffset, 0 , 0);
-                }
-
-
-
-                BladeRenderState.renderOverrided(current, model, renderTarget, textureLocation, matrixStackIn, bufferIn, packedLightIn);
-                BladeRenderState.renderOverridedLuminous(current, model, renderTarget + "_luminous", textureLocation, matrixStackIn, bufferIn, packedLightIn);
-            }
-
-            if(itemIn.isInWater() || itemIn.onGround()) {
-
+        if(itemIn instanceof BladeItemEntity bladeItem) {
+            try (MSAutoCloser msac = MSAutoCloser.pushMatrix(matrixStackIn)) {
+                matrixStackIn.mulPose(Axis.YP.rotationDegrees(entityYaw));
+    
+                ItemStack current = itemIn.getItem();
+    
+                EnumSet<SwordType> types = SwordType.from(current);
+                itemIn.getPersistentData();
+                ResourceLocation modelLocation =
+                        current.getCapability(ItemSlashBlade.BLADESTATE)
+                                .map((state) -> state.getModel().orElseGet(bladeItem::getModel))
+                                .orElseGet(bladeItem::getModel);
+                ResourceLocation textureLocation =
+                        current.getCapability(ItemSlashBlade.BLADESTATE)
+                                .map((state) -> state.getTexture().orElseGet(bladeItem::getTexture))
+                                .orElseGet(bladeItem::getTexture);
+                
+                WavefrontObject model = BladeModelManager.getInstance().getModel(modelLocation);
+    
+                float scale = 0.00625f;
+    
                 try (MSAutoCloser msac2 = MSAutoCloser.pushMatrix(matrixStackIn)) {
-
-                    matrixStackIn.translate(0, 0.025f, 0);
-
-                    matrixStackIn.mulPose(Axis.YP.rotationDegrees(itemIn.bobOffs));
-
-                    if(!itemIn.isInWater()){
-                        matrixStackIn.translate(0.75, 0, -0.4);
+    
+                    float heightOffset;
+                    float xOffset = 0;
+                    String renderTarget;
+                    if (types.contains(SwordType.EDGEFRAGMENT)) {
+                        heightOffset = 225;
+                        xOffset = 200;
+                        renderTarget = "blade_fragment";
+                    }else if (types.contains(SwordType.BROKEN)) {
+                        heightOffset = 100;
+                        xOffset = 30;
+                        renderTarget = "blade_damaged";
+                    }else {
+                        heightOffset = 225;
+                        xOffset = 120;
+                        renderTarget = "blade";
                     }
-
-                    matrixStackIn.scale(scale, scale, scale);
-
-                    matrixStackIn.mulPose(Axis.XP.rotationDegrees(90));
-
-                    String renderTarget = "sheath";
-
+    
+    
+                    if(itemIn.isInWater()){
+    
+                        matrixStackIn.translate(0, 0.025f, 0);
+                        matrixStackIn.mulPose(Axis.YP.rotationDegrees(itemIn.bobOffs));
+    
+                        matrixStackIn.scale(scale, scale, scale);
+    
+                        matrixStackIn.mulPose(Axis.XP.rotationDegrees(90));
+    
+                    }else if(!itemIn.onGround())
+                    {
+                        matrixStackIn.scale(scale, scale, scale);
+    
+                        float speed = -81f;
+                        matrixStackIn.mulPose(Axis.ZP.rotationDegrees(speed * (itemIn.tickCount + partialTicks)));
+                        matrixStackIn.translate(xOffset, 0 , 0);
+                    }else{
+                        matrixStackIn.scale(scale, scale, scale);
+    
+                        matrixStackIn.mulPose(Axis.ZP.rotationDegrees(60 + (float)Math.toDegrees(itemIn.bobOffs / 6.0)));
+                        matrixStackIn.translate(heightOffset, 0 , 0);
+                    }
+    
+    
+    
                     BladeRenderState.renderOverrided(current, model, renderTarget, textureLocation, matrixStackIn, bufferIn, packedLightIn);
                     BladeRenderState.renderOverridedLuminous(current, model, renderTarget + "_luminous", textureLocation, matrixStackIn, bufferIn, packedLightIn);
                 }
+    
+                if(itemIn.isInWater() || itemIn.onGround() && !types.contains(SwordType.NOSCABBARD)) {
+    
+                    try (MSAutoCloser msac2 = MSAutoCloser.pushMatrix(matrixStackIn)) {
+    
+                        matrixStackIn.translate(0, 0.025f, 0);
+    
+                        matrixStackIn.mulPose(Axis.YP.rotationDegrees(itemIn.bobOffs));
+    
+                        if(!itemIn.isInWater()){
+                            matrixStackIn.translate(0.75, 0, -0.4);
+                        }
+    
+                        matrixStackIn.scale(scale, scale, scale);
+    
+                        matrixStackIn.mulPose(Axis.XP.rotationDegrees(90));
+    
+                        String renderTarget = "sheath";
+    
+                        BladeRenderState.renderOverrided(current, model, renderTarget, textureLocation, matrixStackIn, bufferIn, packedLightIn);
+                        BladeRenderState.renderOverridedLuminous(current, model, renderTarget + "_luminous", textureLocation, matrixStackIn, bufferIn, packedLightIn);
+                    }
+                }
+    
             }
-
         }
-
         //todo: fire render override?
     }
 
