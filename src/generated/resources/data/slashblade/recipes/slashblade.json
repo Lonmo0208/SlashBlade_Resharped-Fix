@@ -4,7 +4,7 @@
   "key": {
     "B": {
       "type": "slashblade:blade",
-      "item": "slashblade:slashblade_silverbamboo",
+      "item": "slashblade:slashblade_white",
       "request": {
         "sword_type": [
           "broken"
@@ -15,7 +15,7 @@
       "tag": "forge:storage_blocks/coal"
     },
     "E": {
-      "tag": "forge:rods/wooden"
+      "tag": "forge:rods/blaze"
     },
     "I": {
       "tag": "forge:ingots/gold"

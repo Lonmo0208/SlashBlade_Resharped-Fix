@@ -115,6 +115,17 @@ public class RequestDefinition {
                     .forEach(enchantment -> blade.enchant(
                             ForgeRegistries.ENCHANTMENTS.getValue(enchantment.getEnchantmentID()),
                             enchantment.getEnchantmentLevel()));
+            this.defaultType.forEach(type->{
+                switch(type) {
+                    case BEWITCHED -> state.setDefaultBewitched(true);
+                    case BROKEN -> {
+                        blade.setDamageValue(blade.getMaxDamage() - 1);
+                        state.setBroken(true); 
+                        }
+                    case SEALED -> state.setSealed(true);
+                    default -> {}
+                }
+            });
         });
     }
 
@@ -126,7 +137,7 @@ public class RequestDefinition {
         var state = blade.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
         boolean nameCheck;
         if (this.name.equals(SlashBlade.prefix("none"))) {
-            nameCheck = true;
+            nameCheck = state.getTranslationKey().isBlank();
         } else {
             nameCheck = state.getTranslationKey().equals(getTranslationKey());
         }

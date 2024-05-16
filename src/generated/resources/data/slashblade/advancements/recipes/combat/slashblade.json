@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_slashblade_silverbamboo": {
+    "has_slashblade_white": {
       "conditions": {
         "items": [
           {
             "items": [
-              "slashblade:slashblade_silverbamboo"
+              "slashblade:slashblade_white"
             ]
           }
         ]
@@ -22,7 +22,7 @@
   },
   "requirements": [
     [
-      "has_slashblade_silverbamboo",
+      "has_slashblade_white",
       "has_the_recipe"
     ]
   ],

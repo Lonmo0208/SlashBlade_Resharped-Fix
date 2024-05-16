@@ -13,7 +13,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
-public record SlashBladeRecipeSerializer<T extends Recipe<?>, U extends T> (RecipeSerializer<T> compose,
+public record SlashBladeShapedRecipeSerializer<T extends Recipe<?>, U extends T> (RecipeSerializer<T> compose,
         BiFunction<T, @Nullable ResourceLocation, U> converter) implements RecipeSerializer<U> {
     @Override
     @NotNull
@@ -36,11 +36,20 @@ public record SlashBladeRecipeSerializer<T extends Recipe<?>, U extends T> (Reci
     @NotNull
     public U fromNetwork(@NotNull ResourceLocation id, @NotNull FriendlyByteBuf buf) {
         T recipe = compose().fromNetwork(id, buf);
+        if(buf.readBoolean())
+            return converter().apply(recipe, buf.readResourceLocation());
         return converter().apply(recipe, null);
     }
 
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buf, @NotNull U recipe) {
         compose().toNetwork(buf, recipe);
+        if(recipe instanceof SlashBladeShapedRecipe bladeRecipe) {
+            boolean hasName = bladeRecipe.getOutputBlade()!=null;
+            buf.writeBoolean(hasName);
+            if(hasName)
+                buf.writeResourceLocation(bladeRecipe.getOutputBlade());
+        }else 
+            buf.writeBoolean(false);
     }
 }
