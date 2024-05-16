@@ -158,6 +158,7 @@
     "adv.slashblade.guard_just":  "能力      -格挡-",
     "adv.slashblade.guard_just.desc": "将敌人的攻击无效\n高评价状态中不会消耗耐久度\n评价会上升\n键位：\n潜行(⚪)：%s\n指令：\n在受到攻击时 ⚪",
   
+    
     "adv.slashblade.summonedswords": "射技      -幻影剑-",
     "adv.slashblade.summonedswords.desc": "消耗1点经验值，射出幻影剑\n键位：\n%s(♠)：%s\n指令：\n♠",
     "adv.slashblade.spiral_swords":  "射技      -环形幻剑阵-",
