@@ -70,7 +70,7 @@ public class LockOnManager {
                         Entity target = er.getEntity();
 
                         if(target instanceof PartEntity){
-                            target = ((PartEntity) target).getParent();
+                            target = ((PartEntity<?>) target).getParent();
                         }
 
                         boolean isMatch = true;
@@ -95,7 +95,7 @@ public class LockOnManager {
             }
 
             targetEntity = foundEntity
-                    .map(e-> (e instanceof PartEntity) ? ((PartEntity) e).getParent() : e)
+                    .map(e-> (e instanceof PartEntity) ? ((PartEntity<?>) e).getParent() : e)
                     .orElse(null);
 
         }

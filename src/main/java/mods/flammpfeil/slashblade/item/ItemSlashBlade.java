@@ -9,6 +9,7 @@ import mods.flammpfeil.slashblade.capability.slashblade.SlashBladeState;
 import mods.flammpfeil.slashblade.client.renderer.SlashBladeTEISR;
 import mods.flammpfeil.slashblade.data.tag.SlashBladeItemTags;
 import mods.flammpfeil.slashblade.entity.BladeItemEntity;
+import mods.flammpfeil.slashblade.init.DefaultResources;
 import mods.flammpfeil.slashblade.init.SBItemRegistry;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.registry.combo.ComboState;
@@ -18,6 +19,7 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.TooltipFlag;
@@ -70,6 +72,12 @@ public class ItemSlashBlade extends SwordItem {
     public ItemSlashBlade(Tier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
     }
+    
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        // TODO Auto-generated method stub
+        return super.canApplyAtEnchantingTable(stack, enchantment);
+    }
 
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack)
@@ -84,12 +92,16 @@ public class ItemSlashBlade extends SwordItem {
             LazyOptional<ISlashBladeState> state = stack.getCapability(BLADESTATE);
             state.ifPresent(s -> {
                 float baseAttackModifier = s.getBaseAttackModifier();
+                
+                baseAttackModifier += s.getRefine();
+                
                 AttributeModifier base = new AttributeModifier(BASE_ATTACK_DAMAGE_UUID,
                         "Weapon modifier",
                         (double) baseAttackModifier,
                         AttributeModifier.Operation.ADDITION);
-                result.remove(Attributes.ATTACK_DAMAGE,base);
-                result.put(Attributes.ATTACK_DAMAGE,base);
+                
+                result.remove(Attributes.ATTACK_DAMAGE, base);
+                result.put(Attributes.ATTACK_DAMAGE, base);
 
                 float rankAttackAmplifier = s.getAttackAmplifier();
                 result.put(Attributes.ATTACK_DAMAGE,
@@ -126,7 +138,9 @@ public class ItemSlashBlade extends SwordItem {
 
     public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack itemstack = playerIn.getItemInHand(handIn);
-
+        if(handIn == InteractionHand.OFF_HAND && !(playerIn.getMainHandItem().getItem() instanceof ItemSlashBlade)) {
+            return InteractionResultHolder.pass(itemstack);
+        }
         boolean result = itemstack.getCapability(BLADESTATE).map((state) -> {
 
             playerIn.getCapability(INPUT_STATE).ifPresent((s)->s.getCommands().add(InputCommand.R_CLICK));
@@ -242,8 +256,8 @@ public class ItemSlashBlade extends SwordItem {
             e.init();
             e.push(0,0.4,0);
 
-            e.setModel(state.getModel().get());
-            e.setTexture(state.getTexture().get());
+            e.setModel(state.getModel().orElse(DefaultResources.resourceDefaultModel));
+            e.setTexture(state.getTexture().orElse(DefaultResources.resourceDefaultTexture));
             
             e.setPickUpDelay(20*2);
             e.setGlowingTag(true);
@@ -306,6 +320,7 @@ public class ItemSlashBlade extends SwordItem {
 
     @Override
     public void onUseTick(Level level, LivingEntity player, ItemStack stack, int count) {
+        
         stack.getCapability(BLADESTATE).ifPresent((state)->{
 
             (ComboStateRegistry.REGISTRY.get().getValue(state.getComboSeq()) != null 

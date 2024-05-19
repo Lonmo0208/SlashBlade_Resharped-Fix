@@ -214,7 +214,6 @@ public class EntityJudgementCut extends Projectile implements IShootable {
         }
 
         if(this.getShooter() != null) {
-            AABB bb = this.getBoundingBox();
 
             //cyclehit
             if (this.tickCount % 2 == 0) {

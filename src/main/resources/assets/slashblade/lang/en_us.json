@@ -19,19 +19,15 @@
   "slashblade.tooltip.material.enchantments":"Enchantments",
   
   "item.slashblade.slashblade": "Anonymity -Nameless-",
-  "item.slashblade.slashblade.desc": "Cannibalism maintenance\nA pure vessel.",
+  "item.slashblade.slashblade.desc": "The Beginning\nA pure vessel.",
   "item.slashblade.slashblade_wood": "Anonymity -Wood-",
-  "item.slashblade.simple.wood.desc": "Wooden sword with scabbard.",
+  "item.slashblade.slashblade_wood.desc": "Wooden sword with scabbard.",
   "item.slashblade.slashblade_white": "Sharpness -White-",
-  "item.slashblade.simple.white.desc": "Iron Edge",
-  "item.slashblade.simple.white.material": "Blade Component -White-",
+  "item.slashblade.slashblade_white.desc": "Iron Edge",
   "item.slashblade.slashblade_bamboo": "Anonymity -Bamboo Light-",
-  "item.slashblade.simple.bamboo.desc": "Unfinished Imitation Blade",
-  "item.slashblade.simple.bamboo.material": "Blade Component -Bamboo-",
+  "item.slashblade.slashblade_bamboo.desc": "Unfinished Imitation Blade",
   "item.slashblade.slashblade_silverbamboo": "Noted -Silver Bamboo Light-",
-  "item.slashblade.simple.iron": "SlashBlade --",
-  "item.slashblade.simple.iron.desc": "Basic Blade",
-  "item.slashblade.simple.iron.material": "Blade Component -Iron-",
+  "item.slashblade.slashblade_white.desc": "Imitation Blade",
   
   "item.slashblade.yamato": "Yamato",
   "item.slashblade.sange": "Sange",
@@ -42,18 +38,14 @@
 
   "item.slashblade.ex.fox.white": "-Weiss- SakuraFox",
   "item.slashblade.ex.fox.white.desc": "Fortunate Sign",
-  "item.slashblade.ex.fox.white.material": "Blade Component -WhiteFox-",
   "item.slashblade.ex.fox.black": "-Haze- SakuraFox",
   "item.slashblade.ex.fox.black.desc": "Blade against ill‐fated.",
-  "item.slashblade.ex.fox.black.material": "Blade Component -BlackFox-",
 
   "item.slashblade.yuzukitukumo": "Noble -Tukumo- Violet",
-  "item.slashblade.ex.tukumo.desc": "Article of The Iron Wooden Sword",
-  "item.slashblade.ex.tukumo.material": "Blade Component -Tukumo-",
+  "item.slashblade.yuzukitukumo.desc": "Article of The Iron Wooden Sword",
 
   "item.slashblade.muramasa": "-Chizuru- Muramasa",
-  "item.slashblade.ex.muramasa.desc": "One of the lost muramasa swords.",
-  "item.slashblade.ex.muramasa.material": "Blade Component -Muramasa-",
+  "item.slashblade.muramasa.desc": "One of the lost muramasa swords.",
 
 
   "item.slashblade.proudsoul": "Proud Soul",

@@ -1,41 +1,41 @@
-[175月2024 01:22:48.134] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgedatauserdev, --assetIndex, 5, --assetsDir, C:\Users\mr099\.gradle\caches\forge_gradle\assets, --gameDir, ., --fml.forgeVersion, 47.1.44, --fml.mcVersion, 1.20.1, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20230612.114412, -mixin.config=slashblade.mixins.json, --mod, slashblade, --all, --output, D:\minecraft_120_modding\SlashBlade_2\src\generated\resources, --existing, D:\minecraft_120_modding\SlashBlade_2\src\main\resources, --mixin.config, slashblade.mixins.json]
-[175月2024 01:22:48.143] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 10.0.9+10.0.9+main.dcd20f30 starting: java version 17.0.1 by Eclipse Adoptium; OS Windows 10 arch amd64 version 10.0
-[175月2024 01:22:48.297] [main/INFO] [net.minecraftforge.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgedatauserdev
-[175月2024 01:22:48.369] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=union:/C:/Users/mr099/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar%23128!/ Service=ModLauncher Env=CLIENT
-[175月2024 01:22:48.820] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\mr099\.gradle\caches\modules-2\files-2.1\net.minecraftforge\javafmllanguage\1.20.1-47.1.44\5f9e4f02111b8556646fe30d438a395d7831489b\javafmllanguage-1.20.1-47.1.44.jar is missing mods.toml file
-[175月2024 01:22:48.826] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\mr099\.gradle\caches\modules-2\files-2.1\net.minecraftforge\lowcodelanguage\1.20.1-47.1.44\b0c75b3aaa10da1e196c661e2d26a95f2ef06f89\lowcodelanguage-1.20.1-47.1.44.jar is missing mods.toml file
-[175月2024 01:22:48.831] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\mr099\.gradle\caches\modules-2\files-2.1\net.minecraftforge\mclanguage\1.20.1-47.1.44\c9b0a38bc3bb899928b360953b4a562783c54661\mclanguage-1.20.1-47.1.44.jar is missing mods.toml file
-[175月2024 01:22:48.837] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\mr099\.gradle\caches\modules-2\files-2.1\net.minecraftforge\fmlcore\1.20.1-47.1.44\92f79b4cb3298ce1c261e2d14515244b3445f130\fmlcore-1.20.1-47.1.44.jar is missing mods.toml file
-[175月2024 01:22:49.000] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.JarInJarDependencyLocator/]: No dependencies to load found. Skipping!
-[175月2024 01:22:50.609] [main/INFO] [mixin/]: Compatibility level JAVA_8 specified by slashblade.mixins.json is lower than the default level supported by the current mixin service (JAVA_16).
-[175月2024 01:22:50.623] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgedatauserdev' with arguments [--gameDir, ., --assetsDir, C:\Users\mr099\.gradle\caches\forge_gradle\assets, --assetIndex, 5, --mod, slashblade, --all, --output, D:\minecraft_120_modding\SlashBlade_2\src\generated\resources, --existing, D:\minecraft_120_modding\SlashBlade_2\src\main\resources]
-[175月2024 01:22:50.719] [main/INFO] [mixin/]: Attempting to load Fernflower decompiler (Threaded mode)
-[175月2024 01:22:50.721] [main/INFO] [mixin/]: Fernflower could not be loaded, exported classes will not be decompiled. NoClassDefFoundError: org/jetbrains/java/decompiler/main/extern/IResultSaver
-[175月2024 01:22:50.733] [main/INFO] [mixin/]: Preparing mixins for MixinEnvironment[DEFAULT]
-[175月2024 01:22:50.733] [main/INFO] [mixin/]: Selecting config slashblade.mixins.json
-[175月2024 01:22:50.739] [main/WARN] [mixin/]: Reference map 'slashblade.refmap.json' for slashblade.mixins.json could not be read. If this is a development environment you can ignore this message
-[175月2024 01:22:50.740] [main/INFO] [mixin/]: Selecting config playerAnimator-common.mixins.json
-[175月2024 01:22:51.051] [main/INFO] [mixin/]: Remapping refMap player-animation-lib-minecraft_common-refmap.json using D:\minecraft_120_modding\SlashBlade_2\build\createSrgToMcp\output.srg
-[175月2024 01:22:51.052] [main/INFO] [mixin/]: Preparing slashblade.mixins.json (3)
-[175月2024 01:22:51.128] [main/INFO] [mixin/]: Preparing playerAnimator-common.mixins.json (14)
-[175月2024 01:22:51.366] [main/INFO] [mixin/]: Prepared 16 mixins in 0.632 sec (39.5ms avg) (0ms load, 0ms transform, 0ms plugin)
-[175月2024 01:22:51.844] [main/INFO] [net.minecraftforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [slashblade]
-[175月2024 01:22:51.958] [main/INFO] [mixin/]: Mixing MixinBlockBehaviour from slashblade.mixins.json into net.minecraft.world.level.block.state.BlockBehaviour$BlockStateBase
-[175月2024 01:22:51.962] [main/WARN] [mixin/]: slashblade.mixins.json:MixinBlockBehaviour: Class version 61 required is higher than the class version supported by the current version of Mixin (JAVA_8 supports class version 52)
-[175月2024 01:22:52.166] [main/INFO] [mixin/]: Mixing PlayerEntityMixin from playerAnimator-common.mixins.json into net.minecraft.world.entity.player.Player
-[175月2024 01:22:52.180] [main/WARN] [mixin/]: playerAnimator-common.mixins.json:PlayerEntityMixin: Class version 61 required is higher than the class version supported by the current version of Mixin (JAVA_16 supports class version 60)
-[175月2024 01:22:56.163] [main/INFO] [mixin/]: Mixing MixinPacketBuffer from slashblade.mixins.json into net.minecraft.network.FriendlyByteBuf
-[175月2024 01:22:58.629] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 47.1.44, for MC 1.20.1 with MCP 20230612.114412
-[175月2024 01:22:58.631] [modloading-worker-0/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v47.1.44 Initialized
-[175月2024 01:22:59.119] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager...
-[175月2024 01:22:59.134] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager took 7.669 ms
-[175月2024 01:22:59.949] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/D:/minecraft_120_modding/SlashBlade_2/build/fg_cache/net/minecraftforge/forge/1.20.1-47.1.44_mapped_official_1.20.1/forge-1.20.1-47.1.44_mapped_official_1.20.1-recomp.jar%23191!/assets/.mcassetsroot' uses unexpected schema
-[175月2024 01:22:59.950] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/D:/minecraft_120_modding/SlashBlade_2/build/fg_cache/net/minecraftforge/forge/1.20.1-47.1.44_mapped_official_1.20.1/forge-1.20.1-47.1.44_mapped_official_1.20.1-recomp.jar%23191!/data/.mcassetsroot' uses unexpected schema
-[175月2024 01:23:00.145] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Recipes
-[175月2024 01:23:00.286] [main/INFO] [net.minecraft.data.DataGenerator/]: Recipes finished after 141 ms
-[175月2024 01:23:00.287] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: SlashBlade Definition Registry
-[175月2024 01:23:00.425] [main/INFO] [net.minecraft.data.DataGenerator/]: SlashBlade Definition Registry finished after 138 ms
-[175月2024 01:23:00.426] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Tags for minecraft:entity_type mod id slashblade
-[175月2024 01:23:00.437] [main/INFO] [net.minecraft.data.DataGenerator/]: Tags for minecraft:entity_type mod id slashblade finished after 11 ms
-[175月2024 01:23:00.437] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 292 ms
-[175月2024 01:23:00.442] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 19, old count: 19, new count: 20, removed stale: 0, written: 0
+[185月2024 14:16:07.739] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgedatauserdev, --assetIndex, 5, --assetsDir, C:\Users\mr099\.gradle\caches\forge_gradle\assets, --gameDir, ., --fml.forgeVersion, 47.1.44, --fml.mcVersion, 1.20.1, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20230612.114412, -mixin.config=slashblade.mixins.json, --mod, slashblade, --all, --output, D:\minecraft_120_modding\SlashBlade_2\src\generated\resources, --existing, D:\minecraft_120_modding\SlashBlade_2\src\main\resources, --mixin.config, slashblade.mixins.json]
+[185月2024 14:16:07.746] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 10.0.9+10.0.9+main.dcd20f30 starting: java version 17.0.1 by Eclipse Adoptium; OS Windows 10 arch amd64 version 10.0
+[185月2024 14:16:07.873] [main/INFO] [net.minecraftforge.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forgedatauserdev
+[185月2024 14:16:07.923] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.5 Source=union:/C:/Users/mr099/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar%23128!/ Service=ModLauncher Env=CLIENT
+[185月2024 14:16:08.294] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\mr099\.gradle\caches\modules-2\files-2.1\net.minecraftforge\javafmllanguage\1.20.1-47.1.44\5f9e4f02111b8556646fe30d438a395d7831489b\javafmllanguage-1.20.1-47.1.44.jar is missing mods.toml file
+[185月2024 14:16:08.297] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\mr099\.gradle\caches\modules-2\files-2.1\net.minecraftforge\lowcodelanguage\1.20.1-47.1.44\b0c75b3aaa10da1e196c661e2d26a95f2ef06f89\lowcodelanguage-1.20.1-47.1.44.jar is missing mods.toml file
+[185月2024 14:16:08.302] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\mr099\.gradle\caches\modules-2\files-2.1\net.minecraftforge\mclanguage\1.20.1-47.1.44\c9b0a38bc3bb899928b360953b4a562783c54661\mclanguage-1.20.1-47.1.44.jar is missing mods.toml file
+[185月2024 14:16:08.306] [main/WARN] [net.minecraftforge.fml.loading.moddiscovery.ModFileParser/LOADING]: Mod file C:\Users\mr099\.gradle\caches\modules-2\files-2.1\net.minecraftforge\fmlcore\1.20.1-47.1.44\92f79b4cb3298ce1c261e2d14515244b3445f130\fmlcore-1.20.1-47.1.44.jar is missing mods.toml file
+[185月2024 14:16:08.388] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.JarInJarDependencyLocator/]: No dependencies to load found. Skipping!
+[185月2024 14:16:09.453] [main/INFO] [mixin/]: Compatibility level JAVA_8 specified by slashblade.mixins.json is lower than the default level supported by the current mixin service (JAVA_16).
+[185月2024 14:16:09.464] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forgedatauserdev' with arguments [--gameDir, ., --assetsDir, C:\Users\mr099\.gradle\caches\forge_gradle\assets, --assetIndex, 5, --mod, slashblade, --all, --output, D:\minecraft_120_modding\SlashBlade_2\src\generated\resources, --existing, D:\minecraft_120_modding\SlashBlade_2\src\main\resources]
+[185月2024 14:16:09.536] [main/INFO] [mixin/]: Attempting to load Fernflower decompiler (Threaded mode)
+[185月2024 14:16:09.538] [main/INFO] [mixin/]: Fernflower could not be loaded, exported classes will not be decompiled. NoClassDefFoundError: org/jetbrains/java/decompiler/main/extern/IResultSaver
+[185月2024 14:16:09.548] [main/INFO] [mixin/]: Preparing mixins for MixinEnvironment[DEFAULT]
+[185月2024 14:16:09.548] [main/INFO] [mixin/]: Selecting config slashblade.mixins.json
+[185月2024 14:16:09.553] [main/WARN] [mixin/]: Reference map 'slashblade.refmap.json' for slashblade.mixins.json could not be read. If this is a development environment you can ignore this message
+[185月2024 14:16:09.555] [main/INFO] [mixin/]: Selecting config playerAnimator-common.mixins.json
+[185月2024 14:16:09.774] [main/INFO] [mixin/]: Remapping refMap player-animation-lib-minecraft_common-refmap.json using D:\minecraft_120_modding\SlashBlade_2\build\createSrgToMcp\output.srg
+[185月2024 14:16:09.775] [main/INFO] [mixin/]: Preparing slashblade.mixins.json (3)
+[185月2024 14:16:09.831] [main/INFO] [mixin/]: Preparing playerAnimator-common.mixins.json (14)
+[185月2024 14:16:09.950] [main/INFO] [mixin/]: Prepared 16 mixins in 0.402 sec (25.1ms avg) (0ms load, 0ms transform, 0ms plugin)
+[185月2024 14:16:10.272] [main/INFO] [net.minecraftforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [slashblade]
+[185月2024 14:16:10.406] [main/INFO] [mixin/]: Mixing MixinBlockBehaviour from slashblade.mixins.json into net.minecraft.world.level.block.state.BlockBehaviour$BlockStateBase
+[185月2024 14:16:10.410] [main/WARN] [mixin/]: slashblade.mixins.json:MixinBlockBehaviour: Class version 61 required is higher than the class version supported by the current version of Mixin (JAVA_8 supports class version 52)
+[185月2024 14:16:10.615] [main/INFO] [mixin/]: Mixing PlayerEntityMixin from playerAnimator-common.mixins.json into net.minecraft.world.entity.player.Player
+[185月2024 14:16:10.639] [main/WARN] [mixin/]: playerAnimator-common.mixins.json:PlayerEntityMixin: Class version 61 required is higher than the class version supported by the current version of Mixin (JAVA_16 supports class version 60)
+[185月2024 14:16:12.924] [main/INFO] [mixin/]: Mixing MixinPacketBuffer from slashblade.mixins.json into net.minecraft.network.FriendlyByteBuf
+[185月2024 14:16:13.800] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 47.1.44, for MC 1.20.1 with MCP 20230612.114412
+[185月2024 14:16:13.800] [modloading-worker-0/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v47.1.44 Initialized
+[185月2024 14:16:13.968] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager...
+[185月2024 14:16:13.974] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager took 2.975 ms
+[185月2024 14:16:14.318] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/D:/minecraft_120_modding/SlashBlade_2/build/fg_cache/net/minecraftforge/forge/1.20.1-47.1.44_mapped_official_1.20.1/forge-1.20.1-47.1.44_mapped_official_1.20.1-recomp.jar%23191!/assets/.mcassetsroot' uses unexpected schema
+[185月2024 14:16:14.319] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/D:/minecraft_120_modding/SlashBlade_2/build/fg_cache/net/minecraftforge/forge/1.20.1-47.1.44_mapped_official_1.20.1/forge-1.20.1-47.1.44_mapped_official_1.20.1-recomp.jar%23191!/data/.mcassetsroot' uses unexpected schema
+[185月2024 14:16:14.477] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Recipes
+[185月2024 14:16:14.567] [main/INFO] [net.minecraft.data.DataGenerator/]: Recipes finished after 89 ms
+[185月2024 14:16:14.567] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: SlashBlade Definition Registry
+[185月2024 14:16:14.626] [main/INFO] [net.minecraft.data.DataGenerator/]: SlashBlade Definition Registry finished after 59 ms
+[185月2024 14:16:14.627] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Tags for minecraft:entity_type mod id slashblade
+[185月2024 14:16:14.639] [main/INFO] [net.minecraft.data.DataGenerator/]: Tags for minecraft:entity_type mod id slashblade finished after 12 ms
+[185月2024 14:16:14.639] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 162 ms
+[185月2024 14:16:14.644] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 19, old count: 19, new count: 20, removed stale: 0, written: 1

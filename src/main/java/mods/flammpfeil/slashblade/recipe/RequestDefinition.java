@@ -3,8 +3,7 @@ package mods.flammpfeil.slashblade.recipe;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.compress.utils.Lists;
-
+import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;

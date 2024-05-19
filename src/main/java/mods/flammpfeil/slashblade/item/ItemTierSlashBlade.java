@@ -2,8 +2,6 @@ package mods.flammpfeil.slashblade.item;
 
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
-import java.util.function.Supplier;
-
 import mods.flammpfeil.slashblade.data.tag.SlashBladeItemTags;
 
 public class ItemTierSlashBlade implements Tier {

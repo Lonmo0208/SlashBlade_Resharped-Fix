@@ -17,9 +17,10 @@ public class EntityDropEvent {
     @SubscribeEvent
     public static void name(LivingDropsEvent event) {
         if(event.getSource().getEntity() instanceof LivingEntity living) {
+            dropBlade(event.getEntity(), EntityType.ENDER_DRAGON, SlashBlade.prefix("yamato"), 0D, 70D, 0D);
             if(living.getMainHandItem().getItem() instanceof ItemSlashBlade) {
                 dropBlade(event.getEntity(), EntityType.WITHER, SlashBlade.prefix("sange"));
-                dropBlade(event.getEntity(), EntityType.ENDER_DRAGON, SlashBlade.prefix("yamato"));
+                
             }
         }        
     }
@@ -29,9 +30,18 @@ public class EntityDropEvent {
         dropBlade(entity, type, result);
     }
     
+    private static void dropBlade(LivingEntity entity, EntityType<?> type, ResourceLocation bladeName, double x, double y, double z) {
+        var result = SlashBlade.getSlashBladeDefinitionRegistry(entity.level()).get(bladeName).getBlade();
+        dropBlade(entity, type, result, x, y, z);
+    }
+    
     private static void dropBlade(LivingEntity entity, EntityType<?> type, ItemStack blade) {
+        dropBlade(entity, type, blade, entity.getX(), entity.getY(), entity.getZ());
+    }
+    
+    private static void dropBlade(LivingEntity entity, EntityType<?> type, ItemStack blade, double x, double y, double z) {
         if(entity.getType().equals(type)) {
-            ItemEntity itementity = new ItemEntity(entity.level(), entity.getX(), entity.getY() , entity.getZ(), blade);
+            ItemEntity itementity = new ItemEntity(entity.level(), x, y, z, blade);
             BladeItemEntity e = new BladeItemEntity(SlashBlade.RegistryEvents.BladeItem, entity.level());
 
             e.restoreFrom(itementity);

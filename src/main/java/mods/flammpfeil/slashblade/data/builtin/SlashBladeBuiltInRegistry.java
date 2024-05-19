@@ -29,10 +29,11 @@ public class SlashBladeBuiltInRegistry {
                 .modelName(SlashBlade.prefix("model/named/yamato.obj"))
                 .build(), 
                 PropertiesDefinition.Builder.newInstance()
-                .baseAttackModifier(12.0F)
+                .baseAttackModifier(8.0F)
                 .defaultSwordType(List.of(SwordType.BEWITCHED))
                 .build(), 
-                List.of(new EnchantmentDefinition(getEnchantmentID(Enchantments.SOUL_SPEED), 1))
+                List.of(new EnchantmentDefinition(getEnchantmentID(Enchantments.SOUL_SPEED), 2),
+                        new EnchantmentDefinition(getEnchantmentID(Enchantments.FALL_PROTECTION), 4))
                 ));
         
         bootstrap.register(MURAMASA, new SlashBladeDefinition(SlashBlade.prefix("muramasa"), 
@@ -41,7 +42,7 @@ public class SlashBladeBuiltInRegistry {
                 .modelName(SlashBlade.prefix("model/named/muramasa/muramasa.obj"))
                 .build(), 
                 PropertiesDefinition.Builder.newInstance()
-                .baseAttackModifier(10.0F)
+                .baseAttackModifier(8.0F)
                 .maxDamage(50)
                 .build(), 
                 Lists.newArrayList()
@@ -53,7 +54,7 @@ public class SlashBladeBuiltInRegistry {
                 .modelName(SlashBlade.prefix("model/named/sange/sange.obj"))
                 .build(), 
                 PropertiesDefinition.Builder.newInstance()
-                .baseAttackModifier(10.0F)
+                .baseAttackModifier(6.0F)
                 .maxDamage(70)
                 .defaultSwordType(List.of(SwordType.BEWITCHED))
                 .build(), 
@@ -66,7 +67,7 @@ public class SlashBladeBuiltInRegistry {
                 .modelName(SlashBlade.prefix("model/named/agito.obj"))
                 .build(), 
                 PropertiesDefinition.Builder.newInstance()
-                .baseAttackModifier(10.0F)
+                .baseAttackModifier(6.0F)
                 .defaultSwordType(List.of(SwordType.BEWITCHED))
                 .build(), 
                 List.of(

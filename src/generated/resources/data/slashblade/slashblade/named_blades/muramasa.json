@@ -1,7 +1,7 @@
 {
   "name": "slashblade:muramasa",
   "properties": {
-    "attack_base": 10.0,
+    "attack_base": 6.0,
     "max_damage": 50
   },
   "render": {

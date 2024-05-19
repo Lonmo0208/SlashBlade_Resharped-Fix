@@ -102,7 +102,7 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword{
                                     .filter(r->r.getType() == HitResult.Type.ENTITY)
                                     .filter(r->{
                                         EntityHitResult er = (EntityHitResult)r;
-                                        Entity target = ((EntityHitResult) r).getEntity();
+                                        Entity target = er.getEntity();
 
                                         boolean isMatch = true;
                                         if(target instanceof LivingEntity)

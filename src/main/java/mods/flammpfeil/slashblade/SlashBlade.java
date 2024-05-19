@@ -156,8 +156,8 @@ public class SlashBlade
                 helper -> {
                     
                     helper.register(new ResourceLocation(MODID,"slashblade_wood"), (ItemSlashBladeDetune)(new ItemSlashBladeDetune(
-                            new ItemTierSlashBlade(60, Tiers.WOOD.getAttackDamageBonus()),
-                            1,
+                            new ItemTierSlashBlade(60, 2F),
+                            2,
                             -2.4F,
                             (new Item.Properties())))
                             .setDestructable()
@@ -165,8 +165,8 @@ public class SlashBlade
                             );
                     
                     helper.register(new ResourceLocation(MODID,"slashblade_bamboo"), (ItemSlashBladeDetune)(new ItemSlashBladeDetune(
-                            new ItemTierSlashBlade(70, Tiers.WOOD.getAttackDamageBonus()),
-                            1,
+                            new ItemTierSlashBlade(70, 3F),
+                            3,
                             -2.4F,
                             (new Item.Properties())))
                             .setDestructable()
@@ -174,24 +174,24 @@ public class SlashBlade
                             );
                     
                     helper.register(new ResourceLocation(MODID,"slashblade_silverbamboo"), (ItemSlashBladeDetune)(new ItemSlashBladeDetune(
-                            new ItemTierSlashBlade(40, Tiers.STONE.getAttackDamageBonus()),
-                            1,
+                            new ItemTierSlashBlade(40, 3F),
+                            3,
                             -2.4F,
                             (new Item.Properties())))
                             .setTexture(SlashBlade.prefix("model/silverbamboo.png"))
                             );
                     
                     helper.register(new ResourceLocation(MODID,"slashblade_white"), (ItemSlashBladeDetune)(new ItemSlashBladeDetune(
-                            new ItemTierSlashBlade(70, Tiers.IRON.getAttackDamageBonus()),
-                            1,
+                            new ItemTierSlashBlade(70, 4F),
+                            4,
                             -2.4F,
                             (new Item.Properties())))
                             .setTexture(SlashBlade.prefix("model/white.png"))
                             );
                     
                     helper.register(new ResourceLocation(MODID,"slashblade"), new ItemSlashBlade(
-                            new ItemTierSlashBlade(40, Tiers.IRON.getAttackDamageBonus()),
-                        1,
+                            new ItemTierSlashBlade(40, 4F),
+                        4,
                         -2.4F,
                         (new Item.Properties())));
 

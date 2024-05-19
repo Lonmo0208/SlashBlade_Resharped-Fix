@@ -79,7 +79,7 @@ public class SlayerStyleArts {
 
                     Entity target;
 
-                    if(tmpTarget != null && tmpTarget.getParts() != null && 0 < tmpTarget.getParts().length){
+                    if(tmpTarget != null && tmpTarget.getParts() != null && tmpTarget.getParts().length > 0){
                         target = tmpTarget.getParts()[0];
                     }else{
                         target = tmpTarget;

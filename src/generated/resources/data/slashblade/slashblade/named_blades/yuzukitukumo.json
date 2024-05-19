@@ -14,7 +14,7 @@
   ],
   "name": "slashblade:yuzukitukumo",
   "properties": {
-    "attack_base": 10.0,
+    "attack_base": 6.0,
     "sword_type": [
       "bewitched"
     ]

@@ -20,7 +20,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.phys.Vec3;
-
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -102,14 +101,14 @@ public class AttackManager {
             try {
                 playerIn.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(am);
 
-                founds = TargetSelector.getTargettableEntitiesWithinAABB(playerIn.level(),playerIn);
+                founds = TargetSelector.getTargettableEntitiesWithinAABB(playerIn.level(), playerIn);
 
                 if(exclude != null)
                     founds.removeAll(exclude);
 
                 for (Entity entity : founds) {
-                    if(entity instanceof LivingEntity)
-                        beforeHit.accept((LivingEntity)entity);
+                    if(entity instanceof LivingEntity living)
+                        beforeHit.accept(living);
 
                     doMeleeAttack(playerIn, entity, forceHit, resetHit);
                 }
@@ -135,7 +134,6 @@ public class AttackManager {
         //bb = bb.grow(3.0D, 3D, 3.0D);
 
         if (!owner.level().isClientSide()) {
-
             founds = TargetSelector.getTargettableEntitiesWithinAABB(owner.level(),
                     reach,
                     owner);
@@ -145,11 +143,11 @@ public class AttackManager {
 
             for (Entity entity : founds) {
 
-                if(entity instanceof LivingEntity)
-                    beforeHit.accept((LivingEntity)entity);
-
+                if(entity instanceof LivingEntity living)
+                    beforeHit.accept(living);
+                
                 float baseAmount = (float) owner.getDamage();
-                doAttackWith(owner.damageSources().indirectMagic(owner, owner.getShooter()), baseAmount,entity, forceHit, resetHit);
+                doAttackWith(owner.damageSources().indirectMagic(owner, owner.getShooter()), baseAmount, entity, forceHit, resetHit);
             }
         }
 
@@ -167,10 +165,6 @@ public class AttackManager {
     }
 
     static public void doAttackWith(DamageSource src, float amount , Entity target, boolean forceHit, boolean resetHit){
-
-
-
-
         if(target instanceof EntityAbstractSummonedSword)
             return;
 
@@ -212,7 +206,7 @@ public class AttackManager {
         }
 
         ArrowReflector.doReflect(target, attacker);
-        TNTExtinguisher.doExtinguishing(target,attacker);
+        TNTExtinguisher.doExtinguishing(target, attacker);
     }
     
     public static void playQuickSheathSoundAction(LivingEntity entity) {

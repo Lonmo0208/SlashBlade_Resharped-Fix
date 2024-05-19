@@ -7,13 +7,12 @@
       "translate": "item.slashblade.slashblade.desc"
     },
     "icon": {
-      "item": "slashblade:slashblade",
-      "nbt": "{SlashBladeIcon:{tag:{Crafting:\"slashblade:simple_slashblade\"}}}"
+      "item": "slashblade:slashblade"
     },
     "frame": "task",
     "hidden": true
   },
-  "parent": "slashblade:root",
+  "parent": "slashblade:s_white",
   "criteria": {
     "crafting": {
       "trigger": "minecraft:inventory_changed",

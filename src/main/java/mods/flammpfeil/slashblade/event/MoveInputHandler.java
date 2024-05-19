@@ -81,7 +81,7 @@ public class MoveInputHandler {
         if(minecraftInstance.options.keyAttack.isDown())
             commands.add(InputCommand.L_DOWN);
 
-        if(minecraftInstance.options.keyPickItem.isDown())
+        if(SlashBladeKeyMappings.KEY_SUMMON_BLADE.isDown())
             commands.add(InputCommand.M_DOWN);
 
         EnumSet<InputCommand> old = player.getCapability(INPUT_STATE)

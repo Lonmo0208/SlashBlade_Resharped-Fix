@@ -123,6 +123,7 @@ public class ClientHandler {
     @SubscribeEvent
     public static void registerKeyMapping(RegisterKeyMappingsEvent event) {
         event.register(SlashBladeKeyMappings.KEY_SPECIAL_MOVE);
+        event.register(SlashBladeKeyMappings.KEY_SUMMON_BLADE);
     }
     
     @SubscribeEvent

@@ -110,10 +110,15 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
                 while(combo != ComboStateRegistry.NONE.get() && combo.getTimeoutMS() < time){
                     time -= combo.getTimeoutMS();
 
-                    combo = ComboStateRegistry.REGISTRY.get().getValue(combo.getNextOfTimeout(entity));
+                    combo = ComboStateRegistry.REGISTRY.get().getValue(combo.getNextOfTimeout(entity)) != null
+                            ?ComboStateRegistry.REGISTRY.get().getValue(combo.getNextOfTimeout(entity))
+                                    :ComboStateRegistry.NONE.get();
                 }
                 if(combo == ComboStateRegistry.NONE.get()){
-                    combo = ComboStateRegistry.REGISTRY.get().getValue(s.getComboRoot());
+                    combo = ComboStateRegistry.REGISTRY.get().getValue(s.getComboRoot()) != null 
+                            ?ComboStateRegistry.REGISTRY.get().getValue(s.getComboRoot())
+                            :ComboStateRegistry.STANDBY.get()
+                            ;
                 }
 
                 MmdVmdMotionMc motion = BladeMotionManager.getInstance().getMotion(combo.getMotionLoc());

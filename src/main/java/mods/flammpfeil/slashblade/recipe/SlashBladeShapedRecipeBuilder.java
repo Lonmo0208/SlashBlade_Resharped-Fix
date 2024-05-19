@@ -33,7 +33,6 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class SlashBladeShapedRecipeBuilder extends CraftingRecipeBuilder implements RecipeBuilder {
-    // TODO: 重写合成，尤其是结果
     private final RecipeCategory category = RecipeCategory.COMBAT;
     private final Item result;
     private final int count;

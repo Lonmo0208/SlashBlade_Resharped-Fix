@@ -16,10 +16,8 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -38,10 +36,6 @@ import net.minecraftforge.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.UUID;
-
-import net.minecraft.world.entity.Entity.RemovalReason;
-import org.joml.Quaterniond;
 import org.joml.Vector4f;
 
 public class EntitySlashEffect extends Projectile implements IShootable {
@@ -329,8 +323,6 @@ public class EntitySlashEffect extends Projectile implements IShootable {
         }
 
         if(this.getShooter() != null) {
-            AABB bb = this.getBoundingBox();
-
             //no cyclehit
             if (this.tickCount % 2 == 0) {
                 boolean forceHit = true;
@@ -342,9 +334,9 @@ public class EntitySlashEffect extends Projectile implements IShootable {
                 if(!getIndirect() && getShooter() instanceof LivingEntity) {
                     LivingEntity shooter = (LivingEntity) getShooter();
                     float ratio = (float)damage * (getIsCritical() ? 1.1f : 1.0f);
-                    hits = AttackManager.areaAttack(shooter, this.action.action, ratio, forceHit,false, true, alreadyHits);
+                    hits = AttackManager.areaAttack(shooter, this.action.action, ratio, forceHit, false, true, alreadyHits);
                 }else{
-                    hits = AttackManager.areaAttack(this, this.action.action,4.0, forceHit,false, alreadyHits);
+                    hits = AttackManager.areaAttack(this, this.action.action,4.0, forceHit, false, alreadyHits);
                 }
 
                 if(!this.doCycleHit())
