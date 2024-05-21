@@ -14,7 +14,7 @@ import mods.flammpfeil.slashblade.event.BladeMotionEventBroadcaster;
 import mods.flammpfeil.slashblade.event.client.AdvancementsRecipeRenderer;
 import mods.flammpfeil.slashblade.event.client.SneakingMotionCanceller;
 import mods.flammpfeil.slashblade.event.client.UserPoseOverrider;
-import mods.flammpfeil.slashblade.init.SBItemRegistry;
+import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.optional.playerAnim.PlayerAnimationOverrider;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
@@ -64,7 +64,7 @@ public class ClientHandler {
 
         RankRenderer.getInstance().register();
 
-        ItemProperties.register(SBItemRegistry.slashblade, new ResourceLocation("slashblade:user"), new ClampedItemPropertyFunction() {
+        ItemProperties.register(SBItems.slashblade, new ResourceLocation("slashblade:user"), new ClampedItemPropertyFunction() {
             @Override
             public float unclampedCall(ItemStack p_174564_, @Nullable ClientLevel p_174565_, @Nullable LivingEntity p_174566_, int p_174567_) {
                 BladeModel.user = p_174566_;
@@ -72,7 +72,7 @@ public class ClientHandler {
             }
         });
         
-        ItemProperties.register(SBItemRegistry.slashblade_bamboo, new ResourceLocation("slashblade:user"), new ClampedItemPropertyFunction() {
+        ItemProperties.register(SBItems.slashblade_bamboo, new ResourceLocation("slashblade:user"), new ClampedItemPropertyFunction() {
             @Override
             public float unclampedCall(ItemStack p_174564_, @Nullable ClientLevel p_174565_, @Nullable LivingEntity p_174566_, int p_174567_) {
                 BladeModel.user = p_174566_;
@@ -80,7 +80,7 @@ public class ClientHandler {
             }
         });
         
-        ItemProperties.register(SBItemRegistry.slashblade_silverbamboo, new ResourceLocation("slashblade:user"), new ClampedItemPropertyFunction() {
+        ItemProperties.register(SBItems.slashblade_silverbamboo, new ResourceLocation("slashblade:user"), new ClampedItemPropertyFunction() {
             @Override
             public float unclampedCall(ItemStack p_174564_, @Nullable ClientLevel p_174565_, @Nullable LivingEntity p_174566_, int p_174567_) {
                 BladeModel.user = p_174566_;
@@ -88,7 +88,7 @@ public class ClientHandler {
             }
         });
         
-        ItemProperties.register(SBItemRegistry.slashblade_white, new ResourceLocation("slashblade:user"), new ClampedItemPropertyFunction() {
+        ItemProperties.register(SBItems.slashblade_white, new ResourceLocation("slashblade:user"), new ClampedItemPropertyFunction() {
             @Override
             public float unclampedCall(ItemStack p_174564_, @Nullable ClientLevel p_174565_, @Nullable LivingEntity p_174566_, int p_174567_) {
                 BladeModel.user = p_174566_;
@@ -96,7 +96,7 @@ public class ClientHandler {
             }
         });
         
-        ItemProperties.register(SBItemRegistry.slashblade_wood, new ResourceLocation("slashblade:user"), new ClampedItemPropertyFunction() {
+        ItemProperties.register(SBItems.slashblade_wood, new ResourceLocation("slashblade:user"), new ClampedItemPropertyFunction() {
             @Override
             public float unclampedCall(ItemStack p_174564_, @Nullable ClientLevel p_174565_, @Nullable LivingEntity p_174566_, int p_174567_) {
                 BladeModel.user = p_174566_;
@@ -129,11 +129,11 @@ public class ClientHandler {
     @SubscribeEvent
     public static void Baked(final ModelEvent.ModifyBakingResult event){
         {
-            bakeBlade(SBItemRegistry.slashblade, event);
-            bakeBlade(SBItemRegistry.slashblade_white, event);
-            bakeBlade(SBItemRegistry.slashblade_wood, event);
-            bakeBlade(SBItemRegistry.slashblade_silverbamboo, event);
-            bakeBlade(SBItemRegistry.slashblade_bamboo, event);
+            bakeBlade(SBItems.slashblade, event);
+            bakeBlade(SBItems.slashblade_white, event);
+            bakeBlade(SBItems.slashblade_wood, event);
+            bakeBlade(SBItems.slashblade_silverbamboo, event);
+            bakeBlade(SBItems.slashblade_bamboo, event);
         }
 
     }

@@ -13,9 +13,7 @@ import mods.flammpfeil.slashblade.event.*;
 import mods.flammpfeil.slashblade.item.BladeStandItem;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBladeDetune;
-import mods.flammpfeil.slashblade.item.ItemSoulActivated;
 import mods.flammpfeil.slashblade.item.ItemTierSlashBlade;
-import mods.flammpfeil.slashblade.init.SBItemRegistry;
 import mods.flammpfeil.slashblade.network.NetworkManager;
 import mods.flammpfeil.slashblade.recipe.RecipeSerializerRegistry;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
@@ -24,11 +22,6 @@ import mods.flammpfeil.slashblade.registry.combo.ComboCommands;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.Entity;
@@ -275,47 +268,7 @@ public class SlashBlade
                                 }
                                 @Override
                                 public int getEnchantmentValue(ItemStack stack) {return Integer.MAX_VALUE;}
-
-                                @Override
-                                public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-                                    ItemStack itemstack = player.getItemInHand(hand);
-                                    if(player.isCrouching()){
-
-                                        level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.WARDEN_HEARTBEAT, SoundSource.NEUTRAL, 1.5F, 1.0F);
-                                        return InteractionResultHolder.sidedSuccess(ItemUtils.createFilledResult(itemstack, player, new ItemStack(SBItemRegistry.proudsoul_activated)), level.isClientSide());
-                                    }else{
-                                        return InteractionResultHolder.pass(itemstack);
-                                    }
-                                }
-                            });
-
-                    helper.register(new ResourceLocation(MODID,"proudsoul_activated"),
-                            new ItemSoulActivated((new Item.Properties()).stacksTo(1).rarity(Rarity.EPIC)){
-                                @Override
-                                public boolean isFoil(ItemStack stack) {
-                                    return true;//super.hasEffect(stack);
-                                }
-                                @Override
-                                public int getEnchantmentValue(ItemStack stack) {return Integer.MAX_VALUE;}
-                            });
-
-                    helper.register(new ResourceLocation(MODID,"proudsoul_awakened"),
-                            new Item((new Item.Properties()).stacksTo(1).rarity(Rarity.EPIC)){
-                                @Override
-                                public boolean isFoil(ItemStack stack) {
-                                    return true;//super.hasEffect(stack);
-                                }
-                                @Override
-                                public int getEnchantmentValue(ItemStack stack) {return Integer.MAX_VALUE;}
-                                @Override
-                                public boolean hasCraftingRemainingItem(ItemStack stack) {
-                                    return true;
-                                }
-                                @Override
-                                public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
-                                    return new ItemStack(SBItemRegistry.proudsoul_trapezohedron);
-                                }
-                            });
+                    });
 
 
                     helper.register(new ResourceLocation(MODID,"bladestand_1"),

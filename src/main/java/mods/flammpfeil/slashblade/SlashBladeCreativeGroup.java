@@ -1,7 +1,7 @@
 package mods.flammpfeil.slashblade;
 
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
-import mods.flammpfeil.slashblade.init.SBItemRegistry;
+import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.client.Minecraft;
@@ -18,9 +18,9 @@ public class SlashBladeCreativeGroup {
             .create(Registries.CREATIVE_MODE_TAB, SlashBlade.MODID);
     
     private static final CreativeModeTab SLASHBLADE = CreativeModeTab.builder()
-            .title(Component.translatable(SlashBlade.MODID))
+            .title(Component.translatable("itemGroup.slashblade"))
             .icon(()->{
-                ItemStack stack = new ItemStack(SBItemRegistry.slashblade);
+                ItemStack stack = new ItemStack(SBItems.slashblade);
                 stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s->{
                     s.setModel(new ResourceLocation(SlashBlade.MODID,"model/named/yamato.obj"));
                     s.setTexture(new ResourceLocation(SlashBlade.MODID,"model/named/yamato.png"));
@@ -30,27 +30,25 @@ public class SlashBladeCreativeGroup {
             .displayItems((features, output) -> {
                 
 
-                output.accept(SBItemRegistry.proudsoul);
-                output.accept(SBItemRegistry.proudsoul_tiny);
-                output.accept(SBItemRegistry.proudsoul_ingot);
-                output.accept(SBItemRegistry.proudsoul_sphere);
-                output.accept(SBItemRegistry.proudsoul_crystal);
-                output.accept(SBItemRegistry.proudsoul_trapezohedron);
-                output.accept(SBItemRegistry.proudsoul_activated);
-                output.accept(SBItemRegistry.proudsoul_awakened);
+                output.accept(SBItems.proudsoul);
+                output.accept(SBItems.proudsoul_tiny);
+                output.accept(SBItems.proudsoul_ingot);
+                output.accept(SBItems.proudsoul_sphere);
+                output.accept(SBItems.proudsoul_crystal);
+                output.accept(SBItems.proudsoul_trapezohedron);
+
+                output.accept(SBItems.bladestand_1);
+                output.accept(SBItems.bladestand_1w);
+                output.accept(SBItems.bladestand_2);
+                output.accept(SBItems.bladestand_2w);
+                output.accept(SBItems.bladestand_s);
+                output.accept(SBItems.bladestand_v);
                 
-                output.accept(SBItemRegistry.bladestand_1);
-                output.accept(SBItemRegistry.bladestand_1w);
-                output.accept(SBItemRegistry.bladestand_2);
-                output.accept(SBItemRegistry.bladestand_2w);
-                output.accept(SBItemRegistry.bladestand_s);
-                output.accept(SBItemRegistry.bladestand_v);
-                
-                output.accept(SBItemRegistry.slashblade_wood);
-                output.accept(SBItemRegistry.slashblade_bamboo);
-                output.accept(SBItemRegistry.slashblade_silverbamboo);
-                output.accept(SBItemRegistry.slashblade_white);
-                output.accept(SBItemRegistry.slashblade);
+                output.accept(SBItems.slashblade_wood);
+                output.accept(SBItems.slashblade_bamboo);
+                output.accept(SBItems.slashblade_silverbamboo);
+                output.accept(SBItems.slashblade_white);
+                output.accept(SBItems.slashblade);
 
                 fillBlades(output);
                 })

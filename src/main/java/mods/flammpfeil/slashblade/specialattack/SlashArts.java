@@ -3,7 +3,9 @@ package mods.flammpfeil.slashblade.specialattack;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
+import net.minecraft.Util;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -25,7 +27,7 @@ public class SlashArts {
 
     static public int getJustReceptionSpan(LivingEntity user){
         return Math.min(ChargeJustTicksMax , ChargeJustTicks + EnchantmentHelper.getEnchantmentLevel(Enchantments.SOUL_SPEED,user));
-    }
+    } 
 
     public enum ArtsType{
         Fail,
@@ -37,6 +39,7 @@ public class SlashArts {
     private Function<LivingEntity, ResourceLocation> comboState;
     private Function<LivingEntity, ResourceLocation> comboStateJust;
     private Function<LivingEntity, ResourceLocation> comboStateBroken;
+    
 
     public ResourceLocation doArts(ArtsType type, LivingEntity user) {
         switch (type){
@@ -76,5 +79,26 @@ public class SlashArts {
     public SlashArts setComboStateBroken(Function<LivingEntity, ResourceLocation> state){
         this.comboStateBroken = state;
         return this;
+    }
+    
+    public Component getDescription() {
+        return Component.translatable(this.getDescriptionId());
+    }
+
+    public String toString() {
+        return SlashArtsRegistry.REGISTRY.get().getKey(this).toString();
+    }
+
+    private String descriptionId;
+    
+    protected String getOrCreateDescriptionId() {
+        if (this.descriptionId == null) {
+            this.descriptionId = Util.makeDescriptionId("slash_art", SlashArtsRegistry.REGISTRY.get().getKey(this));
+        }
+        return this.descriptionId;
+    }
+
+    public String getDescriptionId() {
+        return this.getOrCreateDescriptionId();
     }
 }

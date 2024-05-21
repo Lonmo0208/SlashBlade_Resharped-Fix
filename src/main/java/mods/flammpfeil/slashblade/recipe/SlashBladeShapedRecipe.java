@@ -1,7 +1,7 @@
 package mods.flammpfeil.slashblade.recipe;
 
 import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.init.SBItemRegistry;
+import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +29,7 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
 
     private static ItemStack getResultBlade(ResourceLocation outputBlade) {
         Item bladeItem = ForgeRegistries.ITEMS.containsKey(outputBlade) ? ForgeRegistries.ITEMS.getValue(outputBlade)
-                : SBItemRegistry.slashblade;
+                : SBItems.slashblade;
 
         return bladeItem.getDefaultInstance();
     }
@@ -55,7 +55,7 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
         var result = this.getResultItem(access);
         if (!(result.getItem() instanceof ItemSlashBlade)) {
 
-            result = new ItemStack(SBItemRegistry.slashblade);
+            result = new ItemStack(SBItems.slashblade);
         }
         var resultState = result.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
         for (var stack : container.getItems()) {

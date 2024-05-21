@@ -4,20 +4,20 @@
 
   "attribute.name.generic.reachDistance":"Reach",
 
+  "key.category.slashblade": "抜刀剣",
+  "key.slashblade.special_move": "Special Move",
+  "key.slashblade.summon_blade": "Summon Mirage Blade",
+
   "stat.slashblade.sword_summoned": "幻影剣",
 
   "slashblade.tooltip.killcount"  :"KillCount:%1$s",
   "slashblade.tooltip.refine"     :"Refine   :%1$s",
+  "slashblade.tooltip.slash_art": "SA       :%1$s",
 
-  "slashblade.tooltip.material":"クラフト要件",
-  "slashblade.tooltip.material.requiredobjects.anvil":"必要設備: 金床",
-  "slashblade.tooltip.material.killcount":"%1$s <= KillCount",
-  "slashblade.tooltip.material.refine":"%1$s <= Refine",
-  "slashblade.tooltip.material.level":"%1$s <= PlayerLevel",
-  "slashblade.tooltip.material.broken":"折れた",
-  "slashblade.tooltip.material.noscabbard":"抜き身",
-  "slashblade.tooltip.material.enchantments":"必要エンチャント",
-  
+  "slashblade.sword_type.bewitched":"妖",
+  "slashblade.sword_type.enchanted":"印",
+  "slashblade.sword_type.noname":"封",
+
   "item.slashblade.slashblade": "無銘「無名」",
   "item.slashblade.slashblade.desc": "始まり\n無垢の器",
   "item.slashblade.slashblade_wood": "無銘刀「木偶」",
@@ -29,13 +29,13 @@
   "item.slashblade.slashblade_silverbamboo": "名刀「銀紙竹光」",
   "item.slashblade.slashblade_silverbamboo.desc": "模造刀",
 
-  "item.slashblade.ex.ruby": "利刀「無名」紅玉",
-  "item.slashblade.ex.ruby.desc": "傑作",
+  "item.slashblade.ruby": "利刀「無名」紅玉",
+  "item.slashblade.ruby.desc": "傑作",
 
-  "item.slashblade.ex.fox.white": "狐月刀「白狐」",
-  "item.slashblade.ex.fox.white.desc": "幸運の標",
-  "item.slashblade.ex.fox.black": "狐月刀「黒狐」",
-  "item.slashblade.ex.fox.black.desc": "安寧の標",
+  "item.slashblade.fox_white": "狐月刀「白狐」",
+  "item.slashblade.fox_white.desc": "幸運の標",
+  "item.slashblade.fox_black": "狐月刀「黒狐」",
+  "item.slashblade.fox_black.desc": "安寧の標",
 
   "item.slashblade.yuzukitukumo": "宝刀「付喪」結月",
   "item.slashblade.yuzukitukumo.desc": "結月刀「付喪」\n鉄の木刀の軌跡",
@@ -52,9 +52,6 @@
   "item.slashblade.proudsoul_sphere":"刀の魂珠",
   "item.slashblade.proudsoul_crystal":"刀の魂晶",
   "item.slashblade.proudsoul_trapezohedron":"揺蕩う刀の魂結晶",
-  "item.slashblade.proudsoul_activated":"飢渇く刀の魂結晶",
-  "item.slashblade.proudsoul_awakened":"幽玄な刀の魂結晶",
-  "item.slashblade.proudsoul_tiny.dark":"揺籃たる刀の薄魂片",
 
   "item.slashblade.bladestand_1": "刀掛け台 一段",
   "item.slashblade.bladestand_2": "刀掛け台 二段",
@@ -63,12 +60,15 @@
   "item.slashblade.bladestand_1w":"刀掛け台 壁掛け一段",
   "item.slashblade.bladestand_2w":"刀掛け台 壁掛け二段",
 
+  "slash_art.slashblade.none":"無し",
+  "slash_art.slashblade.judgement_cut":"Judgement Cut",
+
   "adv.slashblade.proudsoul": "強化限界 Refine=50\n折れど継がれる誇り高き魂",
   "adv.slashblade.proudsoul_tiny":"強化限界 Refine=10\n幽かな霊炎",
   "adv.slashblade.proudsoul_ingot": "強化限界 Refine=100\n紫炎で鍛し霊鉄",
   "adv.slashblade.proudsoul_sphere": "強化限界 Refine=150\n製錬\n幻炎抱く宝珠",
   "adv.slashblade.proudsoul_crystal": "強化限界 Refine=200\n精錬\n霊鋼の核心",
-  "adv.slashblade.proudsoul_trapezohedron":"強化限界無し\n燻煙\n揺蕩う誇りの末路",
+  "adv.slashblade.proudsoul_trapezohedron":"強化限界無し\n再び精錬\n揺蕩う誇りの末路",
   "adv.slashblade.proudsoul_activated":"揺り起こした代償は底なしの餓え\n魂結晶のスニーク中に使用で活性化する\n手元に置くとき空腹が襲う\n空腹中は更なる空腹と引き換えに刀の耐久値が回復する",
   "adv.slashblade.proudsoul_awakened":"精魂共に満ち鎮まった\n再びの餓えを代償に新たに欠片を得ることができる",
 

@@ -59,11 +59,6 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
             tag.putInt("killCount", instance.getKillCount());
             tag.putInt("RepairCounter", instance.getRefine());
 
-            UUID id = instance.getOwner();
-            if(id != null)
-                tag.putUUID("Owner", id);
-
-
             UUID bladeId = instance.getUniqueId();
             tag.putUUID("BladeUniqueId", bladeId);
 
@@ -71,7 +66,6 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
             //performance setting
 
             tag.putString("SpecialAttackType", Optional.ofNullable(instance.getSlashArtsKey()).orElse(SlashArtsRegistry.JUDGEMENT_CUT.getId()).toString());
-//            tag.putBoolean("isDestructable", instance.isDestructable());
             tag.putBoolean("isDefaultBewitched", instance.isDefaultBewitched());
             tag.putString("translationKey", instance.getTranslationKey());
 
@@ -93,21 +87,11 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
         return tag;
     }
 
-
-    @Deprecated
-    private final String tagState = "State";
-
     @Override
     public void deserializeNBT(Tag inTag) {
 
-        Tag baseTag;
-        if(inTag instanceof CompoundTag && ((CompoundTag) inTag).contains(tagState)){
-            //old
-            baseTag = ((CompoundTag) inTag).get(tagState);
-        }else{
-            baseTag = inTag;
-        }
-
+        Tag baseTag = inTag;
+        
         state.ifPresent(instance->{
             CompoundTag tag = (CompoundTag)baseTag;
 
@@ -134,8 +118,6 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
 
             instance.setKillCount(tag.getInt("killCount"));
             instance.setRefine(tag.getInt("RepairCounter"));
-
-            instance.setOwner(tag.hasUUID("Owner") ? tag.getUUID("Owner") : null);
 
             instance.setUniqueId(tag.hasUUID("BladeUniqueId") ? tag.getUUID("BladeUniqueId") : UUID.randomUUID());
 

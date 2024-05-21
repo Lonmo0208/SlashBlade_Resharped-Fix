@@ -10,7 +10,7 @@ import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import mods.flammpfeil.slashblade.entity.BladeStandEntity;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.init.DefaultResources;
-import mods.flammpfeil.slashblade.init.SBItemRegistry;
+import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.SwordType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -256,10 +256,10 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
                         break;
                 }
 
-                if(type == SBItemRegistry.bladestand_1) {
+                if(type == SBItems.bladestand_1) {
                      bladeOffset = Vec3.ZERO;
                     sheathOffset = Vec3.ZERO;
-                }else if(type == SBItemRegistry.bladestand_2){
+                }else if(type == SBItems.bladestand_2){
                     bladeOffset = new Vec3(0,21.5f,0);
                     if(hFlip){
                         sheathOffset = new Vec3(-40,-27,0);
@@ -267,12 +267,12 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
                         sheathOffset = new Vec3(40,-27,0);
                     }
                     sheathOffsetBaseRot = -4;
-                }else if(type == SBItemRegistry.bladestand_v){
+                }else if(type == SBItems.bladestand_v){
                     bladeOffset = new Vec3(-100,230,0);
                     sheathOffset = new Vec3(-100,230,0);
                     bladeOffsetRot = 80;
                     sheathOffsetRot = 80;
-                }else if(type == SBItemRegistry.bladestand_s){
+                }else if(type == SBItems.bladestand_s){
                     if(hFlip){
                         bladeOffset = new Vec3(60,-25,0);
                         sheathOffset = new Vec3(60,-25,0);
@@ -280,10 +280,10 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
                         bladeOffset = new Vec3(-60,-25,0);
                         sheathOffset = new Vec3(-60,-25,0);
                     }
-                }else if(type == SBItemRegistry.bladestand_1w){
+                }else if(type == SBItems.bladestand_1w){
                     bladeOffset = Vec3.ZERO;
                     sheathOffset = Vec3.ZERO;
-                }else if(type == SBItemRegistry.bladestand_2w){
+                }else if(type == SBItems.bladestand_2w){
                     bladeOffset = new Vec3(0,21.5f,0);
                     if(hFlip){
                         sheathOffset = new Vec3(-40,-27,0);

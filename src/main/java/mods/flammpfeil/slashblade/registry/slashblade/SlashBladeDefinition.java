@@ -9,7 +9,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.init.SBItemRegistry;
+import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
@@ -72,7 +72,7 @@ public class SlashBladeDefinition {
     }
     
     public ItemStack getBlade() {
-        return getBlade(SBItemRegistry.slashblade);
+        return getBlade(SBItems.slashblade);
     }
     
     public ItemStack getBlade(Item bladeItem) {

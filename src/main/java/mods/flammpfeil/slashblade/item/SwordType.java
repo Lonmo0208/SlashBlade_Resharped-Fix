@@ -13,14 +13,12 @@ public enum SwordType{
     NONE,
     EDGEFRAGMENT,
     BROKEN,
-    PERFECT,
     ENCHANTED,
     BEWITCHED,
     SOULEATER,
     FIERCEREDGE,
     NOSCABBARD,
     SEALED,
-    CURSED,
     ;
     
     public static final Codec<SwordType> CODEC = Codec.STRING.xmap(
@@ -37,20 +35,29 @@ public enum SwordType{
                     types.add(BROKEN);
 
                 if(s.isSealed())
-                    types.add(CURSED);
+                    types.add(SEALED);
 
                 if(!s.isSealed() && itemStackIn.isEnchanted() && (itemStackIn.hasCustomHoverName() || s.isDefaultBewitched()))
                     types.add(BEWITCHED);
+                
+                if(s.getKillCount() > 1000)
+                    types.add(FIERCEREDGE);
+                
             });
         }else{
             types.add(NOSCABBARD);
             types.add(EDGEFRAGMENT);
         }
 
-
         if(itemStackIn.isEnchanted())
             types.add(ENCHANTED);
 
+        if(itemStackIn.getItem() instanceof ItemSlashBladeDetune) {
+            types.remove(SwordType.ENCHANTED);
+            types.remove(SwordType.BEWITCHED);
+            types.remove(SwordType.SOULEATER);
+        }
+        
         return types;
     }
 }

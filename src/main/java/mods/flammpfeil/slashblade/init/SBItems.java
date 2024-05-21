@@ -4,7 +4,7 @@ import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.ObjectHolder;
 
-public class SBItemRegistry {
+public class SBItems {
 
     @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":proudsoul")
     public static final Item proudsoul = null;
@@ -18,10 +18,6 @@ public class SBItemRegistry {
     public static final Item proudsoul_crystal = null;
     @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":proudsoul_trapezohedron")
     public static final Item proudsoul_trapezohedron = null;
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":proudsoul_activated")
-    public static final Item proudsoul_activated = null;
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":proudsoul_awakened")
-    public static final Item proudsoul_awakened = null;
     
     @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":slashblade_wood")
     public static final Item slashblade_wood = null;

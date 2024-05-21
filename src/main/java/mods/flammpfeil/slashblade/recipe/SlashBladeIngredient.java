@@ -11,7 +11,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-import mods.flammpfeil.slashblade.init.SBItemRegistry;
+import mods.flammpfeil.slashblade.init.SBItems;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
@@ -46,7 +46,7 @@ public class SlashBladeIngredient extends Ingredient {
     }
     
     public static SlashBladeIngredient of(RequestDefinition request) {
-        return new SlashBladeIngredient(Set.of(SBItemRegistry.slashblade), request);
+        return new SlashBladeIngredient(Set.of(SBItems.slashblade), request);
     }
 
     @Override

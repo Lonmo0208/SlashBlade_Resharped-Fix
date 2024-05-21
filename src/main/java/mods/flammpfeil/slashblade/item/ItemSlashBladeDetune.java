@@ -1,13 +1,18 @@
 package mods.flammpfeil.slashblade.item;
 
+import java.util.List;
+
 import org.jetbrains.annotations.Nullable;
 
 import mods.flammpfeil.slashblade.capability.slashblade.SimpleBladeStateCapabilityProvider;
 import mods.flammpfeil.slashblade.init.DefaultResources;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemSlashBladeDetune extends ItemSlashBlade {
@@ -61,4 +66,8 @@ public class ItemSlashBladeDetune extends ItemSlashBlade {
         return new SimpleBladeStateCapabilityProvider(model, texture, baseAttack, this.getTier().getUses());
     }
     
+    @Override
+    public void appendSwordType(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+        
+    }
 }

@@ -13,7 +13,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import mods.flammpfeil.slashblade.init.SBItemRegistry;
+import mods.flammpfeil.slashblade.init.SBItems;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.CriterionTriggerInstance;
@@ -50,7 +50,7 @@ public class SlashBladeShapedRecipeBuilder extends CraftingRecipeBuilder impleme
     }
 
     public static SlashBladeShapedRecipeBuilder shaped(ResourceLocation blade) {
-        return shaped(SBItemRegistry.slashblade, 1).blade(blade);
+        return shaped(SBItems.slashblade, 1).blade(blade);
     }
     
     public static SlashBladeShapedRecipeBuilder shaped(ItemLike result) {

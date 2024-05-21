@@ -20,7 +20,6 @@
 package mods.flammpfeil.slashblade.capability.slashblade;
 
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
-import mods.flammpfeil.slashblade.init.DefaultResources;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -56,12 +55,11 @@ public class SlashBladeState implements ISlashBladeState{
 
     //protected int lumbmanager; //lumbmanager EntityID
 
-
     //passive state
     protected boolean isNoScabbard; //isNoScabbard
     protected boolean isSealed; //isSealed
 
-    protected float baseAttackModifier; //BaseAttackModifier
+    protected float baseAttackModifier = 4F; //BaseAttackModifier
 
     protected int killCount; //killCount
     protected int refine; //RepairCounter
@@ -176,16 +174,6 @@ public class SlashBladeState implements ISlashBladeState{
     public void setBroken(boolean broken) {
         isBroken = broken;
         setHasChangedActiveState(true);
-    }
-    
-    @Override
-    public UUID getOwner() {
-        return owner;
-    }
-
-    @Override
-    public void setOwner(UUID owner) {
-        this.owner = owner;
     }
 
     @Override

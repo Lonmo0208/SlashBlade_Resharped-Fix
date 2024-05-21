@@ -49,21 +49,13 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
             tag.putFloat("AttackAmplifier", instance.getAttackAmplifier());
             tag.putString("currentCombo", instance.getComboSeq().toString());
             tag.putInt("Damage", instance.getDamage());
-//            tag.putInt("maxDamage", instance.getMaxDamage());
             tag.putBoolean("isBroken", instance.isBroken());
 
             //passive state
             tag.putBoolean("isSealed", instance.isSealed());
 
-//            tag.putFloat("baseAttackModifier", instance.getBaseAttackModifier());
-
             tag.putInt("killCount", instance.getKillCount());
             tag.putInt("RepairCounter", instance.getRefine());
-
-            UUID id = instance.getOwner();
-            if(id != null)
-                tag.putUUID("Owner", id);
-
 
             UUID bladeId = instance.getUniqueId();
             tag.putUUID("BladeUniqueId", bladeId);
@@ -72,21 +64,12 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
             //performance setting
 
             tag.putString("SpecialAttackType", Optional.ofNullable(instance.getSlashArtsKey()).orElse(SlashArtsRegistry.JUDGEMENT_CUT.getId()).toString());
-//            tag.putBoolean("isDestructable", instance.isDestructable());
-//            tag.putBoolean("isDefaultBewitched", instance.isDefaultBewitched());
-//            tag.putString("translationKey", instance.getTranslationKey());
-
             //render info
             tag.putByte("StandbyRenderType", (byte)instance.getCarryType().ordinal());
             tag.putInt("SummonedSwordColor", instance.getColorCode());
             tag.putBoolean("SummonedSwordColorInverse", instance.isEffectColorInverse());
             tag.put("adjustXYZ" , NBTHelper.newDoubleNBTList(instance.getAdjust()));
-
-//            instance.getTexture()
-//                    .ifPresent(loc ->  tag.putString("TextureName", loc.toString()));
-//            instance.getModel()
-//                    .ifPresent(loc ->  tag.putString("ModelName", loc.toString()));
-
+            
             tag.putString("ComboRoot", Optional.ofNullable(instance.getComboRoot()).orElse(ComboStateRegistry.STANDBY.getId()).toString());
             
         });
@@ -94,20 +77,10 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
         return tag;
     }
 
-
-    @Deprecated
-    private final String tagState = "State";
-
     @Override
     public void deserializeNBT(Tag inTag) {
 
-        Tag baseTag;
-        if(inTag instanceof CompoundTag && ((CompoundTag) inTag).contains(tagState)){
-            //old
-            baseTag = ((CompoundTag) inTag).get(tagState);
-        }else{
-            baseTag = inTag;
-        }
+        Tag baseTag = inTag;
 
         state.ifPresent(instance->{
             CompoundTag tag = (CompoundTag)baseTag;
@@ -135,8 +108,6 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
 
             instance.setKillCount(tag.getInt("killCount"));
             instance.setRefine(tag.getInt("RepairCounter"));
-
-            instance.setOwner(tag.hasUUID("Owner") ? tag.getUUID("Owner") : null);
 
             instance.setUniqueId(tag.hasUUID("BladeUniqueId") ? tag.getUUID("BladeUniqueId") : UUID.randomUUID());
 
