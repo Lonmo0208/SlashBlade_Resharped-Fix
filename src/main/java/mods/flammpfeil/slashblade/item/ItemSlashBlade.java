@@ -2,6 +2,7 @@ package mods.flammpfeil.slashblade.item;
 
 import com.google.common.collect.*;
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.SlashBladeConfig;
 import mods.flammpfeil.slashblade.capability.inputstate.IInputState;
 import mods.flammpfeil.slashblade.capability.slashblade.NamedBladeStateCapabilityProvider;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
@@ -20,6 +21,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.TooltipFlag;
@@ -75,13 +77,16 @@ public class ItemSlashBlade extends SwordItem {
     public static final Capability<IInputState> INPUT_STATE = CapabilityManager.get(new CapabilityToken<>() {
     });
 
+    public static final List<Enchantment> exEnchantment = List.of(Enchantments.SOUL_SPEED, Enchantments.POWER_ARROWS, Enchantments.FALL_PROTECTION);
+    
     public ItemSlashBlade(Tier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
     }
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        // TODO Auto-generated method stub
+        if(exEnchantment.contains(enchantment))
+            return true;
         return super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
@@ -107,7 +112,7 @@ public class ItemSlashBlade extends SwordItem {
                 if (s.isBroken() || s.isSealed())
                     attackAmplifier = 2 - baseAttackModifier;
                 else 
-                    attackAmplifier += swordType.contains(SwordType.FIERCEREDGE) ? s.getRefine() : s.getRefine() * 0.75F;
+                    attackAmplifier += swordType.contains(SwordType.FIERCEREDGE) ? s.getRefine() : s.getRefine() * SlashBladeConfig.REFINE_BOUNS.get();
                 
                 AttributeModifier amplifier = new AttributeModifier(ATTACK_DAMAGE_AMPLIFIER, "Weapon amplifier",
                         (double) attackAmplifier, AttributeModifier.Operation.ADDITION);
@@ -231,7 +236,12 @@ public class ItemSlashBlade extends SwordItem {
 
             var state = stack.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
             ItemStack soul = new ItemStack(SBItems.proudsoul_tiny);
-            soul.setCount(user.getRandom().nextInt(4));
+            
+            int count = state.getProudSoulCount() >= 1000 ? 10 : Math.max(1, state.getProudSoulCount() / 100);
+            
+            soul.setCount(count);
+            state.setProudSoulCount(state.getProudSoulCount() - (count * 100));
+            
             ItemEntity itementity = new ItemEntity(user.level(), user.getX(), user.getY(), user.getZ(), soul);
             BladeItemEntity e = new BladeItemEntity(SlashBlade.RegistryEvents.BladeItem, user.level()) {
                 static final String isReleased = "isReleased";
@@ -364,12 +374,12 @@ public class ItemSlashBlade extends SwordItem {
             stack.getCapability(BLADESTATE).ifPresent((state) -> {
                 var swordType = SwordType.from(stack);
                 if (entityIn instanceof Player player) {
-                    boolean hasHunger = player.hasEffect(MobEffects.HUNGER);
+                    boolean hasHunger = player.hasEffect(MobEffects.HUNGER) && SlashBladeConfig.HUNGER_CAN_REPAIR.get();
                     if(swordType.contains(SwordType.BEWITCHED) || hasHunger) {
                         if (stack.getDamageValue() > 0 && player.getFoodData().getFoodLevel() > 0) {
                             int hungerAmplifier = hasHunger ? player.getEffect(MobEffects.HUNGER).getAmplifier() : 0;
                             int level = 1 + Math.abs(hungerAmplifier);
-                            player.causeFoodExhaustion(0.01F * level);
+                            player.causeFoodExhaustion(SlashBladeConfig.BEWITCHED_HUNGER_EXHAUSTION.get().floatValue() * level);
                             stack.setDamageValue(stack.getDamageValue() - level);
                         }
                     }
@@ -523,10 +533,10 @@ public class ItemSlashBlade extends SwordItem {
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s -> {
             this.appendSwordType(stack, worldIn, tooltip, flagIn);
+            this.appendProudSoulCount(tooltip, s);
             this.appendKillCount(tooltip, s);
             this.appendSlashArt(stack, tooltip, s);
             this.appendRefineCount(tooltip, s);
-            this.appendAttackDamage(tooltip, s);
         });
 
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
@@ -540,16 +550,22 @@ public class ItemSlashBlade extends SwordItem {
                     );
         }
     }
-    
-    public void appendAttackDamage(List<Component> tooltip, @NotNull ISlashBladeState s) {
-        // TODO: 把这个写了
-        // 断刀 / 基础 / 精锻补正
-    }
 
     public void appendRefineCount(List<Component> tooltip, @NotNull ISlashBladeState s) {
         if (s.getRefine() > 0) {
             tooltip.add(Component.translatable("slashblade.tooltip.refine", s.getRefine())
                     .withStyle((ChatFormatting) refineColor.get(s.getRefine())));
+        }
+    }
+    
+    public void appendProudSoulCount(List<Component> tooltip, @NotNull ISlashBladeState s) {
+        if (s.getProudSoulCount() > 0) {
+            MutableComponent countComponent = 
+                    Component.translatable("slashblade.tooltip.proud_soul", s.getProudSoulCount())
+                    .withStyle(ChatFormatting.GRAY);
+            if(s.getProudSoulCount() > 1000)
+                countComponent = countComponent.withStyle(ChatFormatting.DARK_PURPLE);
+            tooltip.add(countComponent);
         }
     }
 

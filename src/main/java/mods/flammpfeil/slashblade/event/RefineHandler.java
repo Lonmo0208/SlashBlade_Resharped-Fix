@@ -54,6 +54,9 @@ public class RefineHandler {
             int damage = result.getCapability(ItemSlashBlade.BLADESTATE).map(s->{
 //                s.setDamage(s.getDamage() - (0.2f + 0.05f * level));
                 result.setDamageValue(result.getDamageValue() - Math.max(1, level / 20));
+                
+                s.setProudSoulCount(s.getProudSoulCount() + Math.max(5000, level * 10));
+                
                 if(s.getRefine() < refineLimit)
                     s.setRefine(s.getRefine() + 1);
                 return result.getDamageValue();

@@ -58,6 +58,12 @@ public class BladeRenderState extends RenderStateShard{
     static public void renderOverridedColorWrite(ItemStack stack, WavefrontObject model, String target, ResourceLocation texture, PoseStack  matrixStackIn, MultiBufferSource bufferIn, int packedLightIn){
         renderOverrided(stack, model, target, texture, matrixStackIn, bufferIn, packedLightIn, Util.memoize(BladeRenderState::getSlashBladeBlendColorWrite), true);
     }
+    
+    static public void renderChargeEffect(ItemStack stack, float f, WavefrontObject model, String target, ResourceLocation texture, PoseStack  matrixStackIn, MultiBufferSource bufferIn, int packedLightIn){
+        renderOverrided(stack, model, target, texture, matrixStackIn, bufferIn, packedLightIn, 
+                (loc)->BladeRenderState.getChargeEffect(loc, f * 0.1F % 1.0F, f * 0.01F % 1.0F),
+        true);
+    }
 
     static public void renderOverridedLuminous(ItemStack stack, WavefrontObject model, String target, ResourceLocation texture, PoseStack  matrixStackIn, MultiBufferSource bufferIn, int packedLightIn){
         renderOverrided(stack, model, target, texture, matrixStackIn, bufferIn, packedLightIn, Util.memoize(BladeRenderState::getSlashBladeBlendLuminous), false);
@@ -80,14 +86,13 @@ public class BladeRenderState extends RenderStateShard{
         ResourceLocation loc = event.getTexture();
 
         RenderType rt = getRenderType.apply(loc);//getSlashBladeBlendLuminous(event.getTexture());
-        VertexConsumer vb;
-        vb = bufferIn.getBuffer(rt);
+        VertexConsumer vb = bufferIn.getBuffer(rt);
 
         Face.setCol(col);
         Face.setLightMap(packedLightIn);
         Face.setMatrix(matrixStackIn);
         event.getModel().tessellateOnly(vb, event.getTarget());
-
+        
 
         if(stack.hasFoil() && enableEffect){
             boolean forceQuad = Face.forceQuad;
@@ -192,6 +197,23 @@ public class BladeRenderState extends RenderStateShard{
                 .createCompositeState(false);
         return RenderType.create("slashblade_blend_luminous", WavefrontObject.POSITION_TEX_LMAP_COL_NORMAL, VertexFormat.Mode.TRIANGLES, 256, true, false, state);
     }
+    
+    public static RenderType getChargeEffect(ResourceLocation p_228638_0_, float x, float y) {
+        RenderType.CompositeState state = RenderType.CompositeState.builder()
+                .setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER)
+                .setOutputState(PARTICLES_TARGET)
+                .setCullState(RenderStateShard.NO_CULL)
+                .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, false, false))
+                .setTexturingState(new RenderStateShard.OffsetTexturingStateShard(x,y))
+                .setTransparencyState(LIGHTNING_ADDITIVE_TRANSPARENCY)
+                //.setDiffuseLightingState(RenderStateShard.NO_DIFFUSE_LIGHTING)
+                .setLightmapState(RenderStateShard.LIGHTMAP)
+                .setOverlayState(OVERLAY)
+                .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+                .createCompositeState(false);
+        return RenderType.create("slashblade_charge_effect", WavefrontObject.POSITION_TEX_LMAP_COL_NORMAL, VertexFormat.Mode.TRIANGLES, 256, true, false, state);
+    }
+    
     public static RenderType getSlashBladeBlendLuminousDepthWrite(ResourceLocation p_228638_0_) {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
                 .setShaderState(POSITION_COLOR_TEX_LIGHTMAP_SHADER)

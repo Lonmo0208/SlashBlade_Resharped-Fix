@@ -25,6 +25,7 @@ public class RequestDefinition {
     public static final Codec<RequestDefinition> CODEC = RecordCodecBuilder
             .create(instance -> instance
                     .group(ResourceLocation.CODEC.optionalFieldOf("name", SlashBlade.prefix("none")).forGetter(RequestDefinition::getName),
+                            Codec.INT.optionalFieldOf("proud_soul", 0).forGetter(RequestDefinition::getProudSoulCount),
                             Codec.INT.optionalFieldOf("kill", 0).forGetter(RequestDefinition::getKillCount),
                             Codec.INT.optionalFieldOf("refine", 0).forGetter(RequestDefinition::getRefineCount),
                             EnchantmentDefinition.CODEC.listOf().optionalFieldOf("enchantments", Lists.newArrayList())
@@ -34,13 +35,15 @@ public class RequestDefinition {
                     .apply(instance, RequestDefinition::new));
 
     private final ResourceLocation name;
+    private final int proudSoulCount;
     private final int killCount;
     private final int refineCount;
     private final List<EnchantmentDefinition> enchantments;
     private final List<SwordType> defaultType;
 
-    public RequestDefinition(ResourceLocation name, int kill, int refine, List<EnchantmentDefinition> enchantments, List<SwordType> defaultType) {
+    public RequestDefinition(ResourceLocation name, int proud, int kill, int refine, List<EnchantmentDefinition> enchantments, List<SwordType> defaultType) {
         this.name = name;
+        this.proudSoulCount = proud;
         this.killCount = kill;
         this.refineCount = refine;
         this.enchantments = enchantments;
@@ -49,6 +52,10 @@ public class RequestDefinition {
 
     public ResourceLocation getName() {
         return name;
+    }
+    
+    public int getProudSoulCount() {
+        return proudSoulCount;
     }
 
     public int getKillCount() {
@@ -81,6 +88,7 @@ public class RequestDefinition {
 
     public void toNetwork(FriendlyByteBuf buffer) {
         buffer.writeResourceLocation(this.getName());
+        buffer.writeInt(this.getProudSoulCount());
         buffer.writeInt(this.getKillCount());
         buffer.writeInt(this.getRefineCount());
         buffer.writeCollection(this.getEnchantments(), (buf, request) -> {
@@ -95,13 +103,14 @@ public class RequestDefinition {
 
     public static RequestDefinition fromNetwork(FriendlyByteBuf buffer) {
         ResourceLocation name = buffer.readResourceLocation();
+        int proud = buffer.readInt();
         int kill = buffer.readInt();
         int refine = buffer.readInt();
         var enchantments = buffer.readList((buf) -> {
             return new EnchantmentDefinition(buf.readResourceLocation(), buf.readByte());
         });
         var types = buffer.readList((buf) -> SwordType.valueOf(buf.readUtf().toUpperCase()));
-        return new RequestDefinition(name, kill, refine, enchantments, types);
+        return new RequestDefinition(name, proud, kill, refine, enchantments, types);
     }
 
     public void initItemStack(ItemStack blade) {
@@ -140,6 +149,7 @@ public class RequestDefinition {
         } else {
             nameCheck = state.getTranslationKey().equals(getTranslationKey());
         }
+        boolean proudCheck = state.getProudSoulCount() >= this.getProudSoulCount();
         boolean killCheck = state.getKillCount() >= this.getKillCount();
         boolean refineCheck = state.getRefine() >= this.getRefineCount();
 
@@ -152,7 +162,7 @@ public class RequestDefinition {
         
         boolean types = SwordType.from(blade).containsAll(this.getDefaultType());
 
-        return nameCheck && killCheck && refineCheck && types;
+        return nameCheck && proudCheck && killCheck && refineCheck && types;
     }
 
     public String getTranslationKey() {
@@ -161,6 +171,7 @@ public class RequestDefinition {
 
     public static class Builder {
         private ResourceLocation name;
+        private int proudCount;
         private int killCount;
         private int refineCount;
         private List<EnchantmentDefinition> enchantments;
@@ -168,6 +179,7 @@ public class RequestDefinition {
 
         private Builder() {
             this.name = SlashBlade.prefix("none");
+            this.proudCount = 0;
             this.killCount = 0;
             this.refineCount = 0;
             this.enchantments = new ArrayList<>();
@@ -180,6 +192,11 @@ public class RequestDefinition {
 
         public Builder name(ResourceLocation name) {
             this.name = name;
+            return this;
+        }
+        
+        public Builder proudSoul(int proudCount) {
+            this.proudCount = proudCount;
             return this;
         }
 
@@ -206,7 +223,7 @@ public class RequestDefinition {
         }
 
         public RequestDefinition build() {
-            return new RequestDefinition(name, killCount, refineCount, enchantments, defaultType);
+            return new RequestDefinition(name, proudCount, killCount, refineCount, enchantments, defaultType);
         }
     }
 }

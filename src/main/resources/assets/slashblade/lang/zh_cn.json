@@ -11,6 +11,7 @@
     "stat.slashblade.sword_summoned": "召唤幻影剑",
     "entity.slashblade.abstract_summoned_sword": "幻影剑",
 
+    "slashblade.tooltip.proud_soul": "耀魂数：%1$s",
     "slashblade.tooltip.killcount": "杀敌数：%1$s",
     "slashblade.tooltip.refine": "精炼数：%1$s",
     "slashblade.tooltip.slash_art": "SA:%1$s",

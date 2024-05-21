@@ -5,6 +5,10 @@
       "lvl": 2
     },
     {
+      "id": "minecraft:power",
+      "lvl": 5
+    },
+    {
       "id": "minecraft:feather_falling",
       "lvl": 4
     }

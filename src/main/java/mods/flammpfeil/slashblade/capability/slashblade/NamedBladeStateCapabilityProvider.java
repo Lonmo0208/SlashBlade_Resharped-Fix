@@ -49,6 +49,7 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
             tag.putString("currentCombo", instance.getComboSeq().toString());
             tag.putInt("Damage", instance.getDamage());
             tag.putInt("maxDamage", instance.getMaxDamage());
+            tag.putInt("proudSoul", instance.getProudSoulCount());
             tag.putBoolean("isBroken", instance.isBroken());
 
             //passive state
@@ -105,7 +106,7 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
             instance.setComboSeq(ResourceLocation.tryParse(tag.getString("currentCombo")));
             instance.setDamage(tag.getInt("Damage"));
             instance.setMaxDamage(tag.getInt("maxDamage"));
-
+            instance.setProudSoulCount(tag.getInt("proudSoul"));
             instance.setBroken(tag.getBoolean("isBroken"));
 
             instance.setHasChangedActiveState(true);
@@ -125,7 +126,6 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
 
 
             instance.setSlashArtsKey(ResourceLocation.tryParse(tag.getString("SpecialAttackType")));
-//            instance.setDestructable(tag.getBoolean("isDestructable"));
             instance.setDefaultBewitched(tag.getBoolean("isDefaultBewitched"));
 
             instance.setTranslationKey(tag.getString("translationKey"));

@@ -15,7 +15,6 @@ public enum SwordType{
     BROKEN,
     ENCHANTED,
     BEWITCHED,
-    SOULEATER,
     FIERCEREDGE,
     NOSCABBARD,
     SEALED,
@@ -42,7 +41,7 @@ public enum SwordType{
                 
                 if(s.getKillCount() > 1000)
                     types.add(FIERCEREDGE);
-                
+
             });
         }else{
             types.add(NOSCABBARD);
@@ -55,7 +54,6 @@ public enum SwordType{
         if(itemStackIn.getItem() instanceof ItemSlashBladeDetune) {
             types.remove(SwordType.ENCHANTED);
             types.remove(SwordType.BEWITCHED);
-            types.remove(SwordType.SOULEATER);
         }
         
         return types;

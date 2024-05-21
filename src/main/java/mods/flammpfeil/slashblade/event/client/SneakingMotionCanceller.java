@@ -31,8 +31,9 @@ public class SneakingMotionCanceller {
 
         if(!event.getRenderer().getModel().crouching) return;
 
-        if(Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON
-                && Minecraft.getInstance().player == event.getEntity()) return;
+        final Minecraft instance = Minecraft.getInstance();
+        if(instance.options.getCameraType() == CameraType.FIRST_PERSON
+                && instance.player == event.getEntity()) return;
 
         event.getRenderer().getModel().crouching = false;
 

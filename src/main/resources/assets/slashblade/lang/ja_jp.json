@@ -10,9 +10,10 @@
 
   "stat.slashblade.sword_summoned": "幻影剣",
 
+  "slashblade.tooltip.proud_soul" :"ProudSoul:%1$s",
   "slashblade.tooltip.killcount"  :"KillCount:%1$s",
   "slashblade.tooltip.refine"     :"Refine   :%1$s",
-  "slashblade.tooltip.slash_art": "SA       :%1$s",
+  "slashblade.tooltip.slash_art"  :"SA       :%1$s",
 
   "slashblade.sword_type.bewitched":"妖",
   "slashblade.sword_type.enchanted":"印",

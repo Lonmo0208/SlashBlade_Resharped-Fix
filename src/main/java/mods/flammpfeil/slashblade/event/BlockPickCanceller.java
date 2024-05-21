@@ -1,5 +1,6 @@
 package mods.flammpfeil.slashblade.event;
 
+import mods.flammpfeil.slashblade.SlashBladeKeyMappings;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -26,9 +27,11 @@ public class BlockPickCanceller {
     public void onBlockPick(InputEvent.InteractionKeyMappingTriggered event){
         if(!event.isPickBlock()) return;
 
-        LocalPlayer player = Minecraft.getInstance().player;
+        final Minecraft instance = Minecraft.getInstance();
+        LocalPlayer player = instance.player;
         if(player == null) return;
-
+        if(SlashBladeKeyMappings.KEY_SUMMON_BLADE.getKey() != SlashBladeKeyMappings.KEY_SUMMON_BLADE.getDefaultKey())
+            return;
         if(player.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).isPresent()){
             event.setCanceled(true);
         }

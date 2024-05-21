@@ -72,6 +72,7 @@ public class SlashBladeBuiltInRegistry {
                         PropertiesDefinition.Builder.newInstance().baseAttackModifier(8.0F)
                                 .defaultSwordType(List.of(SwordType.BEWITCHED)).build(),
                         List.of(new EnchantmentDefinition(getEnchantmentID(Enchantments.SOUL_SPEED), 2),
+                                new EnchantmentDefinition(getEnchantmentID(Enchantments.POWER_ARROWS), 5),
                                 new EnchantmentDefinition(getEnchantmentID(Enchantments.FALL_PROTECTION), 4))));
 
         bootstrap.register(TUKUMO, new SlashBladeDefinition(SlashBlade.prefix("yuzukitukumo"),

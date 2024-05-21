@@ -49,6 +49,7 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
             tag.putFloat("AttackAmplifier", instance.getAttackAmplifier());
             tag.putString("currentCombo", instance.getComboSeq().toString());
             tag.putInt("Damage", instance.getDamage());
+            tag.putInt("proudSoul", instance.getProudSoulCount());
             tag.putBoolean("isBroken", instance.isBroken());
 
             //passive state
@@ -94,7 +95,7 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
             instance.setAttackAmplifier(tag.getFloat("AttackAmplifier"));
             instance.setComboSeq(ResourceLocation.tryParse(tag.getString("currentCombo")));
             instance.setDamage(tag.getInt("Damage"));
-//            instance.setMaxDamage(tag.getInt("maxDamage"));
+            instance.setProudSoulCount(tag.getInt("proudSoul"));
 
             instance.setBroken(tag.getBoolean("isBroken"));
 
@@ -103,9 +104,6 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
 
             //passive state
             instance.setSealed(tag.getBoolean("isSealed"));
-
-//            instance.setBaseAttackModifier(tag.getFloat("baseAttackModifier"));
-
             instance.setKillCount(tag.getInt("killCount"));
             instance.setRefine(tag.getInt("RepairCounter"));
 

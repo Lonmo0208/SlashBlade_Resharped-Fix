@@ -38,7 +38,9 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -75,6 +77,9 @@ public class SlashBlade
         SlashArtsRegistry.SLASH_ARTS.register(FMLJavaModLoadingContext.get().getModEventBus());
         SlashBladeCreativeGroup.CREATIVE_MODE_TABS.register(FMLJavaModLoadingContext.get().getModEventBus());
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register(FMLJavaModLoadingContext.get().getModEventBus());
+        
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SlashBladeConfig.COMMON_CONFIG);
+        
     }
 
     private void setup(final FMLCommonSetupEvent event)

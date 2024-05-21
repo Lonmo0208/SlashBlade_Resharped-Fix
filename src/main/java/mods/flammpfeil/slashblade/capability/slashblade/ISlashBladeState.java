@@ -81,6 +81,10 @@ public interface ISlashBladeState {
 
     void setBaseAttackModifier(float baseAttackModifier);
 
+    int getProudSoulCount();
+
+    void setProudSoulCount(int psCount);
+    
     int getKillCount();
 
     void setKillCount(int killCount);
@@ -343,12 +347,17 @@ public interface ISlashBladeState {
 
         NBTHelper.getNBTCoupler(tag).put("BladeUniqueId", this.getUniqueId())
 
-                .put("lastActionTime", this.getLastActionTime()).put("TargetEntity", this.getTargetEntityId())
-                .put("_onClick", this.onClick()).put("fallDecreaseRate", this.getFallDecreaseRate())
-                .put("isCharged", this.isCharged()).put("AttackAmplifier", this.getAttackAmplifier())
+                .put("lastActionTime", this.getLastActionTime())
+                .put("TargetEntity", this.getTargetEntityId())
+                .put("_onClick", this.onClick())
+                .put("fallDecreaseRate", this.getFallDecreaseRate())
+                .put("isCharged", this.isCharged())
+                .put("AttackAmplifier", this.getAttackAmplifier())
                 .put("currentCombo", this.getComboSeq().toString())
-
-                .put("killCount", this.getKillCount()).put("Damage", this.getDamage()).put("isBroken", this.isBroken());
+                .put("proudSoul", this.getProudSoulCount())
+                .put("killCount", this.getKillCount())
+                .put("Damage", this.getDamage())
+                .put("isBroken", this.isBroken());
 
         return tag;
     }
@@ -362,8 +371,10 @@ public interface ISlashBladeState {
                 .get("fallDecreaseRate", this::setFallDecreaseRate).get("isCharged", this::setCharged)
                 .get("AttackAmplifier", this::setAttackAmplifier)
                 .get("currentCombo", ((String s) -> this.setComboSeq(ResourceLocation.tryParse(s))))
-
-                .get("killCount", this::setKillCount).get("Damage", this::setDamage).get("isBroken", this::setBroken);
+                .get("proudSoul", this::setProudSoulCount)
+                .get("killCount", this::setKillCount)
+                .get("Damage", this::setDamage)
+                .get("isBroken", this::setBroken);
 
         this.setHasChangedActiveState(false);
     }

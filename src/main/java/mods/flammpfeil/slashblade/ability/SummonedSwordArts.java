@@ -1,17 +1,20 @@
 package mods.flammpfeil.slashblade.ability;
 
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.SlashBladeConfig;
 import mods.flammpfeil.slashblade.capability.concentrationrank.CapabilityConcentrationRank;
 import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank;
 import mods.flammpfeil.slashblade.capability.inputstate.CapabilityInputState;
 import mods.flammpfeil.slashblade.entity.*;
 import mods.flammpfeil.slashblade.event.InputCommandEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.item.SwordType;
 import mods.flammpfeil.slashblade.util.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
@@ -47,11 +50,11 @@ public class SummonedSwordArts {
     }
 
 
-    static public final ResourceLocation ADVANCEMENT_SUMMONEDSWORDS = new ResourceLocation(SlashBlade.MODID, "arts/shooting/summonedswords");
-    static public final ResourceLocation ADVANCEMENT_SPIRAL_SWORDS = new ResourceLocation(SlashBlade.MODID, "arts/shooting/spiral_swords");
-    static public final ResourceLocation ADVANCEMENT_STORM_SWORDS = new ResourceLocation(SlashBlade.MODID, "arts/shooting/storm_swords");
-    static public final ResourceLocation ADVANCEMENT_BLISTERING_SWORDS = new ResourceLocation(SlashBlade.MODID, "arts/shooting/blistering_swords");
-    static public final ResourceLocation ADVANCEMENT_HEAVY_RAIN_SWORDS = new ResourceLocation(SlashBlade.MODID, "arts/shooting/heavy_rain_swords");
+    public static final ResourceLocation ADVANCEMENT_SUMMONEDSWORDS = new ResourceLocation(SlashBlade.MODID, "arts/shooting/summonedswords");
+    public static final ResourceLocation ADVANCEMENT_SPIRAL_SWORDS = new ResourceLocation(SlashBlade.MODID, "arts/shooting/spiral_swords");
+    public static final ResourceLocation ADVANCEMENT_STORM_SWORDS = new ResourceLocation(SlashBlade.MODID, "arts/shooting/storm_swords");
+    public static final ResourceLocation ADVANCEMENT_BLISTERING_SWORDS = new ResourceLocation(SlashBlade.MODID, "arts/shooting/blistering_swords");
+    public static final ResourceLocation ADVANCEMENT_HEAVY_RAIN_SWORDS = new ResourceLocation(SlashBlade.MODID, "arts/shooting/heavy_rain_swords");
 
     @SubscribeEvent
     public void onInputChange(InputCommandEvent event) {
@@ -63,8 +66,6 @@ public class SummonedSwordArts {
         InputCommand targetCommnad = InputCommand.M_DOWN;
 
         boolean onDown = !old.contains(targetCommnad) && current.contains(targetCommnad);
-        boolean onPress = current.contains(targetCommnad);
-        boolean onUp = old.contains(targetCommnad) && !current.contains(targetCommnad);
 
         final Long pressTime = event.getState().getLastPressTime(targetCommnad);
 
@@ -72,6 +73,9 @@ public class SummonedSwordArts {
         if(onDown){
 
             sender.getCapability(CapabilityInputState.INPUT_STATE).ifPresent(input-> {
+                
+                
+                
                 //SpiralSwords command
                 input.getScheduler().schedule("SpiralSwords", pressTime + 10, new TimerCallback<LivingEntity>() {
 
@@ -101,11 +105,11 @@ public class SummonedSwordArts {
                         } else {
                             //summon
                             entity.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
-
-                                if (entity.experienceLevel <= 0) return;
-
-                                entity.giveExperiencePoints(-5);
-
+                                if (state.isBroken() || state.isSealed() || !SwordType.from(entity.getMainHandItem()).contains(SwordType.BEWITCHED)) return;
+                                int powerLevel = entity.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
+                                if (powerLevel <= 0) return;
+                                if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get()) return;
+                                state.setProudSoulCount(state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_ART_COST.get());
 
                                 AdvancementHelper.grantCriterion(entity, ADVANCEMENT_SPIRAL_SWORDS);
 
@@ -129,7 +133,7 @@ public class SummonedSwordArts {
                                     ss.setOwner(entity);
                                     ss.setColor(state.getColorCode());
                                     ss.setRoll(0);
-
+                                    ss.setDamage(powerLevel);
                                     //force riding
                                     ss.startRiding(entity, true);
 
@@ -167,11 +171,10 @@ public class SummonedSwordArts {
                             Level worldIn = entity.level();
                             Entity target = state.getTargetEntity(worldIn);
 
-                            if(target == null) return;
-
-                            if (entity.experienceLevel <= 0) return;
-
-                            entity.giveExperiencePoints(-5);
+                            int powerLevel = entity.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
+                            if (powerLevel <= 0) return;
+                            if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get()) return;
+                            state.setProudSoulCount(state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_ART_COST.get());
 
                             AdvancementHelper.grantCriterion(entity, ADVANCEMENT_STORM_SWORDS);
 
@@ -193,7 +196,7 @@ public class SummonedSwordArts {
                                 ss.setOwner(entity);
                                 ss.setColor(state.getColorCode());
                                 ss.setRoll(0);
-
+                                ss.setDamage(powerLevel);
                                 //force riding
                                 ss.startRiding(target, true);
 
@@ -227,10 +230,11 @@ public class SummonedSwordArts {
                         entity.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
 
                             Level worldIn = entity.level();
-
-                            if (entity.experienceLevel <= 0) return;
-
-                            entity.giveExperiencePoints(-5);
+                            if (state.isBroken() || state.isSealed() || !SwordType.from(entity.getMainHandItem()).contains(SwordType.BEWITCHED)) return;
+                            int powerLevel = entity.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
+                            if (powerLevel <= 0) return;
+                            if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get()) return;
+                            state.setProudSoulCount(state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_ART_COST.get());
 
                             AdvancementHelper.grantCriterion(entity, ADVANCEMENT_BLISTERING_SWORDS);
 
@@ -252,7 +256,7 @@ public class SummonedSwordArts {
                                 ss.setOwner(entity);
                                 ss.setColor(state.getColorCode());
                                 ss.setRoll(0);
-
+                                ss.setDamage(powerLevel);
                                 //force riding
                                 ss.startRiding(entity, true);
 
@@ -287,10 +291,11 @@ public class SummonedSwordArts {
 
                             Level worldIn = entity.level();
                             Entity target = state.getTargetEntity(worldIn);
-
-                            if (entity.experienceLevel <= 0) return;
-
-                            entity.giveExperiencePoints(-5);
+                            if (state.isBroken() || state.isSealed() || !SwordType.from(entity.getMainHandItem()).contains(SwordType.BEWITCHED)) return;
+                            int powerLevel = entity.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
+                            if (powerLevel <= 0) return;
+                            if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get()) return;
+                            state.setProudSoulCount(state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_ART_COST.get());
 
                             AdvancementHelper.grantCriterion(entity, ADVANCEMENT_HEAVY_RAIN_SWORDS);
 
@@ -316,11 +321,11 @@ public class SummonedSwordArts {
                                 EntityHeavyRainSwords ss = new EntityHeavyRainSwords(SlashBlade.RegistryEvents.HeavyRainSwords, worldIn);
 
                                 worldIn.addFreshEntity(ss);
-
+                                
                                 ss.setOwner(entity);
                                 ss.setColor(state.getColorCode());
                                 ss.setRoll(0);
-
+                                ss.setDamage(powerLevel);
                                 //force riding
                                 ss.startRiding(entity, true);
 
@@ -332,7 +337,7 @@ public class SummonedSwordArts {
                             }
 
 
-                            int count = 9;
+                            int count = 9 + Math.min(rank - 1, 0);
                             int multiplier = 2;
                             for (int i = 0; i < count; i++)
                             for (int l = 0; l < multiplier; l++){
@@ -343,7 +348,7 @@ public class SummonedSwordArts {
                                 ss.setOwner(entity);
                                 ss.setColor(state.getColorCode());
                                 ss.setRoll(0);
-
+                                ss.setDamage(powerLevel);
                                 //force riding
                                 ss.startRiding(entity, true);
 
@@ -362,10 +367,11 @@ public class SummonedSwordArts {
             });
 
             sender.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state)->{
-                if(sender.experienceLevel <= 0)
-                    return;
-
-                sender.giveExperiencePoints(-1);
+                if (state.isBroken() || state.isSealed() || !SwordType.from(sender.getMainHandItem()).contains(SwordType.BEWITCHED)) return;
+                int powerLevel = sender.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
+                if (powerLevel <= 0) return;
+                if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_COST.get()) return;
+                state.setProudSoulCount(state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_COST.get());
 
                 AdvancementHelper.grantCriterion(sender, ADVANCEMENT_SUMMONEDSWORDS);
 
@@ -409,11 +415,10 @@ public class SummonedSwordArts {
                 Vec3 pos = sender.getEyePosition(1.0f)
                         .add(VectorHelper.getVectorForRotation( 0.0f, sender.getViewYRot(0) + 90).scale(sided ? 1 : -1));
                 ss.setPos(pos.x, pos.y, pos.z);
-
+                ss.setDamage(powerLevel);
                 Vec3 dir = targetPos.subtract(pos).normalize();
                 ss.shoot(dir.x,dir.y,dir.z, 3.0f, 0.0f);
-
-
+                // ss.setDamage(counter);
                 ss.setOwner(sender);
                 ss.setColor(state.getColorCode());
                 ss.setRoll(sender.getRandom().nextFloat() * 360.0f);

@@ -247,7 +247,12 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
 
                         if(s.isCharged(entity)){
                             //TODO : charge effect
+                            float f = (float)entity.tickCount + partialTicks;
+                            BladeRenderState.renderChargeEffect(stack, f, obj,
+                                    "effect", new ResourceLocation("textures/entity/creeper/creeper_armor.png"), 
+                                    matrixStack, bufferIn, lightIn);
                         }
+                        
                     }
                     /*
                     try(MSAutoCloser msac = MSAutoCloser.pushMatrix(matrixStack)){

@@ -12,6 +12,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class SlashBladeShapedRecipe extends ShapedRecipe {
@@ -62,6 +63,8 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
             if (!(stack.getItem() instanceof ItemSlashBlade))
                 continue;
             var ingredientState = stack.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
+            
+            resultState.setProudSoulCount(resultState.getProudSoulCount() + ingredientState.getKillCount());
             resultState.setKillCount(resultState.getKillCount() + ingredientState.getKillCount());
             resultState.setRefine(resultState.getRefine() + ingredientState.getRefine());
             updateEnchantment(result, stack);

@@ -39,6 +39,7 @@ import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 
 public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
 
+    private static final Minecraft MCINSTANCE = Minecraft.getInstance();
     private static final ResourceLocation GUI_TEXTURE_CRAFTING_TABLE = new ResourceLocation("textures/gui/container/crafting_table.png");
     private static final ResourceLocation GUI_TEXTURE_FURNACE = new ResourceLocation("textures/gui/container/furnace.png");
     private static final ResourceLocation GUI_TEXTURE_BLAST_FURNACE = new ResourceLocation("textures/gui/container/blast_furnace.png");
@@ -72,7 +73,7 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
     /*RecipeType.register("sb_forgeing");*/
 
     static RecipeView currentView = null;
-    static Map<RecipeType, RecipeView> typeRecipeViewMap = createRecipeViewMap();
+    static Map<RecipeType<?>, RecipeView> typeRecipeViewMap = createRecipeViewMap();
 
     static class DummyAnvilRecipe implements Recipe<Container> {
         protected SmithingTransformRecipe original;
@@ -158,7 +159,7 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
         }
     }
 
-    static Recipe overrideDummyRecipe(Recipe original){
+    static Recipe<?> overrideDummyRecipe(Recipe<?> original){
 
         if(!(original instanceof SmithingTransformRecipe))
             return original;
@@ -171,23 +172,23 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
     }
 
     static public class RecipeView{
-        final RecipeType recipeType;
+        final RecipeType<?> recipeType;
         final ResourceLocation background;
         List<Vec3i> slots = Lists.newArrayList();
         final boolean isWideOutputSlot;
 
-        public RecipeView(RecipeType recipeType, ResourceLocation background, List<Vec3i> slots) {
+        public RecipeView(RecipeType<?> recipeType, ResourceLocation background, List<Vec3i> slots) {
             this(recipeType, background, slots, true);
         }
-        public RecipeView(RecipeType recipeType, ResourceLocation background, List<Vec3i> slots, boolean isWideOutputSlot) {
+        public RecipeView(RecipeType<?> recipeType, ResourceLocation background, List<Vec3i> slots, boolean isWideOutputSlot) {
             this.recipeType = recipeType;
             this.background = background;
             this.slots = slots;
             this.isWideOutputSlot = isWideOutputSlot;
         }
     }
-    static Map<RecipeType, RecipeView> createRecipeViewMap(){
-        Map<RecipeType, RecipeView> map = Maps.newHashMap();
+    static Map<RecipeType<?>, RecipeView> createRecipeViewMap(){
+        Map<RecipeType<?>, RecipeView> map = Maps.newHashMap();
 
         {
             List<Vec3i> list = Lists.newArrayList();
@@ -209,7 +210,7 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
                 }
             }
 
-            RecipeType key = RecipeType.CRAFTING;
+            RecipeType<?> key = RecipeType.CRAFTING;
             map.put(key, new RecipeView(key,
                     GUI_TEXTURE_CRAFTING_TABLE,
                     list));
@@ -226,19 +227,19 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
             list.add(new Vec3i( 56, 53,0));
 
             {
-                RecipeType key = RecipeType.SMELTING;
+                RecipeType<?> key = RecipeType.SMELTING;
                 map.put(key, new RecipeView(key,
                         GUI_TEXTURE_FURNACE,
                         list));
             }
             {
-                RecipeType key = RecipeType.BLASTING;
+                RecipeType<?> key = RecipeType.BLASTING;
                 map.put(key, new RecipeView(key,
                         GUI_TEXTURE_BLAST_FURNACE,
                         list));
             }
             {
-                RecipeType key = RecipeType.SMOKING;
+                RecipeType<?> key = RecipeType.SMOKING;
                 map.put(key, new RecipeView(key,
                         GUI_TEXTURE_SMOKER,
                         list));
@@ -257,14 +258,14 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
             list.add(new Vec3i( 76, 47,0));
 
             {
-                RecipeType key = RecipeType.SMITHING;
+                RecipeType<?> key = RecipeType.SMITHING;
                 map.put(key, new RecipeView(key,
                         GUI_TEXTURE_SMITHING,
                         list, false));
             }
 
             {
-                RecipeType key = dummy_anvilType;
+                RecipeType<?> key = dummy_anvilType;
                 map.put(key, new RecipeView(key,
                         GUI_TEXTURE_ANVIL,
                         list, false));
@@ -309,7 +310,7 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
         if(!Objects.equals(loc, currentRecipe)){
             currentRecipe = loc;
 
-            Optional<? extends Recipe<?>> recipe = Minecraft.getInstance().level.getRecipeManager().byKey(loc);
+            Optional<? extends Recipe<?>> recipe = MCINSTANCE.level.getRecipeManager().byKey(loc);
             if(recipe.isPresent()){
                 gr.clear();
 
@@ -356,7 +357,7 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
 
             boolean wideOutputSlot = currentView.isWideOutputSlot;
 
-            gr.render(gg, Minecraft.getInstance(), xCorner, yCorner, wideOutputSlot, partialTicks);
+            gr.render(gg, MCINSTANCE, xCorner, yCorner, wideOutputSlot, partialTicks);
 
             //ir.blitOffset = tmp;
 
@@ -381,8 +382,8 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
         }
 
         if(itemStack != null){
-            if (itemStack != null && Minecraft.getInstance().screen != null) {
-                gg.renderTooltip(Minecraft.getInstance().font, itemStack, mouseX, mouseY);
+            if (itemStack != null && MCINSTANCE.screen != null) {
+                gg.renderTooltip(MCINSTANCE.font, itemStack, mouseX, mouseY);
             }
         }
     }
@@ -432,7 +433,6 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
         if(!(event.getScreen() instanceof AdvancementsScreen)) return;
 
         AdvancementsScreen gui = (AdvancementsScreen) event.getScreen();
-
         ((List<GuiEventListener>)gui.children()).add(new AdvancementsExGuiEventListener(gui));
     }
 

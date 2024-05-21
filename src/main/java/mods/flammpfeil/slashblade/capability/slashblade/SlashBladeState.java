@@ -399,4 +399,17 @@ public class SlashBladeState implements ISlashBladeState{
         this.damage = Math.max(0, damage);
         setHasChangedActiveState(true);
     }
+
+    private int proudSoul = 0;
+    
+    @Override
+    public int getProudSoulCount() {
+        return this.proudSoul;
+    }
+
+    @Override
+    public void setProudSoulCount(int psCount) {
+        this.proudSoul = Math.max(0, psCount);
+        setHasChangedActiveState(true);
+    }
 }
