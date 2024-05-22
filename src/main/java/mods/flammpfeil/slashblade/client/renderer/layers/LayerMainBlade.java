@@ -246,7 +246,6 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
                         BladeRenderState.renderOverridedLuminous(stack, obj, "sheath_luminous", textureLocation, matrixStack, bufferIn, lightIn);
 
                         if(s.isCharged(entity)){
-                            //TODO : charge effect
                             float f = (float)entity.tickCount + partialTicks;
                             BladeRenderState.renderChargeEffect(stack, f, obj,
                                     "effect", new ResourceLocation("textures/entity/creeper/creeper_armor.png"), 

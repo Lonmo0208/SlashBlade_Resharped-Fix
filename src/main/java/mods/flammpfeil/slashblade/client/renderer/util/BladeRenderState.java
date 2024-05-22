@@ -62,7 +62,7 @@ public class BladeRenderState extends RenderStateShard{
     static public void renderChargeEffect(ItemStack stack, float f, WavefrontObject model, String target, ResourceLocation texture, PoseStack  matrixStackIn, MultiBufferSource bufferIn, int packedLightIn){
         renderOverrided(stack, model, target, texture, matrixStackIn, bufferIn, packedLightIn, 
                 (loc)->BladeRenderState.getChargeEffect(loc, f * 0.1F % 1.0F, f * 0.01F % 1.0F),
-        true);
+        false);
     }
 
     static public void renderOverridedLuminous(ItemStack stack, WavefrontObject model, String target, ResourceLocation texture, PoseStack  matrixStackIn, MultiBufferSource bufferIn, int packedLightIn){
@@ -208,7 +208,7 @@ public class BladeRenderState extends RenderStateShard{
                 .setTransparencyState(LIGHTNING_ADDITIVE_TRANSPARENCY)
                 //.setDiffuseLightingState(RenderStateShard.NO_DIFFUSE_LIGHTING)
                 .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setOverlayState(OVERLAY)
+                //.setOverlayState(OVERLAY)
                 .setWriteMaskState(RenderStateShard.COLOR_WRITE)
                 .createCompositeState(false);
         return RenderType.create("slashblade_charge_effect", WavefrontObject.POSITION_TEX_LMAP_COL_NORMAL, VertexFormat.Mode.TRIANGLES, 256, true, false, state);

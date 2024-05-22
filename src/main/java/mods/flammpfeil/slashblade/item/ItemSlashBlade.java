@@ -353,10 +353,9 @@ public class ItemSlashBlade extends SwordItem {
                 return;
             if (!player.level().isClientSide()) {
                 int ticks = player.getTicksUsingItem();
-                
+                int fullChargeTicks = state.getFullChargeTicks(player);
                 if (0 < ticks) {
-
-                    if (ticks == 20) {// state.getFullChargeTicks(player)){
+                    if (ticks == fullChargeTicks) {// state.getFullChargeTicks(player)){
                         Vec3 pos = player.getEyePosition(1.0f).add(player.getLookAngle());
                         ((ServerLevel) player.level()).sendParticles(ParticleTypes.PORTAL, pos.x, pos.y, pos.z, 7, 0.7,
                                 0.7, 0.7, 0.02);
