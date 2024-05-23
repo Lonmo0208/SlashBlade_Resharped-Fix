@@ -1,6 +1,6 @@
 package mods.flammpfeil.slashblade.event;
 
-import mods.flammpfeil.slashblade.SlashBladeKeyMappings;
+import mods.flammpfeil.slashblade.client.SlashBladeKeyMappings;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;

@@ -6,6 +6,7 @@ import org.apache.commons.compress.utils.Lists;
 
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.SwordType;
+import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import mods.flammpfeil.slashblade.registry.slashblade.EnchantmentDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.PropertiesDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.RenderDefinition;
@@ -42,6 +43,7 @@ public class SlashBladeBuiltInRegistry {
                 PropertiesDefinition.Builder.newInstance()
                     .baseAttackModifier(5.0F)
                     .maxDamage(70)
+                    .slashArtsType(SlashArtsRegistry.VOID_SLASH.getId())
                     .defaultSwordType(List.of(SwordType.BEWITCHED)).build(),
                 List.of(
                         new EnchantmentDefinition(getEnchantmentID(Enchantments.SMITE), 4),
@@ -79,6 +81,7 @@ public class SlashBladeBuiltInRegistry {
                 RenderDefinition.Builder.newInstance().textureName(SlashBlade.prefix("model/named/a_tukumo.png"))
                         .modelName(SlashBlade.prefix("model/named/agito.obj")).build(),
                 PropertiesDefinition.Builder.newInstance().baseAttackModifier(6.0F)
+                        .slashArtsType(SlashArtsRegistry.SAKURA_END.getId())
                         .defaultSwordType(List.of(SwordType.BEWITCHED)).build(),
                 List.of(new EnchantmentDefinition(getEnchantmentID(Enchantments.FIRE_ASPECT), 1),
                         new EnchantmentDefinition(getEnchantmentID(Enchantments.SHARPNESS), 4),
@@ -96,6 +99,7 @@ public class SlashBladeBuiltInRegistry {
                 RenderDefinition.Builder.newInstance().textureName(SlashBlade.prefix("model/named/sange/sange.png"))
                         .modelName(SlashBlade.prefix("model/named/sange/sange.obj")).build(),
                 PropertiesDefinition.Builder.newInstance().baseAttackModifier(6.0F).maxDamage(70)
+                        .slashArtsType(SlashArtsRegistry.SAKURA_END.getId())
                         .defaultSwordType(List.of(SwordType.BEWITCHED)).build(),
                 Lists.newArrayList()));
 

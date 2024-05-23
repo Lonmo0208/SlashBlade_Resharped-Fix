@@ -16,10 +16,19 @@ public class SlashArtsRegistry {
     public static final RegistryObject<SlashArts> NONE = SLASH_ARTS.register("none",
             ()->new SlashArts((e)->ComboStateRegistry.NONE.getId())
             );
+    
     public static final RegistryObject<SlashArts> JUDGEMENT_CUT = SLASH_ARTS.register("judgement_cut", 
             ()->new SlashArts((e)-> e.onGround() ? ComboStateRegistry.JUDGEMENT_CUT.getId() 
                     : ComboStateRegistry.JUDGEMENT_CUT_SLASH_AIR.getId())
             .setComboStateJust((e)->ComboStateRegistry.JUDGEMENT_CUT_SLASH_JUST.getId())
-            .setComboStateBroken((e)->ComboStateRegistry.VOID_SLASH.getId())
+    );
+    
+    public static final RegistryObject<SlashArts> SAKURA_END = SLASH_ARTS.register("sakura_end", 
+            ()->new SlashArts((e)-> e.onGround() ? ComboStateRegistry.SAKURA_END_LEFT.getId() 
+                    : ComboStateRegistry.SAKURA_END_LEFT_AIR.getId())
+    );
+    
+    public static final RegistryObject<SlashArts> VOID_SLASH = SLASH_ARTS.register("void_slash", 
+            ()->new SlashArts((e)-> ComboStateRegistry.VOID_SLASH.getId())
     );
 }

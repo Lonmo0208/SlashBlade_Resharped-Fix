@@ -44,7 +44,6 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
             tag.putInt("TargetEntity", instance.getTargetEntityId());
             tag.putBoolean("_onClick", instance.onClick());
             tag.putFloat("fallDecreaseRate", instance.getFallDecreaseRate());
-            tag.putBoolean("isCharged", instance.isCharged());
             tag.putFloat("AttackAmplifier", instance.getAttackAmplifier());
             tag.putString("currentCombo", instance.getComboSeq().toString());
             tag.putInt("Damage", instance.getDamage());
@@ -101,7 +100,6 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
             instance.setTargetEntityId(tag.getInt("TargetEntity"));
             instance.setOnClick(tag.getBoolean("_onClick"));
             instance.setFallDecreaseRate(tag.getFloat("fallDecreaseRate"));
-            instance.setCharged(tag.getBoolean("isCharged"));
             instance.setAttackAmplifier(tag.getFloat("AttackAmplifier"));
             instance.setComboSeq(ResourceLocation.tryParse(tag.getString("currentCombo")));
             instance.setDamage(tag.getInt("Damage"));

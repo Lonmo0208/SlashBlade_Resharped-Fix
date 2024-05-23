@@ -171,7 +171,6 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
                         UserPoseOverrider.invertRot(matrixStack,entity,partialTicks);
                     }
 
-
                     //minecraft model neckPoint height = 1.5f
                     //mmd model neckPoint height = 12.0f
                     matrixStack.translate(0, motionYOffset, 0);
@@ -184,7 +183,6 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
 
 
                     ResourceLocation textureLocation = s.getTexture().orElseGet(() -> DefaultResources.resourceDefaultTexture);
-                    //bindTexture(textureLocation);
 
                     WavefrontObject obj = BladeModelManager.getInstance().getModel(s.getModel().orElse(null));
 
@@ -196,7 +194,6 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
                             mmp._skinning_mat[idx].getValue(buf);
 
                             Matrix4f mat = VectorHelper.matrix4fFromArray(buf);
-                            //mat.transpose();
 
                             matrixStack.scale(-1, 1, 1);
                             PoseStack.Pose entry = matrixStack.last();
@@ -206,9 +203,6 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
 
                         float modelScale = (float)(modelScaleBase * (1.0f / motionScale));
                         matrixStack.scale(modelScale, modelScale, modelScale);
-
-                        //matrixStack.rotate(Axis.YP.rotationDegrees(180));
-
 
                         String part;
                         if(s.isBroken()){
@@ -228,7 +222,6 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
                             mmp._skinning_mat[idx].getValue(buf);
 
                             Matrix4f mat = VectorHelper.matrix4fFromArray(buf);
-                            //mat.transpose();
 
                             matrixStack.scale(-1, 1, 1);
                             PoseStack.Pose entry = matrixStack.last();
@@ -239,8 +232,6 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
 
                         float modelScale = (float)(modelScaleBase * (1.0f / motionScale));
                         matrixStack.scale(modelScale, modelScale, modelScale);
-
-                        //matrixStack.rotate(Axis.YP.rotationDegrees(180));
 
                         BladeRenderState.renderOverrided(stack, obj, "sheath", textureLocation, matrixStack, bufferIn, lightIn);
                         BladeRenderState.renderOverridedLuminous(stack, obj, "sheath_luminous", textureLocation, matrixStack, bufferIn, lightIn);
@@ -253,12 +244,6 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
                         }
                         
                     }
-                    /*
-                    try(MSAutoCloser msac = MSAutoCloser.pushMatrix(matrixStack)){
-                        matrixStack.scale(1,1,-1);
-                        //mmp.render();
-                    }
-                    */
 
                 }
 

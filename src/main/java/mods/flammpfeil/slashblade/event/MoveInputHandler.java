@@ -1,7 +1,7 @@
 package mods.flammpfeil.slashblade.event;
 
-import mods.flammpfeil.slashblade.SlashBladeKeyMappings;
 import mods.flammpfeil.slashblade.capability.inputstate.IInputState;
+import mods.flammpfeil.slashblade.client.SlashBladeKeyMappings;
 import mods.flammpfeil.slashblade.network.MoveCommandMessage;
 import mods.flammpfeil.slashblade.network.NetworkManager;
 import mods.flammpfeil.slashblade.util.*;

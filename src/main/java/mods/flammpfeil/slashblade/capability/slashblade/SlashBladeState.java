@@ -129,18 +129,6 @@ public class SlashBladeState implements ISlashBladeState{
     }
 
     @Override
-    public boolean isCharged() {
-        return isCharged;
-    }
-
-    @Override
-    public void setCharged(boolean charged) {
-        isCharged = charged;
-
-        setHasChangedActiveState(true);
-    }
-
-    @Override
     public float getAttackAmplifier() {
         return attackAmplifier;
     }
@@ -148,7 +136,6 @@ public class SlashBladeState implements ISlashBladeState{
     @Override
     public void setAttackAmplifier(float attackAmplifier) {
         this.attackAmplifier = attackAmplifier;
-
         setHasChangedActiveState(true);
     }
 

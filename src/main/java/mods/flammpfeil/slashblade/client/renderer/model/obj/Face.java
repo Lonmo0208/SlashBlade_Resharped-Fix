@@ -1,16 +1,16 @@
 package mods.flammpfeil.slashblade.client.renderer.model.obj;
 
+import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.LazyLoadedValue;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.awt.*;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
-import com.mojang.math.Axis;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -57,7 +57,7 @@ public class Face
         Face.col = Color.white;
     }
 
-    private static final LazyLoadedValue<Matrix4f> defaultTransform = new LazyLoadedValue(()->{Matrix4f m = new Matrix4f(); m.identity(); return m;});
+    private static final Supplier<Matrix4f> defaultTransform = Suppliers.memoize(()->{Matrix4f m = new Matrix4f(); m.identity(); return m;});
 
     public static PoseStack matrix = null;
     public static void setMatrix(PoseStack ms){
@@ -101,8 +101,6 @@ public class Face
             averageU = averageU / textureCoordinates.length;
             averageV = averageV / textureCoordinates.length;
         }
-
-        float offsetU, offsetV;
 
         VertexConsumer wr = tessellator;
 
@@ -168,7 +166,7 @@ public class Face
         }else{
             vector3f = new Vector3f(faceNormal.x, faceNormal.y, faceNormal.z);
         }
-        vector3f.mul(new Matrix3f(transform));;
+        vector3f.mul(new Matrix3f(transform));
         vector3f.normalize();
         wr.normal(vector3f.x(), vector3f.y(), vector3f.z());
 

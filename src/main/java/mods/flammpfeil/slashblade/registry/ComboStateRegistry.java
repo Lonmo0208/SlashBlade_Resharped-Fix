@@ -7,7 +7,6 @@ import java.util.function.Supplier;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.ability.StunManager;
 import mods.flammpfeil.slashblade.capability.inputstate.CapabilityInputState;
-import mods.flammpfeil.slashblade.entity.EntitySlashEffect;
 import mods.flammpfeil.slashblade.event.FallHandler;
 import mods.flammpfeil.slashblade.event.client.UserPoseOverrider;
 import mods.flammpfeil.slashblade.init.DefaultResources;
@@ -15,6 +14,7 @@ import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.combo.ComboCommands;
 import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import mods.flammpfeil.slashblade.specialattack.JudgementCut;
+import mods.flammpfeil.slashblade.specialattack.SakuraEnd;
 import mods.flammpfeil.slashblade.util.AdvancementHelper;
 import mods.flammpfeil.slashblade.util.AttackManager;
 import mods.flammpfeil.slashblade.util.InputCommand;
@@ -27,7 +27,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
@@ -1080,8 +1079,7 @@ public class ComboStateRegistry {
             .releaseAction(ComboState::releaseActionQuickCharge)
             ::build
     );    
-    // TODO: 下面的还没写完
-    
+
     public static final RegistryObject<ComboState> JUDGEMENT_CUT = COMBO_STATE.register("judgement_cut", 
         ComboState.Builder.newInstance()
             .startAndEnd(1900, 1923)
@@ -1249,78 +1247,37 @@ public class ComboStateRegistry {
         ComboState.Builder.newInstance()
             .startAndEnd(2200, 2277)
             .priority(45)
+            .speed(1.0F)
             .next(entity -> SlashBlade.prefix("void_slash"))
             .nextOfTimeout(entity -> SlashBlade.prefix("void_slash_sheath"))
-            .addTickAction(ComboState.TimeLineTickAction.getBuilder().put(28, (living)->{
-                if(!living.level().isClientSide()){
-                    Vec3 pos = living.position()
-                            .add(0.0D, (double)living.getEyeHeight() * 0.75D, 0.0D)
-                            .add(living.getLookAngle().scale(0.3f));
-
-                    EntitySlashEffect jc = new EntitySlashEffect(SlashBlade.RegistryEvents.SlashEffect, living.level()){
-                        @Override
-                        protected void tryDespawn() {
-                            if(this.getShooter() != null){
-                                long timeout = this.getShooter().getPersistentData().getLong(ItemSlashBlade.BREAK_ACTION_TIMEOUT);
-                                if(timeout <= this.level().getGameTime() || timeout == 0){
-                                    this.level().playSound((Player)null, this.getX(), this.getY(), this.getZ(), SoundEvents.GLASS_BREAK, SoundSource.PLAYERS, 0.80F, 0.625F + 0.1f * this.random.nextFloat());
-
-                                    this.remove(RemovalReason.DISCARDED);
-                                }
-                            }
-                            super.tryDespawn();
-                        }
-                    };
-                    jc.setPos(pos.x ,pos.y, pos.z);
-                    jc.setOwner(living);
-
-                    jc.setRotationRoll(0);
-                    jc.setYRot(living.getYRot());
-                    jc.setXRot(0);
-
-                    int colorCode = living.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
-                            .map(state->state.getColorCode())
-                            .orElseGet(()->0xFFFFFF);
-                    jc.setColor(colorCode);
-
-                    jc.setMute(true);
-                    jc.setIsCritical(true);
-
-                    jc.setDamage(living.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2.0);
-
-                    jc.setKnockBack(KnockBacks.cancel);
-
-                    jc.setBaseSize(20);
-
-                    jc.setLifetime(20*5);
-
-                    living.level().addFreshEntity(jc);
-                }
-            }).build())
+            .addTickAction(entity -> entity.setDeltaMovement(Vec3.ZERO))
+            .addTickAction(ComboState.TimeLineTickAction.getBuilder().put(18,
+                AttackManager::doVoidSlashAttack
+            ).build())
             .addTickAction(ComboState.TimeLineTickAction.getBuilder()
-                    .put(28+0, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
-                    .put(28+1, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
-                    .put(28+2, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
-                    .put(28+3, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
-                    .put(28+4, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
-                    .put(28+5, (entityIn)->UserPoseOverrider.setRot(entityIn, 0, true))
-                    .put(79+0, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
-                    .put(79+1, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
-                    .put(79+2, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
-                    .put(79+3, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
-                    .put(79+4, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
-                    .put(79+5, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
-                    .put(79+6, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
-                    .put(79+7, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
-                    .put(79+8, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
-                    .put(79+9, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
-                    .put(79+10, (entityIn)->UserPoseOverrider.setRot(entityIn, 0, true))
+                    .put(18+0, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
+                    .put(18+1, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
+                    .put(18+2, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
+                    .put(18+3, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
+                    .put(18+4, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
+                    .put(18+5, (entityIn)->UserPoseOverrider.setRot(entityIn, 0, true))
+                    .put(57+0, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
+                    .put(57+1, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
+                    .put(57+2, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
+                    .put(57+3, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
+                    .put(57+4, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
+                    .put(57+5, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
+                    .put(57+6, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
+                    .put(57+7, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
+                    .put(57+8, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
+                    .put(57+9, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
+                    .put(57+10, (entityIn)->UserPoseOverrider.setRot(entityIn, 0, true))
                     .build())
             .addTickAction(FallHandler::fallResist)
             .addHitEffect(StunManager::setStun)
             ::build
-    );   
-    
+    );
+
     public static final RegistryObject<ComboState> VOID_SLASH_SHEATH = COMBO_STATE.register("void_slash_sheath", 
         ComboState.Builder.newInstance()
             .startAndEnd(2278, 2299)
@@ -1333,4 +1290,103 @@ public class ComboStateRegistry {
             .releaseAction(ComboState::releaseActionQuickCharge)
             ::build
     );  
+    
+    public static final RegistryObject<ComboState> SAKURA_END_LEFT = COMBO_STATE.register("sakura_end_left", 
+        ComboState.Builder.newInstance()
+            .startAndEnd(1816, 1859)
+            .speed(6F)
+            .priority(50)
+            .next((entity)->SlashBlade.prefix("sakura_end_right"))
+            .nextOfTimeout(entity -> SlashBlade.prefix("sakura_end_right"))
+            .clickAction((entityIn)->SakuraEnd.doSlash(entityIn, 22.5F, Vec3.ZERO, false, false, 1.2))
+            .addTickAction((entityIn)->UserPoseOverrider.resetRot(entityIn))
+            .addHitEffect(StunManager::setStun)
+            ::build
+    );    
+    
+    public static final RegistryObject<ComboState> SAKURA_END_RIGHT = COMBO_STATE.register("sakura_end_right", 
+        ComboState.Builder.newInstance()
+            .startAndEnd(204, 218)
+            .speed(1.1F)
+            .priority(50)
+            .next((entity)->SlashBlade.prefix("none"))
+            .nextOfTimeout(entity -> SlashBlade.prefix("sakura_end_finish"))
+            .clickAction((entityIn)->SakuraEnd.doSlash(entityIn, 180F-22.5F, Vec3.ZERO, false, true, 1.5))
+            .addTickAction((entityIn)->UserPoseOverrider.resetRot(entityIn))
+            .addHitEffect((t,a)->StunManager.setStun(t, 36))
+            ::build
+    );    
+    
+    public static final RegistryObject<ComboState> SAKURA_END_FINISH = COMBO_STATE.register("sakura_end_finish", 
+        ComboState.Builder.newInstance()
+            .startAndEnd(218, 281)
+            .priority(50).aerial()
+            .next(entity -> SlashBlade.prefix("none"))
+            .nextOfTimeout(entity -> SlashBlade.prefix("sakura_end_finish2"))
+            ::build
+    );    
+    public static final RegistryObject<ComboState> SAKURA_END_FINISH2 = COMBO_STATE.register("sakura_end_finish2", 
+        ComboState.Builder.newInstance()
+            .startAndEnd(281, 314)
+            .priority(80)
+            .next(entity -> SlashBlade.prefix("none"))
+            .nextOfTimeout(entity -> SlashBlade.prefix("none"))
+            .addTickAction(ComboState.TimeLineTickAction.getBuilder().put(0,
+                    AttackManager::playQuickSheathSoundAction).build())
+            .releaseAction(ComboState::releaseActionQuickCharge)
+            ::build
+    );    
+    
+    public static final RegistryObject<ComboState> SAKURA_END_LEFT_AIR = COMBO_STATE.register("sakura_end_left_air", 
+        ComboState.Builder.newInstance()
+            .startAndEnd(1300, 1328)
+            .speed(3.2F)
+            .priority(50)
+            .next((entity)->SlashBlade.prefix("sakura_end_right_air"))
+            .nextOfTimeout(entity -> SlashBlade.prefix("sakura_end_right_air"))
+            .clickAction((entityIn)->SakuraEnd.doSlash(entityIn, 22.5F, Vec3.ZERO, false, false, 1.2))
+            .addTickAction((entityIn)->UserPoseOverrider.resetRot(entityIn))
+            .addTickAction(FallHandler::fallDecrease)
+            .addHitEffect(StunManager::setStun)
+            .aerial()
+            ::build
+    );    
+    
+    public static final RegistryObject<ComboState> SAKURA_END_RIGHT_AIR = COMBO_STATE.register("sakura_end_right_air", 
+        ComboState.Builder.newInstance()
+            .startAndEnd(1200, 1210)
+            .priority(50)
+            .next((entity)->SlashBlade.prefix("none"))
+            .nextOfTimeout(entity -> SlashBlade.prefix("sakura_end_finish_air"))
+            .clickAction((entityIn)->SakuraEnd.doSlash(entityIn, 180F-22.5F, Vec3.ZERO, false, true, 1.5))
+            .addTickAction((entityIn)->UserPoseOverrider.resetRot(entityIn))
+            .addTickAction(FallHandler::fallDecrease)
+            .addHitEffect(StunManager::setStun)
+            .aerial()
+            ::build
+    );    
+    
+    public static final RegistryObject<ComboState> SAKURA_END_FINISH_AIR = COMBO_STATE.register("sakura_end_finish_air", 
+        ComboState.Builder.newInstance()
+            .startAndEnd(1210, 1231)
+            .priority(50).aerial()
+            .next(entity -> SlashBlade.prefix("none"))
+            .nextOfTimeout(entity -> SlashBlade.prefix("sakura_end_finish2_air"))
+            .addTickAction(FallHandler::fallDecrease)
+            ::build
+    );    
+    public static final RegistryObject<ComboState> SAKURA_END_FINISH2_AIR = COMBO_STATE.register("sakura_end_finish2_air", 
+        ComboState.Builder.newInstance()
+            .startAndEnd(1231, 1241)
+            .priority(50)
+            .next(entity -> SlashBlade.prefix("none"))
+            .nextOfTimeout(entity -> SlashBlade.prefix("none"))
+            .addTickAction(FallHandler::fallDecrease)
+            .addTickAction(ComboState.TimeLineTickAction.getBuilder().put(0,
+                    AttackManager::playQuickSheathSoundAction).build())
+            .releaseAction(ComboState::releaseActionQuickCharge)
+            .addTickAction(FallHandler::fallDecrease)
+            ::build
+    );    
+
 }

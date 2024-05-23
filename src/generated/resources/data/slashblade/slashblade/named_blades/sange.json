@@ -3,6 +3,7 @@
   "properties": {
     "attack_base": 6.0,
     "max_damage": 70,
+    "slash_art": "slashblade:sakura_end",
     "sword_type": [
       "bewitched"
     ]

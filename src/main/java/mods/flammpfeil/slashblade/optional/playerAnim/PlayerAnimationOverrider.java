@@ -94,7 +94,13 @@ public class PlayerAnimationOverrider {
         map.put(ComboStateRegistry.JUDGEMENT_CUT_SLASH_JUST.getId(), new VmdAnimation(MotionLocation, 1923,1963,false).setBlendLegs(false));
 
         map.put(ComboStateRegistry.VOID_SLASH.getId(), new VmdAnimation(MotionLocation, 2200,2299,false).setBlendLegs(false));
+        
+        map.put(ComboStateRegistry.SAKURA_END_LEFT.getId(), new VmdAnimation(MotionLocation, 1816, 1859,false).setBlendLegs(false));
+        map.put(ComboStateRegistry.SAKURA_END_RIGHT.getId(), new VmdAnimation(MotionLocation, 204, 314,false).setBlendLegs(false));
 
+        map.put(ComboStateRegistry.SAKURA_END_LEFT_AIR.getId(), new VmdAnimation(MotionLocation, 1300, 1328,false).setBlendLegs(false));
+        map.put(ComboStateRegistry.SAKURA_END_RIGHT_AIR.getId(), new VmdAnimation(MotionLocation, 1200, 1241,false).setBlendLegs(false));
+        
         return map;
     }
 

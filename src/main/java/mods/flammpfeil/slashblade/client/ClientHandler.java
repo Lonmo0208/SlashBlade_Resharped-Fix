@@ -3,7 +3,6 @@ package mods.flammpfeil.slashblade.client;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.jetbrains.annotations.Nullable;
 
-import mods.flammpfeil.slashblade.SlashBladeKeyMappings;
 import mods.flammpfeil.slashblade.client.renderer.LockonCircleRender;
 import mods.flammpfeil.slashblade.client.renderer.gui.RankRenderer;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModel;

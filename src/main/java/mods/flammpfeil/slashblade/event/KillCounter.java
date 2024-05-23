@@ -54,7 +54,7 @@ public class KillCounter {
                 player.getCapability(ConcentrationRankCapabilityProvider.RANK_POINT)
                 .map(rp->rp.getRank(player.getCommandSenderWorld().getGameTime()))
                 .orElse(IConcentrationRank.ConcentrationRanks.NONE);
-        int souls = (int) Math.floor(event.getDroppedExperience() * (1.0F + (rankBonus.level * 0.05F)));
+        int souls = (int) Math.floor(event.getDroppedExperience() * (1.0F + (rankBonus.level * 0.1F)));
         
         stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state->{
             state.setProudSoulCount(state.getProudSoulCount() + Math.min(SlashBladeConfig.MAX_PROUD_SOUL_GOT.get(), souls));

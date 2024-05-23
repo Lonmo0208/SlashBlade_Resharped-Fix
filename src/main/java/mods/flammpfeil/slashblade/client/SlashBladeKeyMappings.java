@@ -1,4 +1,4 @@
-package mods.flammpfeil.slashblade;
+package mods.flammpfeil.slashblade.client;
 
 import org.lwjgl.glfw.GLFW;
 

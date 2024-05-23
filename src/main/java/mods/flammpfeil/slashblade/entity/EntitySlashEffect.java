@@ -141,10 +141,15 @@ public class EntitySlashEffect extends Projectile implements IShootable {
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
+    
+    public boolean isWave() {
+        return false;
+    }
 
     @Override
     public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
-        this.setDeltaMovement(0,0,0);
+        if(!this.isWave())
+            this.setDeltaMovement(0,0,0);
     }
 
     @Override
@@ -256,6 +261,10 @@ public class EntitySlashEffect extends Projectile implements IShootable {
             return flags.contains(FlagsState.NoClip);
         }
     }
+    
+    public SoundEvent getSlashSound() {
+        return SoundEvents.TRIDENT_THROW;
+    }
 
     @Override
     public void tick() {
@@ -264,7 +273,7 @@ public class EntitySlashEffect extends Projectile implements IShootable {
         if (tickCount == 2){
 
             if (!getMute())
-                this.playSound(SoundEvents.TRIDENT_THROW, 0.80F, 0.625F + 0.1f * this.random.nextFloat());
+                this.playSound(this.getSlashSound(), 0.80F, 0.625F + 0.1f * this.random.nextFloat());
             else
                 this.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 0.5F, 0.4F / (this.random.nextFloat() * 0.4F + 0.8F));
 
@@ -336,7 +345,7 @@ public class EntitySlashEffect extends Projectile implements IShootable {
                     float ratio = (float)damage * (getIsCritical() ? 1.1f : 1.0f);
                     hits = AttackManager.areaAttack(shooter, this.action.action, ratio, forceHit, false, true, alreadyHits);
                 }else{
-                    hits = AttackManager.areaAttack(this, this.action.action,4.0, forceHit, false, alreadyHits);
+                    hits = AttackManager.areaAttack(this, this.action.action, 4.0, forceHit, false, alreadyHits);
                 }
 
                 if(!this.doCycleHit())
@@ -348,6 +357,10 @@ public class EntitySlashEffect extends Projectile implements IShootable {
 
     }
 
+    public List<Entity> getAlreadyHits() {
+        return alreadyHits;
+    }
+    
     protected void tryDespawn() {
         if(!this.level().isClientSide()){
             if (getLifetime() < this.tickCount)
@@ -373,7 +386,7 @@ public class EntitySlashEffect extends Projectile implements IShootable {
     }
 
     public int getLifetime(){
-        return Math.min(this.lifetime , 1000);
+        return Math.min(this.lifetime, 1000);
     }
     public void setLifetime(int value){
         this.lifetime = value;

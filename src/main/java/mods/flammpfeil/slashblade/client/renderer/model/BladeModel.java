@@ -28,6 +28,7 @@ public class BladeModel implements BakedModel {
         return this.original.getOverrides();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState p_235039_, @org.jetbrains.annotations.Nullable Direction p_235040_, RandomSource p_235041_) {
         return original.getQuads(p_235039_, p_235040_, p_235041_);
@@ -53,6 +54,7 @@ public class BladeModel implements BakedModel {
         return true;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public TextureAtlasSprite getParticleIcon() {
         return original.getParticleIcon();

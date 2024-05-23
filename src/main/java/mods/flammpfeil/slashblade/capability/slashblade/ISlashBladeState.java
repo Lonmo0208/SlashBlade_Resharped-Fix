@@ -6,6 +6,7 @@ import com.google.common.collect.RangeMap;
 
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
 import mods.flammpfeil.slashblade.event.BladeMotionEvent;
+import mods.flammpfeil.slashblade.item.SwordType;
 import mods.flammpfeil.slashblade.network.ActiveStateSyncMessage;
 import mods.flammpfeil.slashblade.network.NetworkManager;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
@@ -55,10 +56,6 @@ public interface ISlashBladeState {
     float getFallDecreaseRate();
 
     void setFallDecreaseRate(float fallDecreaseRate);
-
-    boolean isCharged();
-
-    void setCharged(boolean charged);
 
     float getAttackAmplifier();
 
@@ -187,6 +184,10 @@ public interface ISlashBladeState {
     }
 
     default boolean isCharged(LivingEntity user) {
+        if (!(SwordType.from(user.getMainHandItem()).contains(SwordType.ENCHANTED)))
+            return false;
+        if (this.isBroken() || this.isSealed())
+            return false;
         int elapsed = user.getTicksUsingItem();
         return getFullChargeTicks(user) < elapsed;
     }
@@ -221,7 +222,7 @@ public interface ISlashBladeState {
             return ComboStateRegistry.NONE.getId();
 
         ComboState current = ComboStateRegistry.REGISTRY.get().getValue(currentloc.getValue());
-
+        
         if (this.isBroken() || this.isSealed())
             return ComboStateRegistry.NONE.getId();
 
@@ -257,24 +258,6 @@ public interface ISlashBladeState {
 
                 updateComboSeq(user, csloc);
             }
-        }
-        return csloc;
-    }
-
-    default ResourceLocation doBrokenAction(LivingEntity user) {
-        Map.Entry<Integer, ResourceLocation> currentloc = resolvCurrentComboStateTicks(user);
-        ComboState current = ComboStateRegistry.REGISTRY.get().getValue(currentloc.getValue());
-        // Uninterrupted
-        if (!currentloc.getValue().equals(ComboStateRegistry.NONE.getId()) && current.getNext(user) == currentloc)
-            return ComboStateRegistry.NONE.getId();
-
-        SlashArts.ArtsType type = SlashArts.ArtsType.Broken;
-
-        ResourceLocation csloc = this.getSlashArts().doArts(type, user);
-        ComboState cs = ComboStateRegistry.REGISTRY.get().getValue(csloc);
-        if (currentloc != csloc && !csloc.equals(ComboStateRegistry.NONE.getId())) {
-            if (current.getPriority() > cs.getPriority())
-                updateComboSeq(user, csloc);
         }
         return csloc;
     }
@@ -351,7 +334,6 @@ public interface ISlashBladeState {
                 .put("TargetEntity", this.getTargetEntityId())
                 .put("_onClick", this.onClick())
                 .put("fallDecreaseRate", this.getFallDecreaseRate())
-                .put("isCharged", this.isCharged())
                 .put("AttackAmplifier", this.getAttackAmplifier())
                 .put("currentCombo", this.getComboSeq().toString())
                 .put("proudSoul", this.getProudSoulCount())
@@ -368,7 +350,7 @@ public interface ISlashBladeState {
 
                 .get("lastActionTime", this::setLastActionTime)
                 .get("TargetEntity", ((Integer id) -> this.setTargetEntityId(id))).get("_onClick", this::setOnClick)
-                .get("fallDecreaseRate", this::setFallDecreaseRate).get("isCharged", this::setCharged)
+                .get("fallDecreaseRate", this::setFallDecreaseRate)
                 .get("AttackAmplifier", this::setAttackAmplifier)
                 .get("currentCombo", ((String s) -> this.setComboSeq(ResourceLocation.tryParse(s))))
                 .get("proudSoul", this::setProudSoulCount)

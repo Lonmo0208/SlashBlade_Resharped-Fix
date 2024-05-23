@@ -32,14 +32,11 @@ public class SlashArts {
     public enum ArtsType{
         Fail,
         Success,
-        Jackpot,
-        Broken
+        Jackpot
     }
     
     private Function<LivingEntity, ResourceLocation> comboState;
     private Function<LivingEntity, ResourceLocation> comboStateJust;
-    private Function<LivingEntity, ResourceLocation> comboStateBroken;
-    
 
     public ResourceLocation doArts(ArtsType type, LivingEntity user) {
         switch (type){
@@ -47,8 +44,6 @@ public class SlashArts {
                 return getComboStateJust(user);
             case Success:
                 return getComboState(user);
-            case Broken:
-                return getComboStateBroken(user);
             default:
                 break;
         }
@@ -58,7 +53,6 @@ public class SlashArts {
     public SlashArts(Function<LivingEntity, ResourceLocation> state) {
         this.comboState = state;
         this.comboStateJust = state;
-        this.comboStateBroken = state;
     }
 
     public ResourceLocation getComboState(LivingEntity user) {
@@ -70,14 +64,6 @@ public class SlashArts {
     }
     public SlashArts setComboStateJust(Function<LivingEntity, ResourceLocation> state){
         this.comboStateJust = state;
-        return this;
-    }
-
-    public ResourceLocation getComboStateBroken(LivingEntity user) {
-        return this.comboStateBroken.apply(user);
-    }
-    public SlashArts setComboStateBroken(Function<LivingEntity, ResourceLocation> state){
-        this.comboStateBroken = state;
         return this;
     }
     

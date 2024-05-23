@@ -64,6 +64,8 @@
 
   "slash_art.slashblade.none":"None",
   "slash_art.slashblade.judgement_cut":"Judgement Cut",
+  "slash_art.slashblade.sakura_end":"Sakura End",
+  "slash_art.slashblade.void_slash":"Void Slash",
 
   "adv.slashblade.proudsoul": "Limit of Refine=50\nBlade is Fragile.\nThe soul never wastes.",
   "adv.slashblade.proudsoul_tiny":"Limit of Refine=10\nMysterious burning soul.",
@@ -158,8 +160,6 @@
   "adv.slashblade.blistering_swords.desc": "Create swords around you that launch themselves at your enemy one after another.This technique expends the 5exp each time it is activated.\nUse buttons\n%s ♠:%s\nForward ᐃ:%s\nSneak ⚪:%s\npress ⚪+ᐃ hold and release ♠",
   "adv.slashblade.heavy_rain_swords": "Shooting Arts -Heavy Rain Swords-",
   "adv.slashblade.heavy_rain_swords.desc": "Creates a rainfall of Swords above your enemy's head.This technique expends the 5exp each time it is activated.\nUse buttons\n%s ♠:%s\nBack ᐁ:%s\nForward ᐃ:%s\nSneak ⚪:%s\npress ⚪+ᐁ to ᐃ hold ♠",
-
-
 
   "adv.slashblade.exeffect": "Ex Enchantment Effect",
   "adv.slashblade.exeffect.desc": "extra enchantment effect",
