@@ -18,6 +18,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.phys.Vec3;
@@ -127,8 +129,10 @@ public class AttackManager {
                 if(!this.level().isClientSide()){
                 if (getLifetime() < this.tickCount) {
                     this.level().playSound((Player) null, this.getX(), this.getY(), this.getZ(),
-                            SoundEvents.GLASS_BREAK, SoundSource.PLAYERS, 0.80F,
+                            SoundEvents.GLASS_BREAK, SoundSource.PLAYERS, 1.0F,
                             0.625F + 0.1f * this.random.nextFloat());
+                    ((ServerLevel) this.level()).sendParticles(ParticleTypes.ENCHANTED_HIT, this.getX(), this.getY(), this.getZ(), 16, 0.7,
+                            0.7, 0.7, 0.02);
                     this.getAlreadyHits().forEach(entity -> {
 
                         if(entity.isAlive()) {
@@ -149,15 +153,15 @@ public class AttackManager {
         jc.setPos(pos.x, pos.y, pos.z);
         jc.setOwner(living);
 
-        jc.setRotationRoll(0);
-        jc.setYRot(living.getYRot());
+        jc.setRotationRoll(180);
+        jc.setYRot(living.getYRot() - 22.5F);
         jc.setXRot(0);
 
         int colorCode = living.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(state -> state.getColorCode()).orElseGet(() -> 0xFFFFFF);
         jc.setColor(colorCode);
 
-        jc.setMute(true);
+        jc.setMute(false);
         jc.setIsCritical(false);
 
         jc.setDamage(0D);

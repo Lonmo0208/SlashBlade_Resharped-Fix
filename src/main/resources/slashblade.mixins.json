@@ -3,9 +3,6 @@
   "mixins": [
     "MixinPacketBuffer","MixinBlockBehaviour"
   ],
-  "client": [
-    "MixinPlayerRenderer"
-  ],
   "refmap": "slashblade.refmap.json",
   "required": true,
   "minVersion": "0.8",

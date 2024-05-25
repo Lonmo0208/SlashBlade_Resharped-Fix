@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import mods.flammpfeil.slashblade.client.renderer.LockonCircleRender;
 import mods.flammpfeil.slashblade.client.renderer.gui.RankRenderer;
+import mods.flammpfeil.slashblade.client.renderer.layers.LayerMainBlade;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModel;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeMotionManager;
@@ -16,15 +17,20 @@ import mods.flammpfeil.slashblade.event.client.UserPoseOverrider;
 import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.optional.playerAnim.PlayerAnimationOverrider;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -42,17 +48,12 @@ public class ClientHandler {
     public static void doClientStuff(final FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(BladeModelManager.getInstance());
         MinecraftForge.EVENT_BUS.register(BladeMotionManager.getInstance());
-/*
-        Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap().values().stream()
-                .filter((er)-> er instanceof LivingEntityRenderer)
-                .forEach((lr)-> ((LivingEntityRenderer)lr).addLayer(new LayerMainBlade((LivingEntityRenderer)lr)));
-*/
-        SneakingMotionCanceller.getInstance().register();
 
+        SneakingMotionCanceller.getInstance().register();
 
         if(LoaderUtil.isClassAvailable("dev.kosmx.playerAnim.api.layered.AnimationStack")){
             PlayerAnimationOverrider.getInstance().register();
-        }else{
+        } else {
             UserPoseOverrider.getInstance().register();
         }
         LockonCircleRender.getInstance().register();
@@ -103,20 +104,6 @@ public class ClientHandler {
             }
         });
 
-        // do something that can only be done on the client
-
-        //OBJLoader.INSTANCE.addDomain("slashblade");
-
-        /*
-        RenderingRegistry.registerEntityRenderingHandler(RegistryEvents.SummonedSword, SummonedSwordRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(RegistryEvents.JudgementCut, JudgementCutRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(RegistryEvents.BladeItem, BladeItemEntityRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(RegistryEvents.BladeStand, BladeStandEntityRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(RegistryEvents.SlashEffect, SlashEffectRenderer::new);
-
-        RenderingRegistry.registerEntityRenderingHandler(RegistryEvents.PlacePreview, PlacePreviewEntityRenderer::new);
-        */
-        //LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().options);
     }
     
     @SubscribeEvent
@@ -127,14 +114,11 @@ public class ClientHandler {
     
     @SubscribeEvent
     public static void Baked(final ModelEvent.ModifyBakingResult event){
-        {
-            bakeBlade(SBItems.slashblade, event);
-            bakeBlade(SBItems.slashblade_white, event);
-            bakeBlade(SBItems.slashblade_wood, event);
-            bakeBlade(SBItems.slashblade_silverbamboo, event);
-            bakeBlade(SBItems.slashblade_bamboo, event);
-        }
-
+        bakeBlade(SBItems.slashblade, event);
+        bakeBlade(SBItems.slashblade_white, event);
+        bakeBlade(SBItems.slashblade_wood, event);
+        bakeBlade(SBItems.slashblade_silverbamboo, event);
+        bakeBlade(SBItems.slashblade_bamboo, event);
     }
 
     public static void bakeBlade(Item blade, final ModelEvent.ModifyBakingResult event) {
@@ -142,5 +126,41 @@ public class ClientHandler {
                 ForgeRegistries.ITEMS.getKey(blade), "inventory");
         BladeModel model = new BladeModel(event.getModels().get(loc), event.getModelBakery());
         event.getModels().put(loc, model);
+    }
+    
+    @SubscribeEvent
+    public static void addLayers(EntityRenderersEvent.AddLayers event) {
+        addPlayerLayer(event, "default");
+        addPlayerLayer(event, "slim");
+       
+        addEntityLayer(event, EntityType.ZOMBIE);
+        addEntityLayer(event, EntityType.HUSK);
+        addEntityLayer(event, EntityType.ZOMBIE_VILLAGER);
+        
+        addEntityLayer(event, EntityType.WITHER_SKELETON);
+        addEntityLayer(event, EntityType.SKELETON);
+        addEntityLayer(event, EntityType.STRAY);
+        
+        addEntityLayer(event, EntityType.PIGLIN);
+        addEntityLayer(event, EntityType.PIGLIN_BRUTE);
+        addEntityLayer(event, EntityType.ZOMBIFIED_PIGLIN);
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private static void addPlayerLayer(EntityRenderersEvent.AddLayers evt, String skin) {
+        EntityRenderer<? extends Player> renderer = evt.getSkin(skin);
+
+        if (renderer instanceof LivingEntityRenderer livingRenderer) {
+            livingRenderer.addLayer(new LayerMainBlade<>(livingRenderer));
+        }
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private static void addEntityLayer(EntityRenderersEvent.AddLayers evt, EntityType type) {
+        EntityRenderer<?> renderer = evt.getRenderer(type);
+
+        if (renderer instanceof LivingEntityRenderer livingRenderer) {
+            livingRenderer.addLayer(new LayerMainBlade<>(livingRenderer));
+        }
     }
 }

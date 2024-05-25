@@ -15,7 +15,7 @@
   ],
   "name": "slashblade:yamato",
   "properties": {
-    "attack_base": 8.0,
+    "attack_base": 7.0,
     "sword_type": [
       "bewitched"
     ]

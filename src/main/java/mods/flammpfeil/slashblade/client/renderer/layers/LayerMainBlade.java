@@ -153,7 +153,7 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
 
                 try(MSAutoCloser msacA = MSAutoCloser.pushMatrix(matrixStack)){
 
-                    if(!UserPoseOverrider.UsePoseOverrider && entity instanceof AbstractClientPlayer ){
+                    if(!UserPoseOverrider.UsePoseOverrider && entity instanceof AbstractClientPlayer){
                         var animationPlayer = ((IAnimatedPlayer) entity).playerAnimator_getAnimation();
                         animationPlayer.setTickDelta(partialTicks);
                         if(animationPlayer.isActive()){
@@ -182,9 +182,9 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
                     matrixStack.mulPose(Axis.ZP.rotationDegrees(180));
 
 
-                    ResourceLocation textureLocation = s.getTexture().orElseGet(() -> DefaultResources.resourceDefaultTexture);
+                    ResourceLocation textureLocation = s.getTexture().orElse(DefaultResources.resourceDefaultTexture);
 
-                    WavefrontObject obj = BladeModelManager.getInstance().getModel(s.getModel().orElse(null));
+                    WavefrontObject obj = BladeModelManager.getInstance().getModel(s.getModel().orElse(DefaultResources.resourceDefaultModel));
 
                     try(MSAutoCloser msac = MSAutoCloser.pushMatrix(matrixStack)){
                         int idx = mmp.getBoneIndexByName("hardpointA");
@@ -214,6 +214,7 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
                         BladeRenderState.renderOverrided(stack, obj, part, textureLocation, matrixStack, bufferIn, lightIn);
                         BladeRenderState.renderOverridedLuminous(stack, obj, part + "_luminous", textureLocation, matrixStack, bufferIn, lightIn);
                     }
+                    
                     try(MSAutoCloser msac = MSAutoCloser.pushMatrix(matrixStack)){
                         int idx = mmp.getBoneIndexByName("hardpointB");
 

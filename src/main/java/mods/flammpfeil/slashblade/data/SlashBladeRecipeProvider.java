@@ -22,6 +22,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -175,7 +176,45 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
         .define('S', Ingredient.of(SBItems.proudsoul_sphere))
         .unlockedBy(getHasName(SBItems.slashblade), has(SBItems.slashblade))
         .save(consumer);
+        
+        rodaiRecipe(SlashBladeBuiltInRegistry.RODAI_WOODEN.location(), Items.WOODEN_SWORD, consumer);
+        rodaiRecipe(SlashBladeBuiltInRegistry.RODAI_STONE.location(), Items.STONE_SWORD, consumer);
+        rodaiRecipe(SlashBladeBuiltInRegistry.RODAI_IRON.location(), Items.IRON_SWORD, consumer);
+        rodaiRecipe(SlashBladeBuiltInRegistry.RODAI_GOLDEN.location(), Items.GOLDEN_SWORD, consumer);
+        rodaiAdvRecipe(SlashBladeBuiltInRegistry.RODAI_DIAMOND.location(), Items.DIAMOND_SWORD, consumer);
+        rodaiAdvRecipe(SlashBladeBuiltInRegistry.RODAI_NETHERITE.location(), Items.NETHERITE_SWORD, consumer);
     }
+
+    private void rodaiRecipe(ResourceLocation rodai, ItemLike sword, Consumer<FinishedRecipe> consumer) {
+        SlashBladeShapedRecipeBuilder.shaped(rodai)
+        .pattern("  P")
+        .pattern(" B ")
+        .pattern("WS ")
+        .define('B', SlashBladeIngredient.of(SBItems.slashblade_silverbamboo, 
+                RequestDefinition.Builder.newInstance().killCount(100).addSwordType(SwordType.BROKEN).build())
+                )
+        .define('W', Ingredient.of(sword))
+        .define('S', Ingredient.of(Tags.Items.STRING))
+        .define('P', Ingredient.of(SBItems.proudsoul_crystal))
+        .unlockedBy(getHasName(SBItems.slashblade_silverbamboo), has(SBItems.slashblade_silverbamboo))
+        .save(consumer);
+    }
+    
+    private void rodaiAdvRecipe(ResourceLocation rodai, ItemLike sword, Consumer<FinishedRecipe> consumer) {
+        SlashBladeShapedRecipeBuilder.shaped(rodai)
+        .pattern("  P")
+        .pattern(" B ")
+        .pattern("WS ")
+        .define('B', SlashBladeIngredient.of(SBItems.slashblade_silverbamboo, 
+                RequestDefinition.Builder.newInstance().killCount(100).addSwordType(SwordType.BROKEN).build())
+                )
+        .define('W', Ingredient.of(sword))
+        .define('S', Ingredient.of(Tags.Items.STRING))
+        .define('P', Ingredient.of(SBItems.proudsoul_trapezohedron))
+        .unlockedBy(getHasName(SBItems.slashblade_silverbamboo), has(SBItems.slashblade_silverbamboo))
+        .save(consumer);
+    }
+    
     private static ResourceLocation getEnchantmentID(Enchantment enchantment) {
         return ForgeRegistries.ENCHANTMENTS.getKey(enchantment);
     }

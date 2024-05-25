@@ -1246,21 +1246,21 @@ public class ComboStateRegistry {
     public static final RegistryObject<ComboState> VOID_SLASH = COMBO_STATE.register("void_slash", 
         ComboState.Builder.newInstance()
             .startAndEnd(2200, 2277)
-            .priority(45)
+            .priority(50)
             .speed(1.0F)
             .next(entity -> SlashBlade.prefix("void_slash"))
             .nextOfTimeout(entity -> SlashBlade.prefix("void_slash_sheath"))
             .addTickAction(entity -> entity.setDeltaMovement(Vec3.ZERO))
-            .addTickAction(ComboState.TimeLineTickAction.getBuilder().put(18,
+            .addTickAction(ComboState.TimeLineTickAction.getBuilder().put(16,
                 AttackManager::doVoidSlashAttack
             ).build())
             .addTickAction(ComboState.TimeLineTickAction.getBuilder()
-                    .put(18+0, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
-                    .put(18+1, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
-                    .put(18+2, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
-                    .put(18+3, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
-                    .put(18+4, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
-                    .put(18+5, (entityIn)->UserPoseOverrider.setRot(entityIn, 0, true))
+                    .put(16+0, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
+                    .put(16+1, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
+                    .put(16+2, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
+                    .put(16+3, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
+                    .put(16+4, (entityIn)->UserPoseOverrider.setRot(entityIn, -36, true))
+                    .put(16+5, (entityIn)->UserPoseOverrider.setRot(entityIn, 0, true))
                     .put(57+0, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
                     .put(57+1, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
                     .put(57+2, (entityIn)->UserPoseOverrider.setRot(entityIn, 18, true))
@@ -1274,7 +1274,7 @@ public class ComboStateRegistry {
                     .put(57+10, (entityIn)->UserPoseOverrider.setRot(entityIn, 0, true))
                     .build())
             .addTickAction(FallHandler::fallResist)
-            .addHitEffect(StunManager::setStun)
+            .addHitEffect((t,a)->StunManager.setStun(t, 40))
             ::build
     );
 

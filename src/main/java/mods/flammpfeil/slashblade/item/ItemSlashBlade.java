@@ -108,7 +108,7 @@ public class ItemSlashBlade extends SwordItem {
                 result.remove(Attributes.ATTACK_DAMAGE, base);
                 result.put(Attributes.ATTACK_DAMAGE, base);
 
-                float attackAmplifier = s.getAttackAmplifier();
+                float attackAmplifier = s.getAttackAmplifier() - 1F;
                 if (s.isBroken() || s.isSealed())
                     attackAmplifier = 2 - baseAttackModifier;
                 else 

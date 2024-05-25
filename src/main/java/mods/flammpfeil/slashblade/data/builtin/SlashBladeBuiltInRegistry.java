@@ -24,11 +24,76 @@ public class SlashBladeBuiltInRegistry {
     public static final ResourceKey<SlashBladeDefinition> MURAMASA = register("muramasa");
     public static final ResourceKey<SlashBladeDefinition> RUBY = register("ruby");
     public static final ResourceKey<SlashBladeDefinition> SANGE = register("sange");
-    
     public static final ResourceKey<SlashBladeDefinition> FOX_BLACK = register("fox_black");
     public static final ResourceKey<SlashBladeDefinition> FOX_WHITE = register("fox_white");
+    
+    public static final ResourceKey<SlashBladeDefinition> RODAI_WOODEN = register("rodai_wooden");
+    public static final ResourceKey<SlashBladeDefinition> RODAI_STONE = register("rodai_stone");
+    public static final ResourceKey<SlashBladeDefinition> RODAI_IRON = register("rodai_iron");
+    public static final ResourceKey<SlashBladeDefinition> RODAI_GOLDEN = register("rodai_golden");
+    public static final ResourceKey<SlashBladeDefinition> RODAI_DIAMOND = register("rodai_diamond");
+    public static final ResourceKey<SlashBladeDefinition> RODAI_NETHERITE = register("rodai_netherite");
 
     public static void registerAll(BootstapContext<SlashBladeDefinition> bootstrap) {
+        bootstrap.register(RODAI_WOODEN,
+                new SlashBladeDefinition(SlashBlade.prefix("rodai_wooden"),
+                        RenderDefinition.Builder.newInstance()
+                        .textureName(SlashBlade.prefix("model/rodai_wooden.png"))
+                        .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(2.0F)
+                        .maxDamage(60).build(),
+                        Lists.newArrayList()));
+        
+        bootstrap.register(RODAI_STONE,
+                new SlashBladeDefinition(SlashBlade.prefix("rodai_stone"),
+                        RenderDefinition.Builder.newInstance()
+                        .textureName(SlashBlade.prefix("model/rodai_stone.png"))
+                        .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(3.0F)
+                        .maxDamage(132).build(),
+                        Lists.newArrayList()));
+        
+        bootstrap.register(RODAI_IRON,
+                new SlashBladeDefinition(SlashBlade.prefix("rodai_iron"),
+                        RenderDefinition.Builder.newInstance()
+                        .textureName(SlashBlade.prefix("model/rodai_iron.png"))
+                        .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(4.0F)
+                        .maxDamage(250).build(),
+                        Lists.newArrayList()));
+        
+        bootstrap.register(RODAI_GOLDEN,
+                new SlashBladeDefinition(SlashBlade.prefix("rodai_golden"),
+                        RenderDefinition.Builder.newInstance()
+                        .textureName(SlashBlade.prefix("model/rodai_golden.png"))
+                        .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(2.0F)
+                        .maxDamage(33).build(),
+                        Lists.newArrayList()));
+        
+        bootstrap.register(RODAI_DIAMOND,
+                new SlashBladeDefinition(SlashBlade.prefix("rodai_diamond"),
+                        RenderDefinition.Builder.newInstance()
+                        .textureName(SlashBlade.prefix("model/rodai_diamond.png"))
+                        .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(7.0F)
+                        .maxDamage(1561).build(),
+                        Lists.newArrayList()));
+        
+        bootstrap.register(RODAI_NETHERITE,
+                new SlashBladeDefinition(SlashBlade.prefix("rodai_netherite"),
+                        RenderDefinition.Builder.newInstance()
+                        .textureName(SlashBlade.prefix("model/rodai_netherite.png"))
+                        .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(8.0F)
+                        .maxDamage(2031).build(),
+                        Lists.newArrayList()));
 
         bootstrap.register(RUBY,
                 new SlashBladeDefinition(SlashBlade.prefix("ruby"),
@@ -71,7 +136,7 @@ public class SlashBladeBuiltInRegistry {
                 new SlashBladeDefinition(SlashBlade.prefix("yamato"),
                         RenderDefinition.Builder.newInstance().textureName(SlashBlade.prefix("model/named/yamato.png"))
                                 .modelName(SlashBlade.prefix("model/named/yamato.obj")).build(),
-                        PropertiesDefinition.Builder.newInstance().baseAttackModifier(8.0F)
+                        PropertiesDefinition.Builder.newInstance().baseAttackModifier(7.0F)
                                 .defaultSwordType(List.of(SwordType.BEWITCHED)).build(),
                         List.of(new EnchantmentDefinition(getEnchantmentID(Enchantments.SOUL_SPEED), 2),
                                 new EnchantmentDefinition(getEnchantmentID(Enchantments.POWER_ARROWS), 5),
@@ -92,7 +157,7 @@ public class SlashBladeBuiltInRegistry {
                         RenderDefinition.Builder
                                 .newInstance().textureName(SlashBlade.prefix("model/named/muramasa/muramasa.png"))
                                 .modelName(SlashBlade.prefix("model/named/muramasa/muramasa.obj")).build(),
-                        PropertiesDefinition.Builder.newInstance().baseAttackModifier(8.0F).maxDamage(50).build(),
+                        PropertiesDefinition.Builder.newInstance().baseAttackModifier(7.0F).maxDamage(50).build(),
                         Lists.newArrayList()));
 
         bootstrap.register(SANGE, new SlashBladeDefinition(SlashBlade.prefix("sange"),
