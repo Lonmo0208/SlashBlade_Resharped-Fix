@@ -111,7 +111,11 @@
     "slash_art.slashblade.judgement_cut":"次元斩",
     "slash_art.slashblade.sakura_end":"终焉樱",
     "slash_art.slashblade.void_slash":"虚无刀界",
+<<<<<<< HEAD
     "slash_art.slashblade.circle_slash":"円刃",
+=======
+    "slash_art.slashblade.drive":"幻影刃",
+>>>>>>> 66e3aae2b935faaba346ce9287cd1e11daf6b36b
 
     "adv.slashblade.movesets": "操作说明",
     "adv.slashblade.movesets.desc": "指令表",
@@ -191,5 +195,10 @@
     "adv.slashblade.exeffect.soul_speed.desc": "灵魂疾行每1级能够延长格挡指令输入窗口1tick",
 
     "adv.slashblade.exeffect.feather_falling": "缓降",
-    "adv.slashblade.exeffect.feather_falling.desc": "缓降效果的等级将减缓滞空时的下落速度"
+    "adv.slashblade.exeffect.feather_falling.desc": "缓降效果的等级将减缓滞空时的下落速度",
+    "item.slashblade.ruby.material": "Blade Component -Ruby-",
+    "item.slashblade.yuzukitukumo.desc": "Article of The Iron Wooden Sword",
+    "item.slashblade.muramasa.desc": "One of the lost muramasa swords.",
+    "adv.slashblade.proudsoul_activated": "HUNGER\nSneak&Use",
+    "adv.slashblade.proudsoul_awakened": "awakened"
   }

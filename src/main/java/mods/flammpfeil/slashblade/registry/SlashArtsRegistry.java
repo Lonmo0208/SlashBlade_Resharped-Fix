@@ -35,4 +35,8 @@ public class SlashArtsRegistry {
     public static final RegistryObject<SlashArts> CIRCLE_SLASH = SLASH_ARTS.register("circle_slash", 
             ()->new SlashArts((e)-> ComboStateRegistry.CIRCLE_SLASH.getId())
     );
+    
+    public static final RegistryObject<SlashArts> DRIVE = SLASH_ARTS.register("drive",
+            ()->new SlashArts((e)-> ComboStateRegistry.DRIVE.getId())
+    );
 }

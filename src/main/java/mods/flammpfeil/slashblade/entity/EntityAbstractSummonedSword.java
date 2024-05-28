@@ -202,14 +202,15 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
         NoClip,
     }
 
-    EnumSet<FlagsState> flags = EnumSet.noneOf(FlagsState.class);
-    int intFlags = 0;
+    protected EnumSet<FlagsState> flags = EnumSet.noneOf(FlagsState.class);
+    protected int intFlags = 0;
 
-    private void setFlags(FlagsState value) {
+    protected void setFlags(FlagsState value) {
         this.flags.add(value);
         refreshFlags();
     }
-    private void removeFlags(FlagsState value){
+    
+    protected void removeFlags(FlagsState value){
         this.flags.remove(value);
         refreshFlags();
     }

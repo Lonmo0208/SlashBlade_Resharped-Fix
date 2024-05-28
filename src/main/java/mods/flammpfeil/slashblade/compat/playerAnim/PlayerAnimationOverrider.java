@@ -102,6 +102,8 @@ public class PlayerAnimationOverrider {
 
         map.put(ComboStateRegistry.SAKURA_END_LEFT_AIR.getId(), new VmdAnimation(MotionLocation, 1300, 1328,false).setBlendLegs(false));
         map.put(ComboStateRegistry.SAKURA_END_RIGHT_AIR.getId(), new VmdAnimation(MotionLocation, 1200, 1241,false).setBlendLegs(false));
+
+        map.put(ComboStateRegistry.DRIVE.getId(), new VmdAnimation(MotionLocation, 1200, 1241,false).setBlendLegs(false));
         
         return map;
     }

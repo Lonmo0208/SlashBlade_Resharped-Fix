@@ -86,7 +86,11 @@
   "slash_art.slashblade.judgement_cut":"Judgement Cut",
   "slash_art.slashblade.sakura_end":"Sakura End",
   "slash_art.slashblade.void_slash":"Void Slash",
+<<<<<<< HEAD
   "slash_art.slashblade.circle_slash":"Circle Slash",
+=======
+  "slash_art.slashblade.drive": "Drive",
+>>>>>>> 66e3aae2b935faaba346ce9287cd1e11daf6b36b
 
   "adv.slashblade.proudsoul": "Limit of Refine=50\nBlade is Fragile.\nThe soul never wastes.",
   "adv.slashblade.proudsoul_tiny":"Limit of Refine=10\nMysterious burning soul.",

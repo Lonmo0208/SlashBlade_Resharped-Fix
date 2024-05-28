@@ -14,6 +14,7 @@ import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.combo.ComboCommands;
 import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import mods.flammpfeil.slashblade.specialattack.CircleSlash;
+import mods.flammpfeil.slashblade.specialattack.Drive;
 import mods.flammpfeil.slashblade.specialattack.JudgementCut;
 import mods.flammpfeil.slashblade.specialattack.SakuraEnd;
 import mods.flammpfeil.slashblade.util.AdvancementHelper;
@@ -1429,4 +1430,18 @@ public class ComboStateRegistry {
             .addTickAction(ComboState.TimeLineTickAction.getBuilder().put(0,AttackManager::playQuickSheathSoundAction).build())
             ::build
     );    
+
+    public static final RegistryObject<ComboState> DRIVE = COMBO_STATE.register("drive",
+        ComboState.Builder.newInstance()
+            .startAndEnd(1241, 1251)
+            .speed(6F)
+            .priority(50)
+            .next((entity)->SlashBlade.prefix("none"))
+            .nextOfTimeout(entity -> SlashBlade.prefix("none"))
+            .clickAction((entityIn)-> Drive.doSlash(entityIn, Vec3.ZERO, false, 7, 1.5f))
+            .addTickAction(UserPoseOverrider::resetRot)
+            .addHitEffect(StunManager::setStun)
+            ::build
+    );
+
 }

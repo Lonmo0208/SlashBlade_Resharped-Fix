@@ -85,7 +85,11 @@
   "slash_art.slashblade.judgement_cut":"次元斬",
   "slash_art.slashblade.sakura_end":"終焉桜",
   "slash_art.slashblade.void_slash":"時空裂閃",
+<<<<<<< HEAD
   "slash_art.slashblade.circle_slash":"円刃",
+=======
+  "slash_art.slashblade.drive":"幻影の刃",
+>>>>>>> 66e3aae2b935faaba346ce9287cd1e11daf6b36b
 
   "adv.slashblade.proudsoul": "強化限界 Refine=50\n折れど継がれる誇り高き魂",
   "adv.slashblade.proudsoul_tiny":"強化限界 Refine=10\n幽かな霊炎",
