@@ -31,4 +31,8 @@ public class SlashArtsRegistry {
     public static final RegistryObject<SlashArts> VOID_SLASH = SLASH_ARTS.register("void_slash", 
             ()->new SlashArts((e)-> ComboStateRegistry.VOID_SLASH.getId())
     );
+
+    public static final RegistryObject<SlashArts> DRIVE = SLASH_ARTS.register("drive",
+            ()->new SlashArts((e)-> ComboStateRegistry.DRIVE.getId())
+    );
 }

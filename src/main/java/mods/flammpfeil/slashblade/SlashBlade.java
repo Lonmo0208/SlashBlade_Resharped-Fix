@@ -143,6 +143,9 @@ public class SlashBlade
         public static final ResourceLocation SlashEffectLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntitySlashEffect.class));
         public static EntityType<EntitySlashEffect> SlashEffect;
 
+        public static final ResourceLocation DriveLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntityDrive.class));
+        public static EntityType<EntityDrive> Drive;
+
 
         public static final ResourceLocation PlacePreviewEntityLoc = new ResourceLocation(SlashBlade.MODID, classToString(PlacePreviewEntity.class));
         public static EntityType<PlacePreviewEntity> PlacePreview;
@@ -395,7 +398,16 @@ public class SlashBlade
                         helper.register(SlashEffectLoc, entity);
                     }
 
-
+                    {
+                        EntityType<EntityDrive> entity = Drive = EntityType.Builder
+                                .of(EntityDrive::new, MobCategory.MISC)
+                                .sized(3.0F, 3.0F)
+                                .setTrackingRange(4)
+                                .setUpdateInterval(20)
+                                .setCustomClientFactory(EntityDrive::createInstance)
+                                .build(DriveLoc.toString());
+                        helper.register(DriveLoc, entity);
+                    }
 
                     {
                         EntityType<PlacePreviewEntity> entity = PlacePreview = EntityType.Builder
@@ -434,6 +446,7 @@ public class SlashBlade
             event.registerEntityRenderer(RegistryEvents.BladeItem, BladeItemEntityRenderer::new);
             event.registerEntityRenderer(RegistryEvents.BladeStand, BladeStandEntityRenderer::new);
             event.registerEntityRenderer(RegistryEvents.SlashEffect, SlashEffectRenderer::new);
+            event.registerEntityRenderer(RegistryEvents.Drive, DriveRenderer::new);
 
             event.registerEntityRenderer(RegistryEvents.PlacePreview, PlacePreviewEntityRenderer::new);
         }
