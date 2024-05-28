@@ -28,6 +28,26 @@
 
   "item.slashblade.yamato": "Yamato",
   "item.slashblade.sange": "Sange",
+  
+  "item.slashblade.yasha": "Yasha",
+  "item.slashblade.yasha_true": "Yasha -Kikouku-",
+  
+  "item.slashblade.sabigatana": "Sabigatana",
+  "item.slashblade.doutanuki": "Steel -Doutanuki-",
+  
+  "item.slashblade.tagayasan": "Ironwood -Tagayasan-",
+  "item.slashblade.agito": "-Agito-",
+  "item.slashblade.orotiagito_sealed": "-Agito-",
+  "item.slashblade.orotiagito": "-Orotiagito-",
+  "item.slashblade.agito_rust": "Rust -Agito-",
+  "item.slashblade.orotiagito_rust": "Rust -Agito-",
+  
+  "item.slashblade.rodai_wooden": "-Wooden- Rodai",
+  "item.slashblade.rodai_stone": "-Stone- Rodai",
+  "item.slashblade.rodai_iron": "Named -Steel- Rodai",
+  "item.slashblade.rodai_golden": "Named -Golden- Rodai",
+  "item.slashblade.rodai_diamond": "Named -Diamond- Rodai",
+  "item.slashblade.rodai_netherite": "Named -Netherite- Rodai",
 
   "slashblade.sword_type.bewitched":"Bewitched",
   "slashblade.sword_type.enchanted":"Enchanted",
@@ -66,6 +86,7 @@
   "slash_art.slashblade.judgement_cut":"Judgement Cut",
   "slash_art.slashblade.sakura_end":"Sakura End",
   "slash_art.slashblade.void_slash":"Void Slash",
+  "slash_art.slashblade.circle_slash":"Circle Slash",
 
   "adv.slashblade.proudsoul": "Limit of Refine=50\nBlade is Fragile.\nThe soul never wastes.",
   "adv.slashblade.proudsoul_tiny":"Limit of Refine=10\nMysterious burning soul.",

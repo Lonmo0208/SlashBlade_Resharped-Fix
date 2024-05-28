@@ -157,9 +157,80 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
         .pattern("SSS")
         .pattern("SBS")
         .pattern("SSS")
-        .define('B', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance().refineCount(20).build()))
+        .define('B', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance().proudSoul(10000).refineCount(20).build()))
         .define('S', Ingredient.of(SBItems.proudsoul_sphere))
         .unlockedBy(getHasName(SBItems.slashblade), has(SBItems.slashblade))
+        .save(consumer);
+        
+        SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.TAGAYASAN.location())
+        .pattern("SES")
+        .pattern("DBD")
+        .pattern("SES")
+        .define('B', SlashBladeIngredient.of(SBItems.slashblade_wood,
+                RequestDefinition.Builder.newInstance().addEnchantment(
+                        new EnchantmentDefinition(getEnchantmentID(Enchantments.UNBREAKING), 1)
+                        ).proudSoul(1000).refineCount(10).build()))
+        .define('S', Ingredient.of(SBItems.proudsoul_sphere))
+        .define('E', Ingredient.of(Items.ENDER_EYE))
+        .define('D', Ingredient.of(Items.ENDER_PEARL))
+        .unlockedBy(getHasName(SBItems.slashblade_wood), has(SBItems.slashblade_wood))
+        .save(consumer);
+        
+        SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.AGITO.location())
+        .pattern(" S ")
+        .pattern("SBS")
+        .pattern(" S ")
+        .define('B', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
+                .name(SlashBladeBuiltInRegistry.AGITO_RUST.location())
+                .killCount(100).build()))
+        .define('S', Ingredient.of(SBItems.proudsoul))
+        .unlockedBy(getHasName(SBItems.proudsoul), has(SBItems.proudsoul))
+        .save(consumer);
+        
+        SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.OROTIAGITO_SEALED.location())
+        .pattern(" S ")
+        .pattern("SBS")
+        .pattern(" S ")
+        .define('B', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
+                .name(SlashBladeBuiltInRegistry.OROTIAGITO_RUST.location())
+                .killCount(100).build()))
+        .define('S', Ingredient.of(SBItems.proudsoul))
+        .unlockedBy(getHasName(SBItems.proudsoul), has(SBItems.proudsoul))
+        .save(consumer);
+        
+        SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.OROTIAGITO.location())
+        .pattern("PSP")
+        .pattern("SBS")
+        .pattern("PSP")
+        .define('B', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
+                .name(SlashBladeBuiltInRegistry.OROTIAGITO_SEALED.location())
+                .killCount(1000).proudSoul(1000).refineCount(10).build()))
+        .define('P', Ingredient.of(SBItems.proudsoul))
+        .define('S', Ingredient.of(SBItems.proudsoul_sphere))
+        .unlockedBy(getHasName(SBItems.proudsoul_sphere), has(SBItems.proudsoul_sphere))
+        .save(consumer);
+        
+        SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.DOUTANUKI.location())
+        .pattern("  P")
+        .pattern(" B ")
+        .pattern("P  ")
+        .define('B', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
+                .name(SlashBladeBuiltInRegistry.SABIGATANA.location())
+                .killCount(100).proudSoul(1000).refineCount(10).build()))
+        .define('P', Ingredient.of(SBItems.proudsoul_sphere))
+        .unlockedBy(getHasName(SBItems.proudsoul_sphere), has(SBItems.proudsoul_sphere))
+        .save(consumer);
+        
+        SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.SABIGATANA.location())
+        .pattern("  P")
+        .pattern(" P ")
+        .pattern("B  ")
+        .define('B', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
+                .name(SlashBladeBuiltInRegistry.SABIGATANA.location())
+                .addSwordType(SwordType.BROKEN).addSwordType(SwordType.SEALED)
+                .build()))
+        .define('P', Ingredient.of(SBItems.proudsoul_ingot))
+        .unlockedBy(getHasName(SBItems.proudsoul_ingot), has(SBItems.proudsoul_ingot))
         .save(consumer);
         
         SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.TUKUMO.location())

@@ -22,7 +22,7 @@ public class SlashBladeEntityTypeTagProvider extends EntityTypeTagsProvider{
 
     @Override
     protected void addTags(Provider lookupProvider) {
-        this.tag(EntityTypeTags.ATTACKABLE_BLACKLIST);
+        this.tag(EntityTypeTags.ATTACKABLE_BLACKLIST).add(EntityType.VILLAGER);
     }
     
     public static class EntityTypeTags{

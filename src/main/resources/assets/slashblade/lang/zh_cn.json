@@ -33,6 +33,26 @@
 
     "item.slashblade.yamato": "魔剑「阎魔刀」",
     "item.slashblade.sange": "散华",
+    
+    "item.slashblade.yasha": "夜叉",
+    "item.slashblade.yasha_true": "夜叉「鬼哭」",
+  
+    "item.slashblade.sabigatana": "锈刀",
+    "item.slashblade.doutanuki": "刚剑「胴田贯」",
+  
+    "item.slashblade.tagayasan": "木刀「铁刀木」",
+    "item.slashblade.agito": "伪物「鄂门」",
+    "item.slashblade.orotiagito_sealed": "「鄂门」",
+    "item.slashblade.orotiagito": "名刀「大蛇鄂门」",
+    "item.slashblade.agito_rust": "锈掉的鄂门",
+    "item.slashblade.orotiagito_rust": "锈掉的鄂门",
+  
+    "item.slashblade.rodai_wooden": "「击柝」露台",
+    "item.slashblade.rodai_stone": "「锐岩」露台",
+    "item.slashblade.rodai_iron": "利刀「铁」露台",
+    "item.slashblade.rodai_golden": "宝刀「山吹」露台",
+    "item.slashblade.rodai_diamond": "名刀「金刚」露台",
+    "item.slashblade.rodai_netherite": "名刀「玄钰」露台",
 
     "item.slashblade.ruby": "利刀「无名」红玉",
     "item.slashblade.ruby.desc": "杰作",
@@ -91,6 +111,7 @@
     "slash_art.slashblade.judgement_cut":"次元斩",
     "slash_art.slashblade.sakura_end":"终焉樱",
     "slash_art.slashblade.void_slash":"虚无刀界",
+    "slash_art.slashblade.circle_slash":"円刃",
 
     "adv.slashblade.movesets": "操作说明",
     "adv.slashblade.movesets.desc": "指令表",

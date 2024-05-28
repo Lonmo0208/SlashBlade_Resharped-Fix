@@ -2,6 +2,7 @@ package mods.flammpfeil.slashblade.util;
 
 import com.google.common.collect.Lists;
 
+import mods.flammpfeil.slashblade.SlashBladeConfig;
 import mods.flammpfeil.slashblade.data.tag.SlashBladeEntityTypeTagProvider.EntityTypeTags;
 import mods.flammpfeil.slashblade.entity.IShootable;
 import mods.flammpfeil.slashblade.event.InputCommandEvent;
@@ -73,6 +74,10 @@ public class TargetSelector {
     static public class AttackablePredicate implements Predicate<LivingEntity> {
 
         public boolean test(LivingEntity livingentity) {
+            
+            if (!SlashBladeConfig.PVP_ENABLE.get() && livingentity instanceof Player)
+                return false;
+            
             if (livingentity instanceof ArmorStand)
                 if (((ArmorStand) livingentity).isMarker())
                     return true;

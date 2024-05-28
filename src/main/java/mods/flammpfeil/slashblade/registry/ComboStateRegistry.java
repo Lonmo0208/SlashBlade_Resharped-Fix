@@ -13,6 +13,7 @@ import mods.flammpfeil.slashblade.init.DefaultResources;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.combo.ComboCommands;
 import mods.flammpfeil.slashblade.registry.combo.ComboState;
+import mods.flammpfeil.slashblade.specialattack.CircleSlash;
 import mods.flammpfeil.slashblade.specialattack.JudgementCut;
 import mods.flammpfeil.slashblade.specialattack.SakuraEnd;
 import mods.flammpfeil.slashblade.util.AdvancementHelper;
@@ -342,8 +343,7 @@ public class ComboStateRegistry {
             .addHitEffect(StunManager::setStun)
             ::build
     );
-
-    
+   
     public static final RegistryObject<ComboState> COMBO_B1_END = COMBO_STATE.register("combo_b1_end", 
         ComboState.Builder.newInstance()
             .startAndEnd(720, 743)
@@ -1389,4 +1389,44 @@ public class ComboStateRegistry {
             ::build
     );    
 
+    public static final RegistryObject<ComboState> CIRCLE_SLASH = COMBO_STATE.register("circle_slash", 
+            ComboState.Builder.newInstance()
+                .startAndEnd(725, 743)
+                .priority(50)
+                .next(entity -> SlashBlade.prefix("circle_slash"))
+                .nextOfTimeout(entity -> SlashBlade.prefix("circle_slash_end"))
+                .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                        .put(4, (entityIn)->CircleSlash.doCircleSlashAttack(entityIn, 180))
+                        .put(5, (entityIn)->CircleSlash.doCircleSlashAttack(entityIn, 90))
+                        .put(6, (entityIn)->CircleSlash.doCircleSlashAttack(entityIn, 0))
+                        .put(7, (entityIn)->CircleSlash.doCircleSlashAttack(entityIn, -90))
+                        .build())
+                .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                        .put(7-3 +0, (entityIn)->UserPoseOverrider.setRot(entityIn, 72, true))
+                        .put(7-3 +1, (entityIn)->UserPoseOverrider.setRot(entityIn, 72, true))
+                        .put(7-3 +2, (entityIn)->UserPoseOverrider.setRot(entityIn, 72, true))
+                        .put(7-3 +3, (entityIn)->UserPoseOverrider.setRot(entityIn, 72, true))
+                        .put(7-3 +4, (entityIn)->UserPoseOverrider.setRot(entityIn, 72, true))
+                        .put(7-3 +5, (entityIn)->UserPoseOverrider.resetRot(entityIn))
+                        .build())
+                .addHitEffect(StunManager::setStun)
+                ::build
+        );    
+    public static final RegistryObject<ComboState> CIRCLE_SLASH_END = COMBO_STATE.register("circle_slash_end", 
+        ComboState.Builder.newInstance()
+            .startAndEnd(743, 764)
+            .priority(100)
+            .next(entity -> SlashBlade.prefix("none"))
+            .nextOfTimeout(entity -> SlashBlade.prefix("circle_slash_end2"))
+            ::build
+    );    
+    public static final RegistryObject<ComboState> CIRCLE_SLASH_END2 = COMBO_STATE.register("circle_slash_end2", 
+        ComboState.Builder.newInstance()
+            .startAndEnd(764, 787)
+            .priority(100)
+            .next(entity -> SlashBlade.prefix("none"))
+            .nextOfTimeout(entity -> SlashBlade.prefix("none"))
+            .addTickAction(ComboState.TimeLineTickAction.getBuilder().put(0,AttackManager::playQuickSheathSoundAction).build())
+            ::build
+    );    
 }

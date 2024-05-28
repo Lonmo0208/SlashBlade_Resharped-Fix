@@ -10,14 +10,27 @@ public class SlashBladeConfig {
     public static ForgeConfigSpec.IntValue SUMMON_SWORD_ART_COST;
     public static ForgeConfigSpec.DoubleValue BEWITCHED_HUNGER_EXHAUSTION;
     public static ForgeConfigSpec.DoubleValue REFINE_BOUNS;
-    
+    public static ForgeConfigSpec.BooleanValue PVP_ENABLE;
+    public static ForgeConfigSpec.DoubleValue SABIGATANA_SPAWN_CHANCE; 
+    public static ForgeConfigSpec.DoubleValue BROKEN_SABIGATANA_SPAWN_CHANCE; 
     static {
         ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
         COMMON_BUILDER.comment("General settings").push("general");
         
+        SABIGATANA_SPAWN_CHANCE = COMMON_BUILDER
+                .comment("Determining the spawn chance of sabigatana.")
+                .defineInRange("sabigatana_spawn_chance", 0.05D, 0.0D, 1.0D);
+        
+        BROKEN_SABIGATANA_SPAWN_CHANCE = COMMON_BUILDER
+                .comment("Determining the spawn chance of a broken sabigatana.")
+                .defineInRange("broken_sabigatana_spawn_chance", 0.15D, 0.0D, 1.0D);
+        
         HUNGER_CAN_REPAIR = COMMON_BUILDER.comment("Determines whether to make hunger effect repair slashblade.",
                 "If enable, if player has hunger effect, your slashblade in hotbar will be repaired, cost player's hunger.")
                 .define("hunger_can_repair", true);
+        PVP_ENABLE = COMMON_BUILDER.comment("Determines whether to enable slashblade's PVP.",
+                "If enable, player can attack player with SlashBlade.")
+                .define("pvp_enable", false);
         
         SUMMON_SWORD_COST = COMMON_BUILDER
                 .comment("Determining the proud soul cost for single summon mirage blade.")

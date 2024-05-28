@@ -20,6 +20,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class SlashBladeBuiltInRegistry {
     public static final ResourceKey<SlashBladeDefinition> YAMATO = register("yamato");
+    public static final ResourceKey<SlashBladeDefinition> YAMATO_BROKEN = register("yamato_broken");
+    
     public static final ResourceKey<SlashBladeDefinition> TUKUMO = register("yuzukitukumo");
     public static final ResourceKey<SlashBladeDefinition> MURAMASA = register("muramasa");
     public static final ResourceKey<SlashBladeDefinition> RUBY = register("ruby");
@@ -34,7 +36,159 @@ public class SlashBladeBuiltInRegistry {
     public static final ResourceKey<SlashBladeDefinition> RODAI_DIAMOND = register("rodai_diamond");
     public static final ResourceKey<SlashBladeDefinition> RODAI_NETHERITE = register("rodai_netherite");
 
+    public static final ResourceKey<SlashBladeDefinition> TAGAYASAN = register("tagayasan");
+    public static final ResourceKey<SlashBladeDefinition> AGITO = register("agito");
+    public static final ResourceKey<SlashBladeDefinition> AGITO_RUST = register("agito_rust");
+    public static final ResourceKey<SlashBladeDefinition> OROTIAGITO = register("orotiagito");
+    public static final ResourceKey<SlashBladeDefinition> OROTIAGITO_SEALED = register("orotiagito_sealed");
+    public static final ResourceKey<SlashBladeDefinition> OROTIAGITO_RUST = register("orotiagito_rust");
+    
+    public static final ResourceKey<SlashBladeDefinition> YASHA = register("yasha");
+    public static final ResourceKey<SlashBladeDefinition> YASHA_TRUE = register("yasha_true");
+    
+    public static final ResourceKey<SlashBladeDefinition> SABIGATANA = register("sabigatana");
+    public static final ResourceKey<SlashBladeDefinition> SABIGATANA_BROKEN = register("sabigatana_broken");
+    public static final ResourceKey<SlashBladeDefinition> DOUTANUKI = register("doutanuki");
+
     public static void registerAll(BootstapContext<SlashBladeDefinition> bootstrap) {
+        
+        bootstrap.register(SABIGATANA,
+                new SlashBladeDefinition(SlashBlade.prefix("sabigatana"),
+                        RenderDefinition.Builder.newInstance()
+                        .textureName(SlashBlade.prefix("model/named/muramasa/sabigatana.png"))
+                        .modelName(SlashBlade.prefix("model/named/muramasa/muramasa.obj"))
+                        .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(3.0F)
+                        .maxDamage(40).build(),
+                        Lists.newArrayList()));
+        
+        bootstrap.register(SABIGATANA_BROKEN,
+                new SlashBladeDefinition(SlashBlade.prefix("sabigatana"),
+                        RenderDefinition.Builder.newInstance()
+                        .textureName(SlashBlade.prefix("model/named/muramasa/sabigatana.png"))
+                        .modelName(SlashBlade.prefix("model/named/muramasa/muramasa.obj"))
+                        .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(3.0F)
+                        .maxDamage(40)
+                        .defaultSwordType(List.of(SwordType.BROKEN, SwordType.SEALED)).build(),
+                        Lists.newArrayList()));
+        
+        bootstrap.register(DOUTANUKI,
+                new SlashBladeDefinition(SlashBlade.prefix("doutanuki"),
+                        RenderDefinition.Builder.newInstance()
+                        .textureName(SlashBlade.prefix("model/named/muramasa/doutanuki.png"))
+                        .modelName(SlashBlade.prefix("model/named/muramasa/muramasa.obj"))
+                        .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(5.0F)
+                        .maxDamage(60)
+                        .slashArtsType(SlashArtsRegistry.CIRCLE_SLASH.getId())
+                        .defaultSwordType(List.of(SwordType.BEWITCHED))
+                        .build(),
+                        Lists.newArrayList()));
+        
+        bootstrap.register(TAGAYASAN, new SlashBladeDefinition(SlashBlade.prefix("tagayasan"),
+                RenderDefinition.Builder.newInstance()
+                    .textureName(SlashBlade.prefix("model/named/tagayasan.png"))
+                    .build(),
+                PropertiesDefinition.Builder.newInstance()
+                    .baseAttackModifier(5.0F)
+                    .maxDamage(70)
+                    .slashArtsType(SlashArtsRegistry.JUDGEMENT_CUT.getId())
+                    .defaultSwordType(List.of(SwordType.BEWITCHED)).build(),
+                List.of(
+                        new EnchantmentDefinition(getEnchantmentID(Enchantments.SMITE), 3),
+                        new EnchantmentDefinition(getEnchantmentID(Enchantments.UNBREAKING), 3)
+                        )));
+        
+        bootstrap.register(YASHA,
+                new SlashBladeDefinition(SlashBlade.prefix("yasha"),
+                        RenderDefinition.Builder.newInstance()
+                        .textureName(SlashBlade.prefix("model/named/yasha/yasha.png"))
+                        .modelName(SlashBlade.prefix("model/named/yasha/yasha.obj"))
+                        .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(6.0F)
+                        .slashArtsType(SlashArtsRegistry.SAKURA_END.getId())
+                        .maxDamage(70).build(),
+                        Lists.newArrayList()));
+        
+        bootstrap.register(YASHA_TRUE,
+                new SlashBladeDefinition(SlashBlade.prefix("yasha_true"),
+                        RenderDefinition.Builder.newInstance()
+                        .textureName(SlashBlade.prefix("model/named/yasha/yasha.png"))
+                        .modelName(SlashBlade.prefix("model/named/yasha/yasha_true.obj"))
+                        .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(6.0F)
+                        .slashArtsType(SlashArtsRegistry.CIRCLE_SLASH.getId())
+                        .defaultSwordType(List.of(SwordType.BEWITCHED))
+                        .maxDamage(70).build(),
+                        Lists.newArrayList()));
+        
+        bootstrap.register(AGITO_RUST,
+                new SlashBladeDefinition(SlashBlade.prefix("agito_rust"),
+                        RenderDefinition.Builder.newInstance()
+                        .textureName(SlashBlade.prefix("model/named/agito_rust.png"))
+                        .modelName(SlashBlade.prefix("model/named/agito.obj"))
+                        .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(3.0F)
+                        .maxDamage(60)
+                        .defaultSwordType(List.of(SwordType.SEALED)).build(),
+                        Lists.newArrayList()));
+        
+        bootstrap.register(AGITO,
+                new SlashBladeDefinition(SlashBlade.prefix("agito"),
+                        RenderDefinition.Builder.newInstance()
+                        .textureName(SlashBlade.prefix("model/named/agito_false.png"))
+                        .modelName(SlashBlade.prefix("model/named/agito.obj"))
+                        .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(5.0F)
+                        .slashArtsType(SlashArtsRegistry.SAKURA_END.getId())
+                        .maxDamage(60).build(),
+                        Lists.newArrayList()));
+        
+        bootstrap.register(OROTIAGITO_RUST,
+                new SlashBladeDefinition(SlashBlade.prefix("orotiagito_rust"),
+                        RenderDefinition.Builder.newInstance()
+                        .textureName(SlashBlade.prefix("model/named/agito_rust_true.png"))
+                        .modelName(SlashBlade.prefix("model/named/agito.obj"))
+                        .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(3.0F)
+                        .maxDamage(60)
+                        .defaultSwordType(List.of(SwordType.SEALED)).build(),
+                        Lists.newArrayList()));
+        
+        bootstrap.register(OROTIAGITO_SEALED,
+                new SlashBladeDefinition(SlashBlade.prefix("orotiagito_sealed"),
+                        RenderDefinition.Builder.newInstance()
+                        .textureName(SlashBlade.prefix("model/named/agito_true.png"))
+                        .modelName(SlashBlade.prefix("model/named/agito.obj"))
+                        .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(5.0F)
+                        .slashArtsType(SlashArtsRegistry.SAKURA_END.getId())
+                        .maxDamage(60).build(),
+                        Lists.newArrayList()));
+        
+        bootstrap.register(OROTIAGITO,
+                new SlashBladeDefinition(SlashBlade.prefix("orotiagito"),
+                        RenderDefinition.Builder.newInstance()
+                        .textureName(SlashBlade.prefix("model/named/orotiagito.png"))
+                        .modelName(SlashBlade.prefix("model/named/agito.obj"))
+                        .build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(7.0F)
+                        .slashArtsType(SlashArtsRegistry.CIRCLE_SLASH.getId())
+                        .defaultSwordType(List.of(SwordType.BEWITCHED))
+                        .maxDamage(60).build(),
+                        Lists.newArrayList()));
+        
         bootstrap.register(RODAI_WOODEN,
                 new SlashBladeDefinition(SlashBlade.prefix("rodai_wooden"),
                         RenderDefinition.Builder.newInstance()
@@ -141,6 +295,14 @@ public class SlashBladeBuiltInRegistry {
                         List.of(new EnchantmentDefinition(getEnchantmentID(Enchantments.SOUL_SPEED), 2),
                                 new EnchantmentDefinition(getEnchantmentID(Enchantments.POWER_ARROWS), 5),
                                 new EnchantmentDefinition(getEnchantmentID(Enchantments.FALL_PROTECTION), 4))));
+        
+        bootstrap.register(YAMATO_BROKEN,
+                new SlashBladeDefinition(SlashBlade.prefix("yamato"),
+                        RenderDefinition.Builder.newInstance().textureName(SlashBlade.prefix("model/named/yamato.png"))
+                                .modelName(SlashBlade.prefix("model/named/yamato.obj")).build(),
+                        PropertiesDefinition.Builder.newInstance().baseAttackModifier(7.0F)
+                                .defaultSwordType(List.of(SwordType.BROKEN, SwordType.SEALED)).build(),
+                        List.of()));
 
         bootstrap.register(TUKUMO, new SlashBladeDefinition(SlashBlade.prefix("yuzukitukumo"),
                 RenderDefinition.Builder.newInstance().textureName(SlashBlade.prefix("model/named/a_tukumo.png"))

@@ -96,41 +96,19 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
             instance.setProudSoulCount(tag.getInt("proudSoul"));
 
             instance.setBroken(tag.getBoolean("isBroken"));
-
             instance.setHasChangedActiveState(true);
-
 
             //passive state
             instance.setSealed(tag.getBoolean("isSealed"));
             instance.setKillCount(tag.getInt("killCount"));
             instance.setRefine(tag.getInt("RepairCounter"));
-
             instance.setUniqueId(tag.hasUUID("BladeUniqueId") ? tag.getUUID("BladeUniqueId") : UUID.randomUUID());
-
-            //performance setting
-
-
-//            instance.setSlashArtsKey(ResourceLocation.tryParse(tag.getString("SpecialAttackType")));
-//            instance.setDestructable(tag.getBoolean("isDestructable"));
-//            instance.setDefaultBewitched(tag.getBoolean("isDefaultBewitched"));
-
-//            instance.setTranslationKey(tag.getString("translationKey"));
 
             //render info
             instance.setCarryType(EnumSetConverter.fromOrdinal(CarryType.values(), tag.getByte("StandbyRenderType"), CarryType.DEFAULT));
             instance.setColorCode(tag.getInt("SummonedSwordColor"));
             instance.setEffectColorInverse(tag.getBoolean("SummonedSwordColorInverse"));
             instance.setAdjust(NBTHelper.getVector3d(tag, "adjustXYZ"));
-
-//            if(tag.contains("TextureName"))
-//                instance.setTexture(new ResourceLocation(tag.getString("TextureName")));
-//            else
-//                instance.setTexture(null);
-//
-//            if(tag.contains("ModelName"))
-//                instance.setModel(new ResourceLocation(tag.getString("ModelName")));
-//            else
-//                instance.setModel(null);
 
             instance.setComboRoot(ResourceLocation.tryParse(tag.getString("ComboRoot")));
         });

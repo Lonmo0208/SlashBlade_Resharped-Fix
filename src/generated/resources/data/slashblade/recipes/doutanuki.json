@@ -1,24 +1,26 @@
 {
   "type": "slashblade:shaped_blade",
-  "blade": "slashblade:muramasa",
+  "blade": "slashblade:doutanuki",
   "category": "equipment",
   "key": {
     "B": {
       "type": "slashblade:blade",
       "item": "slashblade:slashblade",
       "request": {
-        "proud_soul": 10000,
-        "refine": 20
+        "kill": 100,
+        "name": "slashblade:sabigatana",
+        "proud_soul": 1000,
+        "refine": 10
       }
     },
-    "S": {
+    "P": {
       "item": "slashblade:proudsoul_sphere"
     }
   },
   "pattern": [
-    "SSS",
-    "SBS",
-    "SSS"
+    "  P",
+    " B ",
+    "P  "
   ],
   "result": {
     "item": "slashblade:slashblade"

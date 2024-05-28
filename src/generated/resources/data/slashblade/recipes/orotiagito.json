@@ -1,24 +1,29 @@
 {
   "type": "slashblade:shaped_blade",
-  "blade": "slashblade:muramasa",
+  "blade": "slashblade:orotiagito",
   "category": "equipment",
   "key": {
     "B": {
       "type": "slashblade:blade",
       "item": "slashblade:slashblade",
       "request": {
-        "proud_soul": 10000,
-        "refine": 20
+        "kill": 1000,
+        "name": "slashblade:orotiagito_sealed",
+        "proud_soul": 1000,
+        "refine": 10
       }
+    },
+    "P": {
+      "item": "slashblade:proudsoul"
     },
     "S": {
       "item": "slashblade:proudsoul_sphere"
     }
   },
   "pattern": [
-    "SSS",
+    "PSP",
     "SBS",
-    "SSS"
+    "PSP"
   ],
   "result": {
     "item": "slashblade:slashblade"

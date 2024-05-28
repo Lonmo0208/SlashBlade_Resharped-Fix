@@ -5,7 +5,9 @@ import java.util.concurrent.CompletableFuture;
 
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.data.builtin.SlashBladeBuiltInRegistry;
+import mods.flammpfeil.slashblade.data.builtin.SlashBladeEntityDropBuiltInRegistry;
 import mods.flammpfeil.slashblade.data.tag.SlashBladeEntityTypeTagProvider;
+import mods.flammpfeil.slashblade.event.drop.EntityDropEntry;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.RegistrySetBuilder;
@@ -27,6 +29,9 @@ public class DataGen {
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         final RegistrySetBuilder bladeBuilder = new RegistrySetBuilder().add(SlashBladeDefinition.REGISTRY_KEY,
                 SlashBladeBuiltInRegistry::registerAll);
+        
+        final RegistrySetBuilder bladeDropBuilder = new RegistrySetBuilder().add(EntityDropEntry.REGISTRY_KEY,
+                SlashBladeEntityDropBuiltInRegistry::registerAll);
 
         dataGenerator.addProvider(event.includeServer(), new SlashBladeRecipeProvider(packOutput));
         dataGenerator.addProvider(event.includeServer(),
@@ -35,6 +40,15 @@ public class DataGen {
                     @Override
                     public String getName() {
                         return "SlashBlade Definition Registry";
+                    }
+
+                });
+        dataGenerator.addProvider(event.includeServer(),
+                new DatapackBuiltinEntriesProvider(packOutput, lookupProvider, bladeDropBuilder, Set.of(SlashBlade.MODID)) {
+                    
+                    @Override
+                    public String getName() {
+                        return "SlashBlade Entity Drop Entry Registry";
                     }
 
                 });

@@ -1,24 +1,27 @@
 {
   "type": "slashblade:shaped_blade",
-  "blade": "slashblade:muramasa",
+  "blade": "slashblade:sabigatana",
   "category": "equipment",
   "key": {
     "B": {
       "type": "slashblade:blade",
       "item": "slashblade:slashblade",
       "request": {
-        "proud_soul": 10000,
-        "refine": 20
+        "name": "slashblade:sabigatana",
+        "sword_type": [
+          "broken",
+          "sealed"
+        ]
       }
     },
-    "S": {
-      "item": "slashblade:proudsoul_sphere"
+    "P": {
+      "item": "slashblade:proudsoul_ingot"
     }
   },
   "pattern": [
-    "SSS",
-    "SBS",
-    "SSS"
+    "  P",
+    " P ",
+    "B  "
   ],
   "result": {
     "item": "slashblade:slashblade"

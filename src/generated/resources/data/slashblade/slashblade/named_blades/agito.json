@@ -1,0 +1,11 @@
+{
+  "name": "slashblade:agito",
+  "properties": {
+    "attack_base": 5.0,
+    "max_damage": 60
+  },
+  "render": {
+    "model": "slashblade:model/named/agito.obj",
+    "texture": "slashblade:model/named/agito_false.png"
+  }
+}

@@ -1,4 +1,4 @@
-package mods.flammpfeil.slashblade.optional.playerAnim;
+package mods.flammpfeil.slashblade.compat.playerAnim;
 
 import com.google.common.collect.Maps;
 import dev.kosmx.playerAnim.api.layered.AnimationStack;
@@ -70,6 +70,8 @@ public class PlayerAnimationOverrider {
         map.put(ComboStateRegistry.COMBO_B5.getId(), new VmdAnimation(MotionLocation, 710,787,false));
         map.put(ComboStateRegistry.COMBO_B6.getId(), new VmdAnimation(MotionLocation, 710,787,false));
         map.put(ComboStateRegistry.COMBO_B7.getId(), new VmdAnimation(MotionLocation, 710,787,false));
+        
+        map.put(ComboStateRegistry.CIRCLE_SLASH.getId(), new VmdAnimation(MotionLocation, 725,787,false));
 
         map.put(ComboStateRegistry.AERIAL_RAVE_A1.getId(), new VmdAnimation(MotionLocation, 1100,1132,false).setBlendLegs(false));
         map.put(ComboStateRegistry.AERIAL_RAVE_A2.getId(), new VmdAnimation(MotionLocation, 1200,1241,false).setBlendLegs(false));

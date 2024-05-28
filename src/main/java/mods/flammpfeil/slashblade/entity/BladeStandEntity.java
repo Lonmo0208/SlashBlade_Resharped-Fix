@@ -127,7 +127,7 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
                         this.playSound(SoundEvents.ITEM_FRAME_ADD_ITEM, 1.0F, 1.0F);
                         result = InteractionResult.SUCCESS;
                     }
-                }else{
+                } else{
                     ItemStack displayed = this.getItem().copy();
 
                     this.setItem(itemstack);

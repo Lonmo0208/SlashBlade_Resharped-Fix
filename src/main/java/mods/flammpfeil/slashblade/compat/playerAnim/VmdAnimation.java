@@ -1,4 +1,4 @@
-package mods.flammpfeil.slashblade.optional.playerAnim;
+package mods.flammpfeil.slashblade.compat.playerAnim;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;

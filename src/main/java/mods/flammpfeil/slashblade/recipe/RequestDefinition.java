@@ -117,6 +117,7 @@ public class RequestDefinition {
         blade.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
             if(!this.name.equals(SlashBlade.prefix("none")))
                 state.setTranslationKey(getTranslationKey());
+            state.setProudSoulCount(getProudSoulCount());
             state.setKillCount(getKillCount());
             state.setRefine(getRefineCount());
             this.getEnchantments()

@@ -63,7 +63,7 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
                 continue;
             var ingredientState = stack.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
             
-            resultState.setProudSoulCount(resultState.getProudSoulCount() + ingredientState.getKillCount());
+            resultState.setProudSoulCount(resultState.getProudSoulCount() + ingredientState.getProudSoulCount());
             resultState.setKillCount(resultState.getKillCount() + ingredientState.getKillCount());
             resultState.setRefine(resultState.getRefine() + ingredientState.getRefine());
             updateEnchantment(result, stack);
