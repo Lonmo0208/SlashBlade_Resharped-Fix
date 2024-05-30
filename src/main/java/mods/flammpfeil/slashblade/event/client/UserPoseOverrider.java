@@ -20,11 +20,15 @@ public class UserPoseOverrider {
     private static final class SingletonHolder {
         private static final UserPoseOverrider instance = new UserPoseOverrider();
     }
+
     public static UserPoseOverrider getInstance() {
         return SingletonHolder.instance;
     }
-    private UserPoseOverrider(){}
-    public void register(){
+
+    private UserPoseOverrider() {
+    }
+
+    public void register() {
         MinecraftForge.EVENT_BUS.register(this);
         UsePoseOverrider = true;
     }
@@ -33,11 +37,13 @@ public class UserPoseOverrider {
     private static final String TAG_ROT_PREV = "sb_yrot_prev";
 
     @SubscribeEvent
-    public void onRenderPlayerEventPre(RenderLivingEvent.Pre event){
+    public void onRenderPlayerEventPre(RenderLivingEvent.Pre event) {
         ItemStack stack = event.getEntity().getMainHandItem();
 
-        if(stack.isEmpty()) return;
-        if(!(stack.getItem() instanceof ItemSlashBlade)) return;
+        if (stack.isEmpty())
+            return;
+        if (!(stack.getItem() instanceof ItemSlashBlade))
+            return;
 
         float rot = event.getEntity().getPersistentData().getFloat(TAG_ROT);
         float rotPrev = event.getEntity().getPersistentData().getFloat(TAG_ROT_PREV);
@@ -50,19 +56,19 @@ public class UserPoseOverrider {
         matrixStackIn.mulPose(Axis.YP.rotationDegrees(180.0F - f));
         anotherPoseRotP(matrixStackIn, entityLiving, partialTicks);
 
-        matrixStackIn.mulPose(Axis.YP.rotationDegrees(Mth.rotLerp(partialTicks,rot,rotPrev)));
+        matrixStackIn.mulPose(Axis.YP.rotationDegrees(Mth.rotLerp(partialTicks, rot, rotPrev)));
 
         anotherPoseRotN(matrixStackIn, entityLiving, partialTicks);
         matrixStackIn.mulPose(Axis.YN.rotationDegrees(180.0F - f));
     }
 
-    static public void anotherPoseRotP(PoseStack matrixStackIn, LivingEntity entityLiving, float partialTicks){
+    static public void anotherPoseRotP(PoseStack matrixStackIn, LivingEntity entityLiving, float partialTicks) {
         final boolean isPositive = true;
         final float np = isPositive ? 1 : -1;
 
         float f = entityLiving.getSwimAmount(partialTicks);
         if (entityLiving.isFallFlying()) {
-            float f1 = (float)entityLiving.getFallFlyingTicks() + partialTicks;
+            float f1 = (float) entityLiving.getFallFlyingTicks() + partialTicks;
             float f2 = Mth.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
             if (!entityLiving.isAutoSpinAttack()) {
                 matrixStackIn.mulPose(Axis.XP.rotationDegrees(np * f2 * (-90.0F - entityLiving.getXRot())));
@@ -75,7 +81,7 @@ public class UserPoseOverrider {
             if (d0 > 0.0D && d1 > 0.0D) {
                 double d2 = (vector3d1.x * vector3d.x + vector3d1.z * vector3d.z) / Math.sqrt(d0 * d1);
                 double d3 = vector3d1.x * vector3d.z - vector3d1.z * vector3d.x;
-                matrixStackIn.mulPose(Axis.YP.rotation((float)(np * Math.signum(d3) * Math.acos(d2))));
+                matrixStackIn.mulPose(Axis.YP.rotation((float) (np * Math.signum(d3) * Math.acos(d2))));
             }
         } else if (f > 0.0F) {
             float f3 = entityLiving.isInWater() ? -90.0F - entityLiving.getXRot() : -90.0F;
@@ -86,7 +92,8 @@ public class UserPoseOverrider {
             }
         }
     }
-    static public void anotherPoseRotN(PoseStack matrixStackIn, LivingEntity entityLiving, float partialTicks){
+
+    static public void anotherPoseRotN(PoseStack matrixStackIn, LivingEntity entityLiving, float partialTicks) {
         final boolean isPositive = false;
         final float np = isPositive ? 1 : -1;
 
@@ -99,10 +106,10 @@ public class UserPoseOverrider {
             if (d0 > 0.0D && d1 > 0.0D) {
                 double d2 = (vector3d1.x * vector3d.x + vector3d1.z * vector3d.z) / Math.sqrt(d0 * d1);
                 double d3 = vector3d1.x * vector3d.z - vector3d1.z * vector3d.x;
-                matrixStackIn.mulPose(Axis.YP.rotation((float)(np * Math.signum(d3) * Math.acos(d2))));
+                matrixStackIn.mulPose(Axis.YP.rotation((float) (np * Math.signum(d3) * Math.acos(d2))));
             }
 
-            float f1 = (float)entityLiving.getFallFlyingTicks() + partialTicks;
+            float f1 = (float) entityLiving.getFallFlyingTicks() + partialTicks;
             float f2 = Mth.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
             if (!entityLiving.isAutoSpinAttack()) {
                 matrixStackIn.mulPose(Axis.XP.rotationDegrees(np * f2 * (-90.0F - entityLiving.getXRot())));
@@ -118,27 +125,27 @@ public class UserPoseOverrider {
         }
     }
 
-    static public void setRot(Entity target, float rotYaw, boolean isOffset){
+    static public void setRot(Entity target, float rotYaw, boolean isOffset) {
         CompoundTag tag = target.getPersistentData();
 
         float prevRot = tag.getFloat(TAG_ROT);
         tag.putFloat(TAG_ROT_PREV, prevRot);
 
-        if(isOffset)
+        if (isOffset)
             rotYaw += prevRot;
 
         tag.putFloat(TAG_ROT, rotYaw);
     }
 
-    static public void resetRot(Entity target){
+    static public void resetRot(Entity target) {
         CompoundTag tag = target.getPersistentData();
         tag.putFloat(TAG_ROT_PREV, 0);
         tag.putFloat(TAG_ROT, 0);
     }
 
-    static public void invertRot(PoseStack matrixStack, Entity entity, float partialTicks){
+    static public void invertRot(PoseStack matrixStack, Entity entity, float partialTicks) {
         float rot = entity.getPersistentData().getFloat(TAG_ROT);
         float rotPrev = entity.getPersistentData().getFloat(TAG_ROT_PREV);
-        matrixStack.mulPose(Axis.YP.rotationDegrees(Mth.rotLerp(partialTicks,rot,rotPrev)));
+        matrixStack.mulPose(Axis.YP.rotationDegrees(Mth.rotLerp(partialTicks, rot, rotPrev)));
     }
 }

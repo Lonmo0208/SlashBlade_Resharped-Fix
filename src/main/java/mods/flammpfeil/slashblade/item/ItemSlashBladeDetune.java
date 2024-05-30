@@ -20,7 +20,7 @@ public class ItemSlashBladeDetune extends ItemSlashBlade {
     private ResourceLocation texture;
     private final float baseAttack;
     private boolean isDestructable;
-    
+
     public ItemSlashBladeDetune(Tier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
         this.baseAttack = attackDamageIn;
@@ -28,7 +28,7 @@ public class ItemSlashBladeDetune extends ItemSlashBlade {
         this.model = DefaultResources.resourceDefaultModel;
         this.texture = DefaultResources.resourceDefaultTexture;
     }
-    
+
     public ResourceLocation getModel() {
         return model;
     }
@@ -55,19 +55,19 @@ public class ItemSlashBladeDetune extends ItemSlashBlade {
         this.isDestructable = true;
         return this;
     }
-    
+
     @Override
     public boolean isDestructable(ItemStack stack) {
         return this.isDestructable;
     }
-    
+
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         return new SimpleBladeStateCapabilityProvider(model, texture, baseAttack, this.getTier().getUses());
     }
-    
+
     @Override
     public void appendSwordType(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-        
+
     }
 }

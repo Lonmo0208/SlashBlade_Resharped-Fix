@@ -17,7 +17,8 @@ import java.util.List;
 public class BladeModel implements BakedModel {
 
     BakedModel original;
-    public BladeModel(BakedModel original, ModelBakery loader){
+
+    public BladeModel(BakedModel original, ModelBakery loader) {
         this.original = original;
     }
 
@@ -30,7 +31,8 @@ public class BladeModel implements BakedModel {
 
     @SuppressWarnings("deprecation")
     @Override
-    public List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState p_235039_, @org.jetbrains.annotations.Nullable Direction p_235040_, RandomSource p_235041_) {
+    public List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState p_235039_,
+            @org.jetbrains.annotations.Nullable Direction p_235040_, RandomSource p_235041_) {
         return original.getQuads(p_235039_, p_235040_, p_235041_);
     }
 
@@ -58,28 +60,26 @@ public class BladeModel implements BakedModel {
     @Override
     public TextureAtlasSprite getParticleIcon() {
         return original.getParticleIcon();
-        //return Minecraft.getInstance().getItemRenderer().getItemModelMesher().getParticleIcon(SlashBlade.proudSoul);
+        // return
+        // Minecraft.getInstance().getItemRenderer().getItemModelMesher().getParticleIcon(SlashBlade.proudSoul);
     }
 
     /*
-    ItemCameraTransforms tf = new ItemCameraTransforms(ItemCameraTransforms.DEFAULT){
-        @Override
-        public ItemTransformVec3f getTransform(TransformType srctype) {
-            type = srctype;
-            return super.getTransform(srctype);
-        }
-    } ;
-    @Override
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return tf;
-    }
-    */
+     * ItemCameraTransforms tf = new
+     * ItemCameraTransforms(ItemCameraTransforms.DEFAULT){
+     * 
+     * @Override public ItemTransformVec3f getTransform(TransformType srctype) {
+     * type = srctype; return super.getTransform(srctype); } } ;
+     * 
+     * @Override public ItemCameraTransforms getItemCameraTransforms() { return tf;
+     * }
+     */
 
     /*
-    @Override
-    public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
-        this.type = cameraTransformType;
-        return net.minecraftforge.client.ForgeHooksClient.handlePerspective(getBakedModel(), cameraTransformType, mat);
-    }
-    */
+     * @Override public IBakedModel
+     * handlePerspective(ItemCameraTransforms.TransformType cameraTransformType,
+     * MatrixStack mat) { this.type = cameraTransformType; return
+     * net.minecraftforge.client.ForgeHooksClient.handlePerspective(getBakedModel(),
+     * cameraTransformType, mat); }
+     */
 }

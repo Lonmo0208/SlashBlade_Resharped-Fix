@@ -17,56 +17,62 @@ public class StunManager {
 
     static final int DEFAULT_STUN_TICKS = 10;
 
-
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onEntityJoinWorldEvent(EntityJoinLevelEvent event){
-        if(!(event.getEntity() instanceof PathfinderMob)) return;
+    public void onEntityJoinWorldEvent(EntityJoinLevelEvent event) {
+        if (!(event.getEntity() instanceof PathfinderMob))
+            return;
         PathfinderMob entity = (PathfinderMob) event.getEntity();
 
-        entity.goalSelector.addGoal(-1,new StunGoal(entity));
+        entity.goalSelector.addGoal(-1, new StunGoal(entity));
     }
 
     @SubscribeEvent
-    public void onEntityLivingUpdate(LivingEvent.LivingTickEvent event){
+    public void onEntityLivingUpdate(LivingEvent.LivingTickEvent event) {
         LivingEntity target = event.getEntity();
-        if(!(target instanceof PathfinderMob)) return;
-        if(target.level() == null) return;
+        if (!(target instanceof PathfinderMob))
+            return;
+        if (target.level() == null)
+            return;
 
         boolean onStun = target.getCapability(CapabilityMobEffect.MOB_EFFECT)
-                .filter((state)->state.isStun(target.level().getGameTime()))
-                .isPresent();
+                .filter((state) -> state.isStun(target.level().getGameTime())).isPresent();
 
-        if(onStun){
+        if (onStun) {
             Vec3 motion = target.getDeltaMovement();
-            if(5 < target.fallDistance)
+            if (5 < target.fallDistance)
                 target.setDeltaMovement(motion.x, motion.y - 2.0f, motion.z);
-            else if(motion.y < 0)
+            else if (motion.y < 0)
                 target.setDeltaMovement(motion.x, motion.y * 0.25f, motion.z);
         }
 
     }
 
-    public static void setStun(LivingEntity target, LivingEntity attacker){
+    public static void setStun(LivingEntity target, LivingEntity attacker) {
         setStun(target);
     }
-    public static void setStun(LivingEntity target){
+
+    public static void setStun(LivingEntity target) {
         setStun(target, DEFAULT_STUN_TICKS);
     }
-    public static void setStun(LivingEntity target, long duration){
-        if(!(target instanceof PathfinderMob)) return;
-        if(target.level() == null) return;
 
-        target.getCapability(CapabilityMobEffect.MOB_EFFECT).ifPresent((state)->{
-            state.setManagedStun(target.level().getGameTime() , duration);
+    public static void setStun(LivingEntity target, long duration) {
+        if (!(target instanceof PathfinderMob))
+            return;
+        if (target.level() == null)
+            return;
+
+        target.getCapability(CapabilityMobEffect.MOB_EFFECT).ifPresent((state) -> {
+            state.setManagedStun(target.level().getGameTime(), duration);
         });
     }
 
-    public static void removeStun(LivingEntity target){
-        if(target.level() == null) return;
-        if(!(target instanceof LivingEntity)) return;
+    public static void removeStun(LivingEntity target) {
+        if (target.level() == null)
+            return;
+        if (!(target instanceof LivingEntity))
+            return;
 
-
-        target.getCapability(CapabilityMobEffect.MOB_EFFECT).ifPresent((state)->{
+        target.getCapability(CapabilityMobEffect.MOB_EFFECT).ifPresent((state) -> {
             state.clearStunTimeOut();
         });
     }

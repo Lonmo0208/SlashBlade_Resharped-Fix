@@ -37,8 +37,6 @@
  */
 package jp.nyatla.nymmd.struct.pmd;
 
-
-
 import jp.nyatla.nymmd.MmdException;
 import jp.nyatla.nymmd.struct.DataReader;
 import jp.nyatla.nymmd.struct.StructReader;
@@ -46,35 +44,30 @@ import jp.nyatla.nymmd.struct.StructType;
 import jp.nyatla.nymmd.types.MmdColor3;
 import jp.nyatla.nymmd.types.MmdColor4;
 
-public class PMD_Material implements StructType
-{
-	public final MmdColor4		col4Diffuse=new MmdColor4();
-	public float				fShininess;
-	public final MmdColor3		col3Specular=new MmdColor3();
-	public final MmdColor3		col3Ambient=new MmdColor3();
-	public int			unknown;
-	public int			ulNumIndices;		// この材質に対応する頂点数
-	public String		szTextureFileName;	// テクスチャファイル名
-	public void read(DataReader i_reader) throws MmdException
-	{
-		StructReader.read(this.col4Diffuse, i_reader);
-		this.fShininess=i_reader.readFloat();
-		StructReader.read(this.col3Specular, i_reader);
-		StructReader.read(this.col3Ambient, i_reader);
-		this.unknown=i_reader.readUnsignedShort();
-		this.ulNumIndices=i_reader.readInt();
-		this.szTextureFileName=i_reader.readAscii(20);
-		return;
-	}	
-/*
-	Color4		col4Diffuse;
-	float		fShininess;
-	Color3		col3Specular,
-				col3Ambient;
+public class PMD_Material implements StructType {
+    public final MmdColor4 col4Diffuse = new MmdColor4();
+    public float fShininess;
+    public final MmdColor3 col3Specular = new MmdColor3();
+    public final MmdColor3 col3Ambient = new MmdColor3();
+    public int unknown;
+    public int ulNumIndices; // この材質に対応する頂点数
+    public String szTextureFileName; // テクスチャファイル名
 
-	unsigned short	unknown;
-	unsigned long	ulNumIndices;			// この材質に対応する頂点数
-	char			szTextureFileName[20];	// テクスチャファイル名
-*/
-	
+    public void read(DataReader i_reader) throws MmdException {
+        StructReader.read(this.col4Diffuse, i_reader);
+        this.fShininess = i_reader.readFloat();
+        StructReader.read(this.col3Specular, i_reader);
+        StructReader.read(this.col3Ambient, i_reader);
+        this.unknown = i_reader.readUnsignedShort();
+        this.ulNumIndices = i_reader.readInt();
+        this.szTextureFileName = i_reader.readAscii(20);
+        return;
+    }
+    /*
+     * Color4 col4Diffuse; float fShininess; Color3 col3Specular, col3Ambient;
+     * 
+     * unsigned short unknown; unsigned long ulNumIndices; // この材質に対応する頂点数 char
+     * szTextureFileName[20]; // テクスチャファイル名
+     */
+
 }

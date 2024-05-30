@@ -7,7 +7,6 @@ import mods.flammpfeil.slashblade.client.renderer.CarryType;
 import mods.flammpfeil.slashblade.init.DefaultResources;
 import net.minecraft.resources.ResourceLocation;
 
-
 public class RenderDefinition {
     public static final Codec<RenderDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.optionalFieldOf("texture", DefaultResources.resourceDefaultTexture)
@@ -16,8 +15,7 @@ public class RenderDefinition {
                     .forGetter(RenderDefinition::getModelName),
             Codec.INT.optionalFieldOf("summon_sword_color", 0xFF3333FF)
                     .forGetter(RenderDefinition::getSummonedSwordColor),
-            Codec.BOOL.optionalFieldOf("color_inverse", false)
-                    .forGetter(RenderDefinition::isSummonedSwordColorInverse),
+            Codec.BOOL.optionalFieldOf("color_inverse", false).forGetter(RenderDefinition::isSummonedSwordColorInverse),
             CarryType.CODEC.optionalFieldOf("carry_type", CarryType.DEFAULT)
                     .forGetter(RenderDefinition::getStandbyRenderType))
             .apply(instance, RenderDefinition::new));
@@ -63,7 +61,7 @@ public class RenderDefinition {
         private int SummonedSwordColor;
         private boolean SummonedSwordColorInverse;
         private CarryType StandbyRenderType;
-        
+
         private Builder() {
             this.TextureName = DefaultResources.resourceDefaultTexture;
             this.ModelName = DefaultResources.resourceDefaultModel;
@@ -71,38 +69,39 @@ public class RenderDefinition {
             this.SummonedSwordColorInverse = false;
             this.StandbyRenderType = CarryType.DEFAULT;
         }
-        
+
         public static Builder newInstance() {
             return new Builder();
         }
-        
+
         public Builder textureName(ResourceLocation TextureName) {
             this.TextureName = TextureName;
             return this;
         }
-        
+
         public Builder modelName(ResourceLocation ModelName) {
             this.ModelName = ModelName;
             return this;
         }
-        
+
         public Builder effectColor(int SummonedSwordColor) {
             this.SummonedSwordColor = SummonedSwordColor;
             return this;
         }
-        
+
         public Builder effectColorInverse(boolean SummonedSwordColorInverse) {
             this.SummonedSwordColorInverse = SummonedSwordColorInverse;
             return this;
         }
-        
+
         public Builder standbyRenderType(CarryType standbyRenderType) {
             this.StandbyRenderType = standbyRenderType;
             return this;
         }
-        
+
         public RenderDefinition build() {
-            return new RenderDefinition(TextureName, ModelName, SummonedSwordColor, SummonedSwordColorInverse, StandbyRenderType);
+            return new RenderDefinition(TextureName, ModelName, SummonedSwordColor, SummonedSwordColorInverse,
+                    StandbyRenderType);
         }
     }
 }

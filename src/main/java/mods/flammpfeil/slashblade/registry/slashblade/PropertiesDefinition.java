@@ -12,16 +12,18 @@ import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import net.minecraft.resources.ResourceLocation;
 
 public class PropertiesDefinition {
-    public static final Codec<PropertiesDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.optionalFieldOf("root_combo", ComboStateRegistry.STANDBY.getId())
-                    .forGetter(PropertiesDefinition::getComboRoot),
-            ResourceLocation.CODEC.optionalFieldOf("slash_art", SlashArtsRegistry.JUDGEMENT_CUT.getId())
-                    .forGetter(PropertiesDefinition::getSpecialAttackType),
-            Codec.FLOAT.optionalFieldOf("attack_base", 4.0F).forGetter(PropertiesDefinition::getBaseAttackModifier),
-            Codec.INT.optionalFieldOf("max_damage", 40).forGetter(PropertiesDefinition::getMaxDamage),
-            SwordType.CODEC.listOf().optionalFieldOf("sword_type", Lists.newArrayList())
-                    .forGetter(PropertiesDefinition::getDefaultType))
-            .apply(instance, PropertiesDefinition::new));
+    public static final Codec<PropertiesDefinition> CODEC = RecordCodecBuilder
+            .create(instance -> instance
+                    .group(ResourceLocation.CODEC.optionalFieldOf("root_combo", ComboStateRegistry.STANDBY.getId())
+                            .forGetter(PropertiesDefinition::getComboRoot),
+                            ResourceLocation.CODEC.optionalFieldOf("slash_art", SlashArtsRegistry.JUDGEMENT_CUT.getId())
+                                    .forGetter(PropertiesDefinition::getSpecialAttackType),
+                            Codec.FLOAT.optionalFieldOf("attack_base", 4.0F)
+                                    .forGetter(PropertiesDefinition::getBaseAttackModifier),
+                            Codec.INT.optionalFieldOf("max_damage", 40).forGetter(PropertiesDefinition::getMaxDamage),
+                            SwordType.CODEC.listOf().optionalFieldOf("sword_type", Lists.newArrayList())
+                                    .forGetter(PropertiesDefinition::getDefaultType))
+                    .apply(instance, PropertiesDefinition::new));
 
     private final ResourceLocation comboRoot;
     private final ResourceLocation specialAttackType;
@@ -29,8 +31,8 @@ public class PropertiesDefinition {
     private final int maxDamage;
     private final List<SwordType> defaultType;
 
-    private PropertiesDefinition(ResourceLocation comboRoot, ResourceLocation specialAttackType, float baseAttackModifier,
-            int damage, List<SwordType> defaultType) {
+    private PropertiesDefinition(ResourceLocation comboRoot, ResourceLocation specialAttackType,
+            float baseAttackModifier, int damage, List<SwordType> defaultType) {
         this.comboRoot = comboRoot;
         this.specialAttackType = specialAttackType;
         this.baseAttackModifier = baseAttackModifier;
@@ -57,15 +59,15 @@ public class PropertiesDefinition {
     public List<SwordType> getDefaultType() {
         return defaultType;
     }
-    
+
     public static class Builder {
-        
+
         private ResourceLocation comboRoot;
         private ResourceLocation specialAttackType;
         private float baseAttackModifier;
         private int maxDamage;
         private List<SwordType> defaultType;
-        
+
         private Builder() {
             this.comboRoot = ComboStateRegistry.STANDBY.getId();
             this.specialAttackType = SlashArtsRegistry.JUDGEMENT_CUT.getId();
@@ -73,7 +75,7 @@ public class PropertiesDefinition {
             this.maxDamage = 40;
             this.defaultType = Lists.newArrayList();
         }
-        
+
         public static Builder newInstance() {
             return new Builder();
         }

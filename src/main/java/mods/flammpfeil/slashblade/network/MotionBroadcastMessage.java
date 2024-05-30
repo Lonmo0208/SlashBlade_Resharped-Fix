@@ -27,9 +27,8 @@ public class MotionBroadcastMessage {
     public UUID playerId;
     public String combo;
 
-
-
-    public MotionBroadcastMessage(){}
+    public MotionBroadcastMessage() {
+    }
 
     static public MotionBroadcastMessage decode(FriendlyByteBuf buf) {
         MotionBroadcastMessage msg = new MotionBroadcastMessage();
@@ -46,13 +45,14 @@ public class MotionBroadcastMessage {
     static public void handle(MotionBroadcastMessage msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().setPacketHandled(true);
 
-        if(ctx.get().getDirection() != NetworkDirection.PLAY_TO_CLIENT) {
+        if (ctx.get().getDirection() != NetworkDirection.PLAY_TO_CLIENT) {
             return;
         }
 
-        BiConsumer<UUID,String> handler = DistExecutor.callWhenOn(Dist.CLIENT, ()->()-> MotionBroadcastMessage::setPoint);
+        BiConsumer<UUID, String> handler = DistExecutor.callWhenOn(Dist.CLIENT,
+                () -> () -> MotionBroadcastMessage::setPoint);
 
-        if(handler != null)
+        if (handler != null)
             ctx.get().enqueueWork(() -> {
                 handler.accept(msg.playerId, msg.combo);
             });
@@ -60,14 +60,17 @@ public class MotionBroadcastMessage {
     }
 
     @OnlyIn(Dist.CLIENT)
-    static public void setPoint(UUID playerId, String combo){
+    static public void setPoint(UUID playerId, String combo) {
         Player target = Minecraft.getInstance().level.getPlayerByUUID(playerId);
 
-        if(target == null) return;
-        if(!(target instanceof AbstractClientPlayer)) return;
+        if (target == null)
+            return;
+        if (!(target instanceof AbstractClientPlayer))
+            return;
 
         ComboState state = ComboStateRegistry.REGISTRY.get().getValue(ResourceLocation.tryParse(combo));
-        if(state == null) return;
+        if (state == null)
+            return;
 
         MinecraftForge.EVENT_BUS.post(new BladeMotionEvent(target, state));
     }

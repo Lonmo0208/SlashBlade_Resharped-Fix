@@ -48,14 +48,14 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         String standTypeStr;
-        if(this.currentType != null){
+        if (this.currentType != null) {
             standTypeStr = ForgeRegistries.ITEMS.getKey(this.currentType).toString();
-        }else{
+        } else {
             standTypeStr = "";
         }
         compound.putString("StandType", standTypeStr);
 
-        compound.putByte("Pose", (byte)this.getPose().ordinal());
+        compound.putByte("Pose", (byte) this.getPose().ordinal());
     }
 
     @Override
@@ -96,8 +96,8 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
     @Nullable
     @Override
     public ItemEntity spawnAtLocation(ItemLike iip) {
-        if(iip == Items.ITEM_FRAME){
-            if(this.currentType == null || this.currentType == Items.AIR)
+        if (iip == Items.ITEM_FRAME) {
+            if (this.currentType == null || this.currentType == Items.AIR)
                 return null;
 
             iip = this.currentType;
@@ -108,17 +108,17 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
         InteractionResult result = InteractionResult.PASS;
-        if(!this.level().isClientSide() && hand == InteractionHand.MAIN_HAND){
+        if (!this.level().isClientSide() && hand == InteractionHand.MAIN_HAND) {
             ItemStack itemstack = player.getItemInHand(hand);
-            if(player.isShiftKeyDown() && !this.getItem().isEmpty()){
+            if (player.isShiftKeyDown() && !this.getItem().isEmpty()) {
                 Pose current = this.getPose();
                 int newIndex = (current.ordinal() + 1) % Pose.values().length;
                 this.setPose(Pose.values()[newIndex]);
                 result = InteractionResult.SUCCESS;
-            }else if((!itemstack.isEmpty() && itemstack.getItem() instanceof ItemSlashBlade)
-                        || (itemstack.isEmpty() && !this.getItem().isEmpty())){
+            } else if ((!itemstack.isEmpty() && itemstack.getItem() instanceof ItemSlashBlade)
+                    || (itemstack.isEmpty() && !this.getItem().isEmpty())) {
 
-                if(this.getItem().isEmpty()){
+                if (this.getItem().isEmpty()) {
                     if (!this.isRemoved()) {
                         this.setItem(itemstack);
                         if (!player.getAbilities().instabuild) {
@@ -127,7 +127,7 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
                         this.playSound(SoundEvents.ITEM_FRAME_ADD_ITEM, 1.0F, 1.0F);
                         result = InteractionResult.SUCCESS;
                     }
-                } else{
+                } else {
                     ItemStack displayed = this.getItem().copy();
 
                     this.setItem(itemstack);
@@ -138,7 +138,7 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
 
                 }
 
-            }else {
+            } else {
                 this.playSound(SoundEvents.ITEM_FRAME_ROTATE_ITEM, 1.0F, 1.0F);
                 this.setRotation(this.getRotation() + 1);
                 result = InteractionResult.SUCCESS;

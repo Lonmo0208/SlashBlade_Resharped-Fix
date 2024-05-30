@@ -17,35 +17,35 @@ import java.util.function.Function;
 public class SlashArts {
     public static final ResourceKey<Registry<SlashArts>> REGISTRY_KEY = ResourceKey
             .createRegistryKey(SlashBlade.prefix("slash_arts"));
+
     public static ResourceLocation getRegistryKey(SlashArts state) {
         return SlashArtsRegistry.REGISTRY.get().getKey(state);
     }
-    
+
     static public final int ChargeTicks = 9;
     static public final int ChargeJustTicks = 3;
     static public final int ChargeJustTicksMax = 5;
 
-    static public int getJustReceptionSpan(LivingEntity user){
-        return Math.min(ChargeJustTicksMax , ChargeJustTicks + EnchantmentHelper.getEnchantmentLevel(Enchantments.SOUL_SPEED,user));
-    } 
-
-    public enum ArtsType{
-        Fail,
-        Success,
-        Jackpot
+    static public int getJustReceptionSpan(LivingEntity user) {
+        return Math.min(ChargeJustTicksMax,
+                ChargeJustTicks + EnchantmentHelper.getEnchantmentLevel(Enchantments.SOUL_SPEED, user));
     }
-    
+
+    public enum ArtsType {
+        Fail, Success, Jackpot
+    }
+
     private Function<LivingEntity, ResourceLocation> comboState;
     private Function<LivingEntity, ResourceLocation> comboStateJust;
 
     public ResourceLocation doArts(ArtsType type, LivingEntity user) {
-        switch (type){
-            case Jackpot:
-                return getComboStateJust(user);
-            case Success:
-                return getComboState(user);
-            default:
-                break;
+        switch (type) {
+        case Jackpot:
+            return getComboStateJust(user);
+        case Success:
+            return getComboState(user);
+        default:
+            break;
         }
         return ComboStateRegistry.NONE.getId();
     }
@@ -62,11 +62,12 @@ public class SlashArts {
     public ResourceLocation getComboStateJust(LivingEntity user) {
         return this.comboStateJust.apply(user);
     }
-    public SlashArts setComboStateJust(Function<LivingEntity, ResourceLocation> state){
+
+    public SlashArts setComboStateJust(Function<LivingEntity, ResourceLocation> state) {
         this.comboStateJust = state;
         return this;
     }
-    
+
     public Component getDescription() {
         return Component.translatable(this.getDescriptionId());
     }
@@ -76,7 +77,7 @@ public class SlashArts {
     }
 
     private String descriptionId;
-    
+
     protected String getOrCreateDescriptionId() {
         if (this.descriptionId == null) {
             this.descriptionId = Util.makeDescriptionId("slash_art", SlashArtsRegistry.REGISTRY.get().getKey(this));

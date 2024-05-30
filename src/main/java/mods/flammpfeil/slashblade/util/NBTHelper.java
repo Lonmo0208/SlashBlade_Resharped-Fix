@@ -20,6 +20,7 @@ public class NBTHelper {
     public static ListTag newDoubleNBTList(Vec3 value) {
         return newDoubleNBTList(value.x, value.y, value.z);
     }
+
     public static ListTag newDoubleNBTList(double... numbers) {
         ListTag listnbt = new ListTag();
 
@@ -33,39 +34,41 @@ public class NBTHelper {
     public static class NBTCoupler {
         CompoundTag instance;
         NBTCoupler parent = null;
-        protected NBTCoupler(CompoundTag tag){
+
+        protected NBTCoupler(CompoundTag tag) {
             this.instance = tag;
         }
 
-        public <T> NBTCoupler put(String key, T... value){
+        public <T> NBTCoupler put(String key, T... value) {
             writeNBT(instance, key, value);
             return this;
         }
 
         public <T> NBTCoupler get(String key, Consumer<T> dest, T... values) {
-            return this.get(key,dest,false, values);
+            return this.get(key, dest, false, values);
         }
-        public <T> NBTCoupler get(String key, Consumer<T> dest,boolean isNullable, T... values) {
-            readNBT(this.instance, key, dest,isNullable, values);
+
+        public <T> NBTCoupler get(String key, Consumer<T> dest, boolean isNullable, T... values) {
+            readNBT(this.instance, key, dest, isNullable, values);
             return this;
         }
 
-        public NBTCoupler remove(String key){
-            if(this.instance.hasUUID(key)){
+        public NBTCoupler remove(String key) {
+            if (this.instance.hasUUID(key)) {
                 this.instance.remove(key + "Most");
                 this.instance.remove(key + "Least");
 
-            }else
+            } else
                 this.instance.remove(key);
             return this;
         }
 
-        public NBTCoupler getChild(String key){
+        public NBTCoupler getChild(String key) {
             CompoundTag tag;
 
-            if(this.instance.contains(key, 10))
+            if (this.instance.contains(key, 10))
                 tag = this.instance.getCompound(key);
-            else{
+            else {
                 tag = new CompoundTag();
                 this.instance.put(key, tag);
             }
@@ -74,89 +77,92 @@ public class NBTHelper {
         }
 
         public NBTCoupler getParent() {
-            if(parent != null)
+            if (parent != null)
                 return parent;
             else
                 return this;
         }
 
-        public CompoundTag getRawCompound(){
+        public CompoundTag getRawCompound() {
             return this.instance;
         }
-        public CompoundTag getRawCompound(String key){
-            if(this.instance.contains(key, 10))
+
+        public CompoundTag getRawCompound(String key) {
+            if (this.instance.contains(key, 10))
                 return this.instance.getCompound(key);
-            else{
+            else {
                 CompoundTag nbt = new CompoundTag();
-                this.instance.put(key , nbt);
+                this.instance.put(key, nbt);
                 return nbt;
             }
         }
 
-        public NBTCoupler doRawCompound(String key, Consumer<CompoundTag> action){
-            if(this.instance.contains(key, 10))
+        public NBTCoupler doRawCompound(String key, Consumer<CompoundTag> action) {
+            if (this.instance.contains(key, 10))
                 action.accept(this.instance.getCompound(key));
 
             return this;
         }
     }
 
-    public static NBTCoupler getNBTCoupler(CompoundTag tag){
+    public static NBTCoupler getNBTCoupler(CompoundTag tag) {
         return new NBTCoupler(tag);
     }
 
-    public static <T> void writeNBT(CompoundTag dest, String key, T... value){
-        if(value == null || value.length != 1 || value[0] == null)
-        return;
+    public static <T> void writeNBT(CompoundTag dest, String key, T... value) {
+        if (value == null || value.length != 1 || value[0] == null)
+            return;
 
         @SuppressWarnings("unchecked")
         Class<T> type = (Class<T>) value.getClass().getComponentType();
 
         if (type.equals(Integer.class)) {
-            dest.putInt(key, (Integer)value[0]);
+            dest.putInt(key, (Integer) value[0]);
         } else if (type.equals(Float.class)) {
-            dest.putFloat(key, (Float)value[0]);
+            dest.putFloat(key, (Float) value[0]);
         } else if (type.equals(Short.class)) {
-            dest.putShort(key, (Short)value[0]);
+            dest.putShort(key, (Short) value[0]);
         } else if (type.equals(Byte.class)) {
-            dest.putByte(key, (Byte)value[0]);
+            dest.putByte(key, (Byte) value[0]);
         } else if (type.equals(Long.class)) {
-            dest.putLong(key, (Long)value[0]);
+            dest.putLong(key, (Long) value[0]);
         } else if (type.equals(Double.class)) {
-            dest.putDouble(key, (Double)value[0]);
+            dest.putDouble(key, (Double) value[0]);
         } else if (type.equals(Boolean.class)) {
-            dest.putBoolean(key, (Boolean)value[0]);
-        } else if(value[0] != null){
+            dest.putBoolean(key, (Boolean) value[0]);
+        } else if (value[0] != null) {
             if (type.equals(UUID.class)) {
-                dest.putUUID(key, (UUID)value[0]);
+                dest.putUUID(key, (UUID) value[0]);
             } else if (type.equals(byte[].class)) {
-                dest.putByteArray(key, (byte[])value[0]);
+                dest.putByteArray(key, (byte[]) value[0]);
             } else if (type.equals(int[].class)) {
-                dest.putIntArray(key, (int[])value[0]);
+                dest.putIntArray(key, (int[]) value[0]);
             } else if (type.equals(long[].class)) {
-                dest.putLongArray(key, (long[])value[0]);
-            }else if(type.equals(CompoundTag.class)){
-                dest.put(key, (CompoundTag)value[0]);
-            }else if (type.equals(String.class)) {
-                dest.putString(key, (String)value[0]);
-            }else if(type.equals(Vec3.class)){
-                putVector3d(dest,key,(Vec3)value[0]);
+                dest.putLongArray(key, (long[]) value[0]);
+            } else if (type.equals(CompoundTag.class)) {
+                dest.put(key, (CompoundTag) value[0]);
+            } else if (type.equals(String.class)) {
+                dest.putString(key, (String) value[0]);
+            } else if (type.equals(Vec3.class)) {
+                putVector3d(dest, key, (Vec3) value[0]);
             }
         }
     }
 
     public static <T> void readNBT(CompoundTag src, String key, Consumer<T> dest, T... values) {
-        readNBT(src,key,dest,false, values);
+        readNBT(src, key, dest, false, values);
     }
-    public static <T> void readNBT(CompoundTag src, String key, Consumer<T> dest,boolean isNullable, T... defaultValue) {
-        if(isNullable)
-            dest.accept( ((Optional<T>)castValue(key, src, defaultValue)).orElse(null));
+
+    public static <T> void readNBT(CompoundTag src, String key, Consumer<T> dest, boolean isNullable,
+            T... defaultValue) {
+        if (isNullable)
+            dest.accept(((Optional<T>) castValue(key, src, defaultValue)).orElse(null));
         else
-            ((Optional<T>)castValue(key, src, defaultValue)).ifPresent(dest);
+            ((Optional<T>) castValue(key, src, defaultValue)).ifPresent(dest);
     }
 
     public static <T> Optional<T> castValue(String key, CompoundTag src, T... defaultValue) {
-        if(defaultValue == null)
+        if (defaultValue == null)
             return Optional.empty();
 
         @SuppressWarnings("unchecked")
@@ -186,10 +192,10 @@ public class NBTHelper {
         } else if (type.equals(Boolean.class)) {
             typeId = 99;
             result = src.getBoolean(key);
-        } else if(src.contains(key)){
+        } else if (src.contains(key)) {
             if (type.equals(UUID.class)) {
                 typeId = -2;
-                if(src.hasUUID(key))
+                if (src.hasUUID(key))
                     result = src.getUUID(key);
             } else if (type.equals(byte[].class)) {
                 typeId = 7;
@@ -200,24 +206,24 @@ public class NBTHelper {
             } else if (type.equals(long[].class)) {
                 typeId = 12;
                 result = src.getLongArray(key);
-            }else if(type.equals(CompoundTag.class)){
+            } else if (type.equals(CompoundTag.class)) {
                 typeId = 10;
                 result = src.getCompound(key);
-            }else if (type.equals(String.class)) {
+            } else if (type.equals(String.class)) {
                 typeId = 8;
                 result = src.getString(key);
             }
-        }else if(type.equals(Vec3.class)){
+        } else if (type.equals(Vec3.class)) {
             typeId = 6;
             result = getVector3d(src, key);
         }
 
-        if(0 < defaultValue.length){
+        if (0 < defaultValue.length) {
             boolean exists = (typeId == -2) ? src.hasUUID(key) : src.contains(key, typeId);
-            if(!exists)
+            if (!exists)
                 result = defaultValue;
         }
 
-        return Optional.ofNullable((T)result);
+        return Optional.ofNullable((T) result);
     }
 }

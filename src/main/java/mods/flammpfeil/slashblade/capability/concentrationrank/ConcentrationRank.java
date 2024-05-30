@@ -3,7 +3,7 @@ package mods.flammpfeil.slashblade.capability.concentrationrank;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 
-public class ConcentrationRank implements IConcentrationRank{
+public class ConcentrationRank implements IConcentrationRank {
 
     long rankpoint;
     long lastupdate;
@@ -11,7 +11,7 @@ public class ConcentrationRank implements IConcentrationRank{
 
     static public long UnitCapacity = 300;
 
-    public ConcentrationRank(){
+    public ConcentrationRank() {
         rankpoint = 0;
         lastupdate = 0;
     }

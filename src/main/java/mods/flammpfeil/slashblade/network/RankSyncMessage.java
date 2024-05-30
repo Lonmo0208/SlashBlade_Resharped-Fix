@@ -17,8 +17,8 @@ import java.util.function.Supplier;
 public class RankSyncMessage {
     public long rawPoint;
 
-
-    public RankSyncMessage(){}
+    public RankSyncMessage() {
+    }
 
     static public RankSyncMessage decode(FriendlyByteBuf buf) {
         RankSyncMessage msg = new RankSyncMessage();
@@ -33,13 +33,13 @@ public class RankSyncMessage {
     static public void handle(RankSyncMessage msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().setPacketHandled(true);
 
-        if(ctx.get().getDirection() != NetworkDirection.PLAY_TO_CLIENT) {
+        if (ctx.get().getDirection() != NetworkDirection.PLAY_TO_CLIENT) {
             return;
         }
 
-        Consumer<Long> handler = DistExecutor.callWhenOn(Dist.CLIENT, ()->()->RankSyncMessage::setPoint);
+        Consumer<Long> handler = DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> RankSyncMessage::setPoint);
 
-        if(handler != null)
+        if (handler != null)
             ctx.get().enqueueWork(() -> {
                 handler.accept(msg.rawPoint);
             });
@@ -47,9 +47,9 @@ public class RankSyncMessage {
     }
 
     @OnlyIn(Dist.CLIENT)
-    static public void setPoint(long point){
+    static public void setPoint(long point) {
         Player pl = Minecraft.getInstance().player;
-        pl.getCapability(CapabilityConcentrationRank.RANK_POINT).ifPresent(cr->{
+        pl.getCapability(CapabilityConcentrationRank.RANK_POINT).ifPresent(cr -> {
 
             long time = pl.level().getGameTime();
 
@@ -58,7 +58,7 @@ public class RankSyncMessage {
             cr.setRawRankPoint(point);
             cr.setLastUpdte(time);
 
-            if(oldRank.level < cr.getRank(time).level)
+            if (oldRank.level < cr.getRank(time).level)
                 cr.setLastRankRise(time);
         });
     }

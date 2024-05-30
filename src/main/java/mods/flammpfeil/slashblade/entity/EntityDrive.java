@@ -41,14 +41,21 @@ import net.minecraftforge.network.PlayMessages;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class EntityDrive extends EntityAbstractSummonedSword{
-    private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.<Integer>defineId(EntityDrive.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> FLAGS = SynchedEntityData.<Integer>defineId(EntityDrive.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Float> RANK = SynchedEntityData.<Float>defineId(EntityDrive.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> ROTATION_OFFSET = SynchedEntityData.<Float>defineId(EntityDrive.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> ROTATION_ROLL = SynchedEntityData.<Float>defineId(EntityDrive.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> BASESIZE = SynchedEntityData.<Float>defineId(EntityDrive.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> SPEED = SynchedEntityData.<Float>defineId(EntityDrive.class, EntityDataSerializers.FLOAT);
+public class EntityDrive extends EntityAbstractSummonedSword {
+    private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.<Integer>defineId(EntityDrive.class,
+            EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> FLAGS = SynchedEntityData.<Integer>defineId(EntityDrive.class,
+            EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Float> RANK = SynchedEntityData.<Float>defineId(EntityDrive.class,
+            EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> ROTATION_OFFSET = SynchedEntityData
+            .<Float>defineId(EntityDrive.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> ROTATION_ROLL = SynchedEntityData.<Float>defineId(EntityDrive.class,
+            EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> BASESIZE = SynchedEntityData.<Float>defineId(EntityDrive.class,
+            EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> SPEED = SynchedEntityData.<Float>defineId(EntityDrive.class,
+            EntityDataSerializers.FLOAT);
 
     private int lifetime = 10;
     private KnockBacks action = KnockBacks.cancel;
@@ -57,26 +64,28 @@ public class EntityDrive extends EntityAbstractSummonedSword{
 
     private List<Entity> alreadyHits = Lists.newArrayList();
 
-
     public KnockBacks getKnockBack() {
         return action;
     }
-    public void setKnockBack(KnockBacks action){
+
+    public void setKnockBack(KnockBacks action) {
         this.action = action;
     }
-    public void setKnockBackOrdinal(int ordinal){
-        if(0 <= ordinal && ordinal < KnockBacks.values().length)
+
+    public void setKnockBackOrdinal(int ordinal) {
+        if (0 <= ordinal && ordinal < KnockBacks.values().length)
             this.action = KnockBacks.values()[ordinal];
         else
             this.action = KnockBacks.cancel;
     }
+
     public EntityDrive(EntityType<? extends Projectile> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
         this.setNoGravity(true);
-        //this.setGlowing(true);
+        // this.setGlowing(true);
     }
 
-    public static EntityDrive createInstance(PlayMessages.SpawnEntity packet, Level worldIn){
+    public static EntityDrive createInstance(PlayMessages.SpawnEntity packet, Level worldIn) {
         return new EntityDrive(SlashBlade.RegistryEvents.Drive, worldIn);
     }
 
@@ -97,35 +106,22 @@ public class EntityDrive extends EntityAbstractSummonedSword{
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
 
-        NBTHelper.getNBTCoupler(compound)
-                .put("RotationOffset", this.getRotationOffset())
-                .put("RotationRoll", this.getRotationRoll())
-                .put("BaseSize", this.getBaseSize())
-                .put("Speed", this.getSpeed())
-                .put("Color", this.getColor())
-                .put("Rank", this.getRank())
-                .put("damage", this.damage)
-                .put("crit", this.getIsCritical())
-                .put("clip", this.isNoClip())
-                .put("Lifetime", this.getLifetime())
-                .put("Knockback", this.getKnockBack().ordinal());
+        NBTHelper.getNBTCoupler(compound).put("RotationOffset", this.getRotationOffset())
+                .put("RotationRoll", this.getRotationRoll()).put("BaseSize", this.getBaseSize())
+                .put("Speed", this.getSpeed()).put("Color", this.getColor()).put("Rank", this.getRank())
+                .put("damage", this.damage).put("crit", this.getIsCritical()).put("clip", this.isNoClip())
+                .put("Lifetime", this.getLifetime()).put("Knockback", this.getKnockBack().ordinal());
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
 
-        NBTHelper.getNBTCoupler(compound)
-                .get("RotationOffset", this::setRotationOffset)
-                .get("RotationRoll", this::setRotationRoll)
-                .get("BaseSize", this::setBaseSize)
-                .get("Speed", this::setSpeed)
-                .get("Color", this::setColor)
-                .get("Rank", this::setRank)
-                .get("damage",  ((Double v)->this.damage = v), this.damage)
-                .get("crit",this::setIsCritical)
-                .get("clip",this::setNoClip)
-                .get("Lifetime",this::setLifetime)
+        NBTHelper.getNBTCoupler(compound).get("RotationOffset", this::setRotationOffset)
+                .get("RotationRoll", this::setRotationRoll).get("BaseSize", this::setBaseSize)
+                .get("Speed", this::setSpeed).get("Color", this::setColor).get("Rank", this::setRank)
+                .get("damage", ((Double v) -> this.damage = v), this.damage).get("crit", this::setIsCritical)
+                .get("clip", this::setNoClip).get("Lifetime", this::setLifetime)
                 .get("Knockback", this::setKnockBackOrdinal);
     }
 
@@ -145,22 +141,22 @@ public class EntityDrive extends EntityAbstractSummonedSword{
         d0 = d0 * 64.0D * getViewScale();
         return distance < d0 * d0;
     }
-    
-    protected void removeFlags(FlagsState value){
+
+    protected void removeFlags(FlagsState value) {
         this.flags.remove(value);
         refreshFlags();
     }
 
-    private void refreshFlags(){
-        if(this.level().isClientSide()){
+    private void refreshFlags() {
+        if (this.level().isClientSide()) {
             int newValue = this.entityData.get(FLAGS).intValue();
-            if(intFlags != newValue){
+            if (intFlags != newValue) {
                 intFlags = newValue;
                 flags = EnumSetConverter.convertToEnumSet(FlagsState.class, intFlags);
             }
-        }else{
+        } else {
             int newValue = EnumSetConverter.convertToInt(this.flags);
-            if(this.intFlags != newValue) {
+            if (this.intFlags != newValue) {
                 this.entityData.set(FLAGS, newValue);
                 this.intFlags = newValue;
             }
@@ -171,17 +167,18 @@ public class EntityDrive extends EntityAbstractSummonedSword{
     public void tick() {
         super.tick();
 
-        if(this.getShooter() != null) {
-            //no cyclehit
+        if (this.getShooter() != null) {
+            // no cyclehit
             if (this.tickCount % 2 == 0) {
                 boolean forceHit = true;
 
-                //this::onHitEntity ro KnockBackHandler::setCancel
+                // this::onHitEntity ro KnockBackHandler::setCancel
                 List<Entity> hits;
-                if(getShooter() instanceof LivingEntity shooter) {
-                    float ratio = (float)damage * (getIsCritical() ? 1.1f : 1.0f);
-                    hits = AttackManager.areaAttack(shooter, this.action.action, ratio, forceHit, false, true, alreadyHits);
-                }else{
+                if (getShooter()instanceof LivingEntity shooter) {
+                    float ratio = (float) damage * (getIsCritical() ? 1.1f : 1.0f);
+                    hits = AttackManager.areaAttack(shooter, this.action.action, ratio, forceHit, false, true,
+                            alreadyHits);
+                } else {
                     hits = AttackManager.areaAttack(this, this.action.action, 4.0, forceHit, false, alreadyHits);
                 }
                 alreadyHits.addAll(hits);
@@ -194,59 +191,73 @@ public class EntityDrive extends EntityAbstractSummonedSword{
     public List<Entity> getAlreadyHits() {
         return alreadyHits;
     }
-    
+
     protected void tryDespawn() {
-        if(!this.level().isClientSide()){
+        if (!this.level().isClientSide()) {
             if (getLifetime() < this.tickCount)
                 this.remove(RemovalReason.DISCARDED);
         }
     }
 
-    public int getColor(){
+    public int getColor() {
         return this.getEntityData().get(COLOR);
     }
-    public void setColor(int value){
-        this.getEntityData().set(COLOR,value);
+
+    public void setColor(int value) {
+        this.getEntityData().set(COLOR, value);
     }
 
-    public float getRank(){
+    public float getRank() {
         return this.getEntityData().get(RANK);
     }
-    public void setRank(float value){
-        this.getEntityData().set(RANK,value);
+
+    public void setRank(float value) {
+        this.getEntityData().set(RANK, value);
     }
-    public IConcentrationRank.ConcentrationRanks getRankCode(){
+
+    public IConcentrationRank.ConcentrationRanks getRankCode() {
         return IConcentrationRank.ConcentrationRanks.getRankFromLevel(getRank());
     }
 
-    public int getLifetime(){
+    public int getLifetime() {
         return Math.min(this.lifetime, 1000);
     }
-    public void setLifetime(int value){
+
+    public void setLifetime(int value) {
         this.lifetime = value;
     }
 
-    public float getRotationOffset(){
+    public float getRotationOffset() {
         return this.getEntityData().get(ROTATION_OFFSET);
     }
-    public void setRotationOffset(float value){
+
+    public void setRotationOffset(float value) {
         this.getEntityData().set(ROTATION_OFFSET, value);
     }
-    public float getRotationRoll(){
+
+    public float getRotationRoll() {
         return this.getEntityData().get(ROTATION_ROLL);
     }
-    public void setRotationRoll(float value){
+
+    public void setRotationRoll(float value) {
         this.getEntityData().set(ROTATION_ROLL, value);
     }
-    public float getBaseSize(){
+
+    public float getBaseSize() {
         return this.getEntityData().get(BASESIZE);
     }
-    public void setBaseSize(float value){
+
+    public void setBaseSize(float value) {
         this.getEntityData().set(BASESIZE, value);
     }
-    public float getSpeed() {return  this.getEntityData().get(SPEED);}
-    public void setSpeed(float value) {this.getEntityData().set(SPEED, value);}
 
+    public float getSpeed() {
+        return this.getEntityData().get(SPEED);
+    }
+
+    public void setSpeed(float value) {
+        this.getEntityData().set(SPEED, value);
+    }
 
     @Nullable
     @Override
@@ -259,10 +270,10 @@ public class EntityDrive extends EntityAbstractSummonedSword{
         setOwner(shooter);
     }
 
-    public List<MobEffectInstance> getPotionEffects(){
+    public List<MobEffectInstance> getPotionEffects() {
         List<MobEffectInstance> effects = PotionUtils.getAllEffects(this.getPersistentData());
 
-        if(effects.isEmpty())
+        if (effects.isEmpty())
             effects.add(new MobEffectInstance(MobEffects.POISON, 1, 1));
 
         return effects;
@@ -277,29 +288,23 @@ public class EntityDrive extends EntityAbstractSummonedSword{
         return this.damage;
     }
 
-    protected void onHitEntity(EntityHitResult p_213868_1_)
-    {
+    protected void onHitEntity(EntityHitResult p_213868_1_) {
         Entity targetEntity = p_213868_1_.getEntity();
         int i = Mth.ceil(this.getDamage());
 
-        if (this.getIsCritical())
-        {
+        if (this.getIsCritical()) {
             i += this.random.nextInt(i / 2 + 2);
         }
 
         Entity shooter = this.getShooter();
         DamageSource damagesource;
-        if (shooter == null)
-        {
+        if (shooter == null) {
             damagesource = this.damageSources().indirectMagic(this, this);
-        } else
-        {
+        } else {
             damagesource = this.damageSources().indirectMagic(this, shooter);
-            if (shooter instanceof LivingEntity)
-            {
+            if (shooter instanceof LivingEntity) {
                 Entity hits = targetEntity;
-                if (targetEntity instanceof PartEntity)
-                {
+                if (targetEntity instanceof PartEntity) {
                     hits = ((PartEntity<?>) targetEntity).getParent();
                 }
                 ((LivingEntity) shooter).setLastHurtMob(hits);
@@ -307,57 +312,53 @@ public class EntityDrive extends EntityAbstractSummonedSword{
         }
 
         int fireTime = targetEntity.getRemainingFireTicks();
-        if (this.isOnFire() && !(targetEntity instanceof EnderMan))
-        {
+        if (this.isOnFire() && !(targetEntity instanceof EnderMan)) {
             targetEntity.setSecondsOnFire(5);
         }
 
-        //todo: attack manager
+        // todo: attack manager
         targetEntity.invulnerableTime = 0;
-        if (targetEntity.hurt(damagesource, (float) i))
-        {
+        if (targetEntity.hurt(damagesource, (float) i)) {
             Entity hits = targetEntity;
-            if (targetEntity instanceof PartEntity)
-            {
+            if (targetEntity instanceof PartEntity) {
                 hits = ((PartEntity<?>) targetEntity).getParent();
             }
 
-            if (hits instanceof LivingEntity)
-            {
+            if (hits instanceof LivingEntity) {
                 LivingEntity targetLivingEntity = (LivingEntity) hits;
 
                 StunManager.setStun(targetLivingEntity);
-                if (!this.level().isClientSide() && shooter instanceof LivingEntity)
-                {
+                if (!this.level().isClientSide() && shooter instanceof LivingEntity) {
                     EnchantmentHelper.doPostHurtEffects(targetLivingEntity, shooter);
                     EnchantmentHelper.doPostDamageEffects((LivingEntity) shooter, targetLivingEntity);
                 }
 
                 affectEntity(targetLivingEntity, getPotionEffects(), 1.0f);
 
-                if (shooter != null && targetLivingEntity != shooter && targetLivingEntity instanceof Player && shooter instanceof ServerPlayer)
-                {
-                    ((ServerPlayer) shooter).playNotifySound(this.getHitEntityPlayerSound(), SoundSource.PLAYERS, 0.18F, 0.45F);
+                if (shooter != null && targetLivingEntity != shooter && targetLivingEntity instanceof Player
+                        && shooter instanceof ServerPlayer) {
+                    ((ServerPlayer) shooter).playNotifySound(this.getHitEntityPlayerSound(), SoundSource.PLAYERS, 0.18F,
+                            0.45F);
                 }
             }
 
             this.playSound(this.getHitEntitySound(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
-        } else
-        {
+        } else {
             targetEntity.setRemainingFireTicks(fireTime);
         }
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult blockraytraceresult)
-    {
+    protected void onHitBlock(BlockHitResult blockraytraceresult) {
         this.setRemoved(RemovalReason.DISCARDED);
     }
 
     @Nullable
     public EntityHitResult getRayTrace(Vec3 p_213866_1_, Vec3 p_213866_2_) {
-        return ProjectileUtil.getEntityHitResult(this.level(), this, p_213866_1_, p_213866_2_, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), (entity) -> {
-            return !entity.isSpectator() && entity.isAlive() && entity.isPickable() && (entity != this.getShooter());
-        });
+        return ProjectileUtil.getEntityHitResult(this.level(), this, p_213866_1_, p_213866_2_,
+                this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), (entity) -> {
+                    return !entity.isSpectator() && entity.isAlive() && entity.isPickable()
+                            && (entity != this.getShooter());
+                });
     }
 }

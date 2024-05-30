@@ -74,10 +74,10 @@ public class TargetSelector {
     static public class AttackablePredicate implements Predicate<LivingEntity> {
 
         public boolean test(LivingEntity livingentity) {
-            
+
             if (!SlashBladeConfig.PVP_ENABLE.get() && livingentity instanceof Player)
                 return false;
-            
+
             if (livingentity instanceof ArmorStand)
                 if (((ArmorStand) livingentity).isMarker())
                     return true;
@@ -138,35 +138,30 @@ public class TargetSelector {
 
         list1.addAll(getReflectableEntitiesWithinAABB(attacker));
         list1.addAll(getExtinguishableEntitiesWithinAABB(attacker));
-        
+
         list1.addAll(world.getEntitiesOfClass(LivingEntity.class, aabb.inflate(5), e -> e.isMultipartEntity()).stream()
-                .flatMap(
-                        e -> (e.isMultipartEntity()) ? Stream.of(e.getParts()) : Stream.of(e))
-                .filter(t -> {
+                .flatMap(e -> (e.isMultipartEntity()) ? Stream.of(e.getParts()) : Stream.of(e)).filter(t -> {
                     boolean result = false;
                     var check = new AttackablePredicate();
                     if (t instanceof LivingEntity living) {
                         result = check.test(living);
                     } else if (t instanceof PartEntity<?> part) {
-                        if(part.getParent() instanceof LivingEntity living)
-                        result = check.test(living) && part.distanceToSqr(attacker) < (reach * reach);
+                        if (part.getParent()instanceof LivingEntity living)
+                            result = check.test(living) && part.distanceToSqr(attacker) < (reach * reach);
                     }
                     return result;
                 }).collect(Collectors.toList()));
-        
+
         TargetingConditions predicate = getAreaAttackPredicate(reach);
 
         list1.addAll(world.getEntitiesOfClass(LivingEntity.class, aabb).stream()
-                .flatMap(
-                        e -> (e.isMultipartEntity()) ? Stream.of(e.getParts()) : Stream.of(e))
-                .filter(t -> {
+                .flatMap(e -> (e.isMultipartEntity()) ? Stream.of(e.getParts()) : Stream.of(e)).filter(t -> {
                     boolean result = false;
                     if (t instanceof LivingEntity living) {
                         result = predicate.test(attacker, living);
                     } else if (t instanceof PartEntity<?> part) {
-                        if(part.getParent() instanceof LivingEntity living)
-                        result = predicate.test(attacker, living)
-                                && part.distanceToSqr(attacker) < (reach * reach);
+                        if (part.getParent()instanceof LivingEntity living)
+                            result = predicate.test(attacker, living) && part.distanceToSqr(attacker) < (reach * reach);
                     }
                     return result;
                 }).collect(Collectors.toList()));

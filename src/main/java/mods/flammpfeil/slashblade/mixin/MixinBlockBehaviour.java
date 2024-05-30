@@ -22,37 +22,39 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinBlockBehaviour {
 
     @SuppressWarnings("deprecation")
-    @Inject(at = @At("HEAD")
-            , method="getCollisionShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;"
-            , cancellable = true
-            , remap = true)
-    public void getCollisionShape(BlockGetter p_60743_, BlockPos p_60744_, CollisionContext p_60745_, CallbackInfoReturnable<VoxelShape> callback)
-    {
-        if(!(asState().getBlock() instanceof LeavesBlock)) return;
-        if(p_60745_.isDescending()) return;
+    @Inject(at = @At("HEAD"), method = "getCollisionShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;", cancellable = true, remap = true)
+    public void getCollisionShape(BlockGetter p_60743_, BlockPos p_60744_, CollisionContext p_60745_,
+            CallbackInfoReturnable<VoxelShape> callback) {
+        if (!(asState().getBlock() instanceof LeavesBlock))
+            return;
+        if (p_60745_.isDescending())
+            return;
 
-        if(!(p_60745_ instanceof EntityCollisionContext)) return;
-        if(!(((EntityCollisionContext) p_60745_).getEntity() instanceof Player)) return;
+        if (!(p_60745_ instanceof EntityCollisionContext))
+            return;
+        if (!(((EntityCollisionContext) p_60745_).getEntity() instanceof Player))
+            return;
 
         ItemStack itemStack = ((Player) ((EntityCollisionContext) p_60745_).getEntity()).getMainHandItem();
-        if(!(itemStack.getItem() instanceof ItemSlashBlade)) return;
+        if (!(itemStack.getItem() instanceof ItemSlashBlade))
+            return;
 
-        callback.setReturnValue(Blocks.SCAFFOLDING.getCollisionShape(Blocks.SCAFFOLDING.defaultBlockState(), p_60743_, p_60744_, p_60745_));
+        callback.setReturnValue(Blocks.SCAFFOLDING.getCollisionShape(Blocks.SCAFFOLDING.defaultBlockState(), p_60743_,
+                p_60744_, p_60745_));
         callback.cancel();
     }
+
     @SuppressWarnings("deprecation")
-    @Inject(at = @At("HEAD")
-            , method="getVisualShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;"
-            , cancellable = true
-            , remap = true)
-    public void getVisualShape(BlockGetter p_60743_, BlockPos p_60744_, CollisionContext p_60745_, CallbackInfoReturnable<VoxelShape> callback)
-    {
-        if(!(asState().getBlock() instanceof LeavesBlock)) return;
+    @Inject(at = @At("HEAD"), method = "getVisualShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;", cancellable = true, remap = true)
+    public void getVisualShape(BlockGetter p_60743_, BlockPos p_60744_, CollisionContext p_60745_,
+            CallbackInfoReturnable<VoxelShape> callback) {
+        if (!(asState().getBlock() instanceof LeavesBlock))
+            return;
 
-        callback.setReturnValue(Blocks.SCAFFOLDING.getVisualShape(Blocks.SCAFFOLDING.defaultBlockState(), p_60743_, p_60744_, p_60745_));
+        callback.setReturnValue(Blocks.SCAFFOLDING.getVisualShape(Blocks.SCAFFOLDING.defaultBlockState(), p_60743_,
+                p_60744_, p_60745_));
         callback.cancel();
     }
-
 
     @Shadow
     protected BlockState asState() {

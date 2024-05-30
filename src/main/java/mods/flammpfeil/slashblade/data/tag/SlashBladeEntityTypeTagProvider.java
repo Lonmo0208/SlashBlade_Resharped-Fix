@@ -13,7 +13,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-public class SlashBladeEntityTypeTagProvider extends EntityTypeTagsProvider{
+public class SlashBladeEntityTypeTagProvider extends EntityTypeTagsProvider {
 
     public SlashBladeEntityTypeTagProvider(PackOutput output, CompletableFuture<Provider> lookupProvider, String modId,
             @Nullable ExistingFileHelper existingFileHelper) {
@@ -24,9 +24,9 @@ public class SlashBladeEntityTypeTagProvider extends EntityTypeTagsProvider{
     protected void addTags(Provider lookupProvider) {
         this.tag(EntityTypeTags.ATTACKABLE_BLACKLIST).add(EntityType.VILLAGER);
     }
-    
-    public static class EntityTypeTags{
-        public static final TagKey<EntityType<?>> ATTACKABLE_BLACKLIST = 
-                TagKey.create(Registries.ENTITY_TYPE, SlashBlade.prefix("blacklist/attackable"));
+
+    public static class EntityTypeTags {
+        public static final TagKey<EntityType<?>> ATTACKABLE_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE,
+                SlashBlade.prefix("blacklist/attackable"));
     }
 }

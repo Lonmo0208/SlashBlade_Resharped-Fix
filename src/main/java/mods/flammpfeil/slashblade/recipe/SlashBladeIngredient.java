@@ -40,11 +40,11 @@ public class SlashBladeIngredient extends Ingredient {
         this.items = Collections.unmodifiableSet(items);
         this.request = request;
     }
-    
+
     public static SlashBladeIngredient of(ItemLike item, RequestDefinition request) {
         return new SlashBladeIngredient(Set.of(item.asItem()), request);
     }
-    
+
     public static SlashBladeIngredient of(RequestDefinition request) {
         return new SlashBladeIngredient(Set.of(SBItems.slashblade), request);
     }
@@ -70,12 +70,9 @@ public class SlashBladeIngredient extends Ingredient {
     public JsonElement toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("type", CraftingHelper.getID(Serializer.INSTANCE).toString());
-        if (items.size() == 1)
-        {
+        if (items.size() == 1) {
             json.addProperty("item", ForgeRegistries.ITEMS.getKey(items.iterator().next()).toString());
-        }
-        else
-        {
+        } else {
             JsonArray items = new JsonArray();
             // ensure the order of items in the set is deterministic when saved to JSON
             this.items.stream().map(ForgeRegistries.ITEMS::getKey).sorted().forEach(name -> items.add(name.toString()));
@@ -87,6 +84,7 @@ public class SlashBladeIngredient extends Ingredient {
 
     public static class Serializer implements IIngredientSerializer<SlashBladeIngredient> {
         public static final Serializer INSTANCE = new Serializer();
+
         @Override
         public SlashBladeIngredient parse(FriendlyByteBuf buffer) {
             Set<Item> items = Stream.generate(() -> buffer.readRegistryIdUnsafe(ForgeRegistries.ITEMS))
@@ -101,17 +99,15 @@ public class SlashBladeIngredient extends Ingredient {
             Set<Item> items;
             if (json.has("item"))
                 items = Set.of(CraftingHelper.getItem(GsonHelper.getAsString(json, "item"), true));
-            else if (json.has("items"))
-            {
+            else if (json.has("items")) {
                 ImmutableSet.Builder<Item> builder = ImmutableSet.builder();
                 JsonArray itemArray = GsonHelper.getAsJsonArray(json, "items");
-                for (int i = 0; i < itemArray.size(); i++)
-                {
-                    builder.add(CraftingHelper.getItem(GsonHelper.convertToString(itemArray.get(i), "items[" + i + ']'), true));
+                for (int i = 0; i < itemArray.size(); i++) {
+                    builder.add(CraftingHelper.getItem(GsonHelper.convertToString(itemArray.get(i), "items[" + i + ']'),
+                            true));
                 }
                 items = builder.build();
-            }
-            else
+            } else
                 throw new JsonSyntaxException("Must set either 'item' or 'items'");
             var request = RequestDefinition.fromJSON(json.getAsJsonObject("request"));
             return new SlashBladeIngredient(items, request);

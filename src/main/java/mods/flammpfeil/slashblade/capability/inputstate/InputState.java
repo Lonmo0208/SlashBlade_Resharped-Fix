@@ -11,7 +11,7 @@ public class InputState implements IInputState {
 
     EnumSet<InputCommand> commands = EnumSet.noneOf(InputCommand.class);
     Scheduler scheduler = new Scheduler();
-    EnumMap<InputCommand,Long> lastPressTimes = Maps.newEnumMap(InputCommand.class);
+    EnumMap<InputCommand, Long> lastPressTimes = Maps.newEnumMap(InputCommand.class);
 
     @Override
     public EnumSet<InputCommand> getCommands() {
@@ -27,6 +27,5 @@ public class InputState implements IInputState {
     public EnumMap<InputCommand, Long> getLastPressTimes() {
         return lastPressTimes;
     }
-
 
 }

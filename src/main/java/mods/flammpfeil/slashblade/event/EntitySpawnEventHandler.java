@@ -23,9 +23,9 @@ public class EntitySpawnEventHandler {
         boolean isZombie = isZombie(entity);
         if (!isZombie)
             return;
-        if (!entity.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty()) 
+        if (!entity.getItemBySlot(EquipmentSlot.MAINHAND).isEmpty())
             return;
-        
+
         RandomSource random = event.getLevel().getRandom();
         float difficultyMultiplier = event.getDifficulty().getSpecialMultiplier();
 
@@ -35,7 +35,7 @@ public class EntitySpawnEventHandler {
             return;
 
         float rngResult = random.nextFloat();
-        
+
         if (rngResult < SlashBladeConfig.BROKEN_SABIGATANA_SPAWN_CHANCE.get() * difficultyMultiplier) {
             if (rngResult < SlashBladeConfig.SABIGATANA_SPAWN_CHANCE.get() * difficultyMultiplier) {
                 entity.setItemSlot(EquipmentSlot.MAINHAND,

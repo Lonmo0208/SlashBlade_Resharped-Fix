@@ -29,30 +29,30 @@ public class DataGen {
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         final RegistrySetBuilder bladeBuilder = new RegistrySetBuilder().add(SlashBladeDefinition.REGISTRY_KEY,
                 SlashBladeBuiltInRegistry::registerAll);
-        
+
         final RegistrySetBuilder bladeDropBuilder = new RegistrySetBuilder().add(EntityDropEntry.REGISTRY_KEY,
                 SlashBladeEntityDropBuiltInRegistry::registerAll);
 
         dataGenerator.addProvider(event.includeServer(), new SlashBladeRecipeProvider(packOutput));
         dataGenerator.addProvider(event.includeServer(),
                 new DatapackBuiltinEntriesProvider(packOutput, lookupProvider, bladeBuilder, Set.of(SlashBlade.MODID)) {
-                    
+
                     @Override
                     public String getName() {
                         return "SlashBlade Definition Registry";
                     }
 
                 });
-        dataGenerator.addProvider(event.includeServer(),
-                new DatapackBuiltinEntriesProvider(packOutput, lookupProvider, bladeDropBuilder, Set.of(SlashBlade.MODID)) {
-                    
-                    @Override
-                    public String getName() {
-                        return "SlashBlade Entity Drop Entry Registry";
-                    }
+        dataGenerator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(packOutput, lookupProvider,
+                bladeDropBuilder, Set.of(SlashBlade.MODID)) {
 
-                });
-        dataGenerator.addProvider(event.includeServer(), 
+            @Override
+            public String getName() {
+                return "SlashBlade Entity Drop Entry Registry";
+            }
+
+        });
+        dataGenerator.addProvider(event.includeServer(),
                 new SlashBladeEntityTypeTagProvider(packOutput, lookupProvider, SlashBlade.MODID, existingFileHelper));
     }
 

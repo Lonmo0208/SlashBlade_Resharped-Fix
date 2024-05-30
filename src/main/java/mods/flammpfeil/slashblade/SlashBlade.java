@@ -51,14 +51,12 @@ import org.apache.logging.log4j.Logger;
 // The value here should match an entry in the META-INF/mods.toml file
 
 @Mod(SlashBlade.MODID)
-public class SlashBlade
-{
+public class SlashBlade {
     public static final String MODID = "slashblade";
-    
+
     public static ResourceLocation prefix(String path) {
         return new ResourceLocation(SlashBlade.MODID, path);
     }
-
 
     // Directly reference a log4j logger.
     public static final Logger LOGGER = LogManager.getLogger();
@@ -66,7 +64,6 @@ public class SlashBlade
     public SlashBlade() {
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -76,14 +73,13 @@ public class SlashBlade
         SlashArtsRegistry.SLASH_ARTS.register(FMLJavaModLoadingContext.get().getModEventBus());
         SlashBladeCreativeGroup.CREATIVE_MODE_TABS.register(FMLJavaModLoadingContext.get().getModEventBus());
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register(FMLJavaModLoadingContext.get().getModEventBus());
-        
+
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SlashBladeConfig.COMMON_CONFIG);
-        
+
     }
 
-    private void setup(final FMLCommonSetupEvent event)
-    {
-        
+    private void setup(final FMLCommonSetupEvent event) {
+
         MinecraftForge.EVENT_BUS.addListener(KnockBackHandler::onLivingKnockBack);
 
         FallHandler.getInstance().register();
@@ -111,332 +107,294 @@ public class SlashBlade
         ComboCommands.initDefaultStandByCommands();
     }
 
-
-
-    // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
+    // You can use EventBusSubscriber to automatically subscribe events on the
+    // contained class (this is subscribing to the MOD
     // Event bus for receiving Registry Events)
-    @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents {
 
-        public static final ResourceLocation BladeItemEntityLoc = new ResourceLocation(SlashBlade.MODID, classToString(BladeItemEntity.class));
+        public static final ResourceLocation BladeItemEntityLoc = new ResourceLocation(SlashBlade.MODID,
+                classToString(BladeItemEntity.class));
         public static EntityType<BladeItemEntity> BladeItem;
 
-        public static final ResourceLocation BladeStandEntityLoc = new ResourceLocation(SlashBlade.MODID, classToString(BladeStandEntity.class));
+        public static final ResourceLocation BladeStandEntityLoc = new ResourceLocation(SlashBlade.MODID,
+                classToString(BladeStandEntity.class));
         public static EntityType<BladeStandEntity> BladeStand;
 
-
-        public static final ResourceLocation SummonedSwordLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntityAbstractSummonedSword.class));
+        public static final ResourceLocation SummonedSwordLoc = new ResourceLocation(SlashBlade.MODID,
+                classToString(EntityAbstractSummonedSword.class));
         public static EntityType<EntityAbstractSummonedSword> SummonedSword;
-        public static final ResourceLocation SpiralSwordsLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntitySpiralSwords.class));
+        public static final ResourceLocation SpiralSwordsLoc = new ResourceLocation(SlashBlade.MODID,
+                classToString(EntitySpiralSwords.class));
         public static EntityType<EntitySpiralSwords> SpiralSwords;
 
-        public static final ResourceLocation StormSwordsLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntityStormSwords.class));
+        public static final ResourceLocation StormSwordsLoc = new ResourceLocation(SlashBlade.MODID,
+                classToString(EntityStormSwords.class));
         public static EntityType<EntityStormSwords> StormSwords;
-        public static final ResourceLocation BlisteringSwordsLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntityBlisteringSwords.class));
+        public static final ResourceLocation BlisteringSwordsLoc = new ResourceLocation(SlashBlade.MODID,
+                classToString(EntityBlisteringSwords.class));
         public static EntityType<EntityBlisteringSwords> BlisteringSwords;
-        public static final ResourceLocation HeavyRainSwordsLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntityHeavyRainSwords.class));
+        public static final ResourceLocation HeavyRainSwordsLoc = new ResourceLocation(SlashBlade.MODID,
+                classToString(EntityHeavyRainSwords.class));
         public static EntityType<EntityHeavyRainSwords> HeavyRainSwords;
 
-        public static final ResourceLocation JudgementCutLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntityJudgementCut.class));
+        public static final ResourceLocation JudgementCutLoc = new ResourceLocation(SlashBlade.MODID,
+                classToString(EntityJudgementCut.class));
         public static EntityType<EntityJudgementCut> JudgementCut;
 
-        public static final ResourceLocation SlashEffectLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntitySlashEffect.class));
+        public static final ResourceLocation SlashEffectLoc = new ResourceLocation(SlashBlade.MODID,
+                classToString(EntitySlashEffect.class));
         public static EntityType<EntitySlashEffect> SlashEffect;
 
-        public static final ResourceLocation DriveLoc = new ResourceLocation(SlashBlade.MODID, classToString(EntityDrive.class));
+        public static final ResourceLocation DriveLoc = new ResourceLocation(SlashBlade.MODID,
+                classToString(EntityDrive.class));
         public static EntityType<EntityDrive> Drive;
 
-
-        public static final ResourceLocation PlacePreviewEntityLoc = new ResourceLocation(SlashBlade.MODID, classToString(PlacePreviewEntity.class));
+        public static final ResourceLocation PlacePreviewEntityLoc = new ResourceLocation(SlashBlade.MODID,
+                classToString(PlacePreviewEntity.class));
         public static EntityType<PlacePreviewEntity> PlacePreview;
 
         @SubscribeEvent
-        public static void register(RegisterEvent event){
-            event.register(ForgeRegistries.Keys.ITEMS,
-                helper -> {
-                    
-                    helper.register(new ResourceLocation(MODID,"slashblade_wood"), (ItemSlashBladeDetune)(new ItemSlashBladeDetune(
-                            new ItemTierSlashBlade(60, 2F),
-                            2,
-                            -2.4F,
-                            (new Item.Properties())))
-                            .setDestructable()
-                            .setTexture(SlashBlade.prefix("model/wood.png"))
-                            );
-                    
-                    helper.register(new ResourceLocation(MODID,"slashblade_bamboo"), (ItemSlashBladeDetune)(new ItemSlashBladeDetune(
-                            new ItemTierSlashBlade(70, 3F),
-                            3,
-                            -2.4F,
-                            (new Item.Properties())))
-                            .setDestructable()
-                            .setTexture(SlashBlade.prefix("model/bamboo.png"))
-                            );
-                    
-                    helper.register(new ResourceLocation(MODID,"slashblade_silverbamboo"), (ItemSlashBladeDetune)(new ItemSlashBladeDetune(
-                            new ItemTierSlashBlade(40, 3F),
-                            3,
-                            -2.4F,
-                            (new Item.Properties())))
-                            .setTexture(SlashBlade.prefix("model/silverbamboo.png"))
-                            );
-                    
-                    helper.register(new ResourceLocation(MODID,"slashblade_white"), (ItemSlashBladeDetune)(new ItemSlashBladeDetune(
-                            new ItemTierSlashBlade(70, 4F),
-                            4,
-                            -2.4F,
-                            (new Item.Properties())))
-                            .setTexture(SlashBlade.prefix("model/white.png"))
-                            );
-                    
-                    helper.register(new ResourceLocation(MODID,"slashblade"), new ItemSlashBlade(
-                            new ItemTierSlashBlade(40, 4F),
-                        4,
-                        -2.4F,
-                        (new Item.Properties())));
+        public static void register(RegisterEvent event) {
+            event.register(ForgeRegistries.Keys.ITEMS, helper -> {
 
+                helper.register(new ResourceLocation(MODID, "slashblade_wood"),
+                        (ItemSlashBladeDetune) (new ItemSlashBladeDetune(new ItemTierSlashBlade(60, 2F), 2, -2.4F,
+                                (new Item.Properties()))).setDestructable()
+                                        .setTexture(SlashBlade.prefix("model/wood.png")));
 
-                    helper.register(new ResourceLocation(MODID,"proudsoul"), new Item((new Item.Properties())){
-                        @Override
-                        public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
+                helper.register(new ResourceLocation(MODID, "slashblade_bamboo"),
+                        (ItemSlashBladeDetune) (new ItemSlashBladeDetune(new ItemTierSlashBlade(70, 3F), 3, -2.4F,
+                                (new Item.Properties()))).setDestructable()
+                                        .setTexture(SlashBlade.prefix("model/bamboo.png")));
 
-                            if(entity instanceof BladeItemEntity) return false;
+                helper.register(new ResourceLocation(MODID, "slashblade_silverbamboo"),
+                        (ItemSlashBladeDetune) (new ItemSlashBladeDetune(new ItemTierSlashBlade(40, 3F), 3, -2.4F,
+                                (new Item.Properties()))).setTexture(SlashBlade.prefix("model/silverbamboo.png")));
 
-                            CompoundTag tag = entity.serializeNBT();
-                            tag.putInt("Health", 50);
-                            entity.deserializeNBT(tag);
+                helper.register(new ResourceLocation(MODID, "slashblade_white"),
+                        (ItemSlashBladeDetune) (new ItemSlashBladeDetune(new ItemTierSlashBlade(70, 4F), 4, -2.4F,
+                                (new Item.Properties()))).setTexture(SlashBlade.prefix("model/white.png")));
 
-                            if(entity.isCurrentlyGlowing()){
-                                entity.setDeltaMovement(entity.getDeltaMovement().multiply(0.8,0.0,0.8).add(0.0D, +0.04D, 0.0D));
-                            }else if(entity.isOnFire()) {
-                                entity.setDeltaMovement(entity.getDeltaMovement().multiply(0.8,0.5,0.8).add(0.0D, +0.04D, 0.0D));
+                helper.register(new ResourceLocation(MODID, "slashblade"),
+                        new ItemSlashBlade(new ItemTierSlashBlade(40, 4F), 4, -2.4F, (new Item.Properties())));
+
+                helper.register(new ResourceLocation(MODID, "proudsoul"), new Item((new Item.Properties())) {
+                    @Override
+                    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
+
+                        if (entity instanceof BladeItemEntity)
+                            return false;
+
+                        CompoundTag tag = entity.serializeNBT();
+                        tag.putInt("Health", 50);
+                        entity.deserializeNBT(tag);
+
+                        if (entity.isCurrentlyGlowing()) {
+                            entity.setDeltaMovement(
+                                    entity.getDeltaMovement().multiply(0.8, 0.0, 0.8).add(0.0D, +0.04D, 0.0D));
+                        } else if (entity.isOnFire()) {
+                            entity.setDeltaMovement(
+                                    entity.getDeltaMovement().multiply(0.8, 0.5, 0.8).add(0.0D, +0.04D, 0.0D));
+                        }
+
+                        return false;
+                    }
+
+                    @Override
+                    public boolean isFoil(ItemStack stack) {
+                        return true;// super.hasEffect(stack);
+                    }
+
+                    @Override
+                    public int getEnchantmentValue(ItemStack stack) {
+                        return 50;
+                    }
+                });
+
+                helper.register(new ResourceLocation(MODID, "proudsoul_ingot"), new Item((new Item.Properties())) {
+                    @Override
+                    public boolean isFoil(ItemStack stack) {
+                        return true;// super.hasEffect(stack);
+                    }
+
+                    @Override
+                    public int getEnchantmentValue(ItemStack stack) {
+                        return 100;
+                    }
+                });
+
+                helper.register(new ResourceLocation(MODID, "proudsoul_tiny"), new Item((new Item.Properties())) {
+                    @Override
+                    public boolean isFoil(ItemStack stack) {
+                        return true;// super.hasEffect(stack);
+                    }
+
+                    @Override
+                    public int getEnchantmentValue(ItemStack stack) {
+                        return 10;
+                    }
+                });
+
+                helper.register(new ResourceLocation(MODID, "proudsoul_sphere"),
+                        new Item((new Item.Properties()).rarity(Rarity.UNCOMMON)) {
+                            @Override
+                            public boolean isFoil(ItemStack stack) {
+                                return true;// super.hasEffect(stack);
                             }
 
-                            return false;
-                        }
+                            @Override
+                            public int getEnchantmentValue(ItemStack stack) {
+                                return 150;
+                            }
+                        });
 
-                        @Override
-                        public boolean isFoil(ItemStack stack) {
-                            return true;//super.hasEffect(stack);
-                        }
+                helper.register(new ResourceLocation(MODID, "proudsoul_crystal"),
+                        new Item((new Item.Properties()).rarity(Rarity.RARE)) {
+                            @Override
+                            public boolean isFoil(ItemStack stack) {
+                                return true;// super.hasEffect(stack);
+                            }
 
-                        @Override
-                        public int getEnchantmentValue(ItemStack stack) {
-                            return 50;
-                        }
-                    });
+                            @Override
+                            public int getEnchantmentValue(ItemStack stack) {
+                                return 200;
+                            }
+                        });
 
+                helper.register(new ResourceLocation(MODID, "proudsoul_trapezohedron"),
+                        new Item((new Item.Properties()).rarity(Rarity.EPIC)) {
+                            @Override
+                            public boolean isFoil(ItemStack stack) {
+                                return true;// super.hasEffect(stack);
+                            }
 
-                    helper.register(new ResourceLocation(MODID,"proudsoul_ingot"),
-                            new Item((new Item.Properties())){
-                                @Override
-                                public boolean isFoil(ItemStack stack) {
-                                    return true;//super.hasEffect(stack);
-                                }
-                                @Override
-                                public int getEnchantmentValue(ItemStack stack) {return 100;}
-                            });
+                            @Override
+                            public int getEnchantmentValue(ItemStack stack) {
+                                return Integer.MAX_VALUE;
+                            }
+                        });
 
-                    helper.register(new ResourceLocation(MODID,"proudsoul_tiny"),
-                            new Item((new Item.Properties())){
-                                @Override
-                                public boolean isFoil(ItemStack stack) {
-                                    return true;//super.hasEffect(stack);
-                                }
-                                @Override
-                                public int getEnchantmentValue(ItemStack stack) {return 10;}
-                            });
-
-                    helper.register(new ResourceLocation(MODID,"proudsoul_sphere"),
-                            new Item((new Item.Properties()).rarity(Rarity.UNCOMMON)){
-                                @Override
-                                public boolean isFoil(ItemStack stack) {
-                                    return true;//super.hasEffect(stack);
-                                }
-                                @Override
-                                public int getEnchantmentValue(ItemStack stack) {return 150;}
-                            });
-
-                    helper.register(new ResourceLocation(MODID,"proudsoul_crystal"),
-                            new Item((new Item.Properties()).rarity(Rarity.RARE)){
-                                @Override
-                                public boolean isFoil(ItemStack stack) {
-                                    return true;//super.hasEffect(stack);
-                                }
-                                @Override
-                                public int getEnchantmentValue(ItemStack stack) {return 200;}
-                            });
-
-                    helper.register(new ResourceLocation(MODID,"proudsoul_trapezohedron"),
-                            new Item((new Item.Properties()).rarity(Rarity.EPIC)){
-                                @Override
-                                public boolean isFoil(ItemStack stack) {
-                                    return true;//super.hasEffect(stack);
-                                }
-                                @Override
-                                public int getEnchantmentValue(ItemStack stack) {return Integer.MAX_VALUE;}
-                    });
-
-
-                    helper.register(new ResourceLocation(MODID,"bladestand_1"),
-                            new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
-                    helper.register(new ResourceLocation(MODID,"bladestand_2"),
-                            new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
-                    helper.register(new ResourceLocation(MODID,"bladestand_v"),
-                            new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
-                    helper.register(new ResourceLocation(MODID,"bladestand_s"),
-                            new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
-                    helper.register(new ResourceLocation(MODID,"bladestand_1w"),
-                            new BladeStandItem((new Item.Properties())
-                                    .rarity(Rarity.COMMON),true));
-                    helper.register(new ResourceLocation(MODID,"bladestand_2w"),
-                            new BladeStandItem((new Item.Properties())
-                                    .rarity(Rarity.COMMON),true));
-                }
-            );
-
-
-            event.register(ForgeRegistries.Keys.ENTITY_TYPES,
-                helper -> {
-                    {
-                        EntityType<EntityAbstractSummonedSword> entity = SummonedSword = EntityType.Builder
-                                .of(EntityAbstractSummonedSword::new, MobCategory.MISC)
-                                .sized(0.5F, 0.5F)
-                                .setTrackingRange(4)
-                                .setUpdateInterval(20)
-                                .setCustomClientFactory(EntityAbstractSummonedSword::createInstance)
-                                .build(SummonedSwordLoc.toString());
-                        helper.register(SummonedSwordLoc, entity);
-                    }
-
-                    {
-                        EntityType<EntityStormSwords> entity = StormSwords = EntityType.Builder
-                                .of(EntityStormSwords::new, MobCategory.MISC)
-                                .sized(0.5F, 0.5F)
-                                .setTrackingRange(4)
-                                .setUpdateInterval(20)
-                                .setCustomClientFactory(EntityStormSwords::createInstance)
-                                .build(StormSwordsLoc.toString());
-                        helper.register(StormSwordsLoc, entity);
-                    }
-
-                    {
-                        EntityType<EntitySpiralSwords> entity = SpiralSwords = EntityType.Builder
-                                .of(EntitySpiralSwords::new, MobCategory.MISC)
-                                .sized(0.5F, 0.5F)
-                                .setTrackingRange(4)
-                                .setUpdateInterval(20)
-                                .setCustomClientFactory(EntitySpiralSwords::createInstance)
-                                .build(SpiralSwordsLoc.toString());
-                        helper.register(SpiralSwordsLoc, entity);
-                    }
-
-                    {
-                        EntityType<EntityBlisteringSwords> entity = BlisteringSwords = EntityType.Builder
-                                .of(EntityBlisteringSwords::new, MobCategory.MISC)
-                                .sized(0.5F, 0.5F)
-                                .setTrackingRange(4)
-                                .setUpdateInterval(20)
-                                .setCustomClientFactory(EntityBlisteringSwords::createInstance)
-                                .build(BlisteringSwordsLoc.toString());
-                        helper.register(BlisteringSwordsLoc, entity);
-                    }
-
-                    {
-                        EntityType<EntityHeavyRainSwords> entity = HeavyRainSwords = EntityType.Builder
-                                .of(EntityHeavyRainSwords::new, MobCategory.MISC)
-                                .sized(0.5F, 0.5F)
-                                .setTrackingRange(4)
-                                .setUpdateInterval(20)
-                                .setCustomClientFactory(EntityHeavyRainSwords::createInstance)
-                                .build(HeavyRainSwordsLoc.toString());
-                        helper.register(HeavyRainSwordsLoc, entity);
-                    }
-
-                    {
-                        EntityType<EntityJudgementCut> entity = JudgementCut = EntityType.Builder
-                                .of(EntityJudgementCut::new, MobCategory.MISC)
-                                .sized(2.5F, 2.5F)
-                                .setTrackingRange(4)
-                                .setUpdateInterval(20)
-                                .setCustomClientFactory(EntityJudgementCut::createInstance)
-                                .build(JudgementCutLoc.toString());
-                        helper.register(JudgementCutLoc, entity);
-                    }
-
-                    {
-                        EntityType<BladeItemEntity> entity = BladeItem = EntityType.Builder
-                                .of(BladeItemEntity::new, MobCategory.MISC)
-                                .sized(0.25F, 0.25F)
-                                .setTrackingRange(4)
-                                .setUpdateInterval(20)
-                                .setCustomClientFactory(BladeItemEntity::createInstanceFromPacket)
-                                .build(BladeItemEntityLoc.toString());
-                        helper.register(BladeItemEntityLoc, entity);
-                    }
-
-                    {
-                        EntityType<BladeStandEntity> entity = BladeStand = EntityType.Builder
-                                .of(BladeStandEntity::new, MobCategory.MISC)
-                                .sized(0.5F, 0.5F)
-                                .setTrackingRange(10)
-                                .setUpdateInterval(20)
-                                .setShouldReceiveVelocityUpdates(false)
-                                .setCustomClientFactory(BladeStandEntity::createInstance)
-                                .build(BladeStandEntityLoc.toString());
-                        helper.register(BladeStandEntityLoc, entity);
-                    }
-
-                    {
-                        EntityType<EntitySlashEffect> entity = SlashEffect = EntityType.Builder
-                                .of(EntitySlashEffect::new, MobCategory.MISC)
-                                .sized(3.0F, 3.0F)
-                                .setTrackingRange(4)
-                                .setUpdateInterval(20)
-                                .setCustomClientFactory(EntitySlashEffect::createInstance)
-                                .build(SlashEffectLoc.toString());
-                        helper.register(SlashEffectLoc, entity);
-                    }
-
-                    {
-                        EntityType<EntityDrive> entity = Drive = EntityType.Builder
-                                .of(EntityDrive::new, MobCategory.MISC)
-                                .sized(3.0F, 3.0F)
-                                .setTrackingRange(4)
-                                .setUpdateInterval(20)
-                                .setCustomClientFactory(EntityDrive::createInstance)
-                                .build(DriveLoc.toString());
-                        helper.register(DriveLoc, entity);
-                    }
-
-                    {
-                        EntityType<PlacePreviewEntity> entity = PlacePreview = EntityType.Builder
-                                .of(PlacePreviewEntity::new, MobCategory.MISC)
-                                .sized(0.5F, 0.5F)
-                                .setTrackingRange(10)
-                                .setUpdateInterval(20)
-                                .setShouldReceiveVelocityUpdates(false)
-                                .setCustomClientFactory(PlacePreviewEntity::createInstance)
-                                .build(PlacePreviewEntityLoc.toString());
-                        helper.register(PlacePreviewEntityLoc, entity);
-                    }
-                }
-            );
-
-            event.register(ForgeRegistries.Keys.STAT_TYPES,helper -> {
-                SWORD_SUMMONED =registerCustomStat("sword_summoned");
+                helper.register(new ResourceLocation(MODID, "bladestand_1"),
+                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
+                helper.register(new ResourceLocation(MODID, "bladestand_2"),
+                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
+                helper.register(new ResourceLocation(MODID, "bladestand_v"),
+                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
+                helper.register(new ResourceLocation(MODID, "bladestand_s"),
+                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
+                helper.register(new ResourceLocation(MODID, "bladestand_1w"),
+                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON), true));
+                helper.register(new ResourceLocation(MODID, "bladestand_2w"),
+                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON), true));
             });
 
+            event.register(ForgeRegistries.Keys.ENTITY_TYPES, helper -> {
+                {
+                    EntityType<EntityAbstractSummonedSword> entity = SummonedSword = EntityType.Builder
+                            .of(EntityAbstractSummonedSword::new, MobCategory.MISC).sized(0.5F, 0.5F)
+                            .setTrackingRange(4).setUpdateInterval(20)
+                            .setCustomClientFactory(EntityAbstractSummonedSword::createInstance)
+                            .build(SummonedSwordLoc.toString());
+                    helper.register(SummonedSwordLoc, entity);
+                }
+
+                {
+                    EntityType<EntityStormSwords> entity = StormSwords = EntityType.Builder
+                            .of(EntityStormSwords::new, MobCategory.MISC).sized(0.5F, 0.5F).setTrackingRange(4)
+                            .setUpdateInterval(20).setCustomClientFactory(EntityStormSwords::createInstance)
+                            .build(StormSwordsLoc.toString());
+                    helper.register(StormSwordsLoc, entity);
+                }
+
+                {
+                    EntityType<EntitySpiralSwords> entity = SpiralSwords = EntityType.Builder
+                            .of(EntitySpiralSwords::new, MobCategory.MISC).sized(0.5F, 0.5F).setTrackingRange(4)
+                            .setUpdateInterval(20).setCustomClientFactory(EntitySpiralSwords::createInstance)
+                            .build(SpiralSwordsLoc.toString());
+                    helper.register(SpiralSwordsLoc, entity);
+                }
+
+                {
+                    EntityType<EntityBlisteringSwords> entity = BlisteringSwords = EntityType.Builder
+                            .of(EntityBlisteringSwords::new, MobCategory.MISC).sized(0.5F, 0.5F).setTrackingRange(4)
+                            .setUpdateInterval(20).setCustomClientFactory(EntityBlisteringSwords::createInstance)
+                            .build(BlisteringSwordsLoc.toString());
+                    helper.register(BlisteringSwordsLoc, entity);
+                }
+
+                {
+                    EntityType<EntityHeavyRainSwords> entity = HeavyRainSwords = EntityType.Builder
+                            .of(EntityHeavyRainSwords::new, MobCategory.MISC).sized(0.5F, 0.5F).setTrackingRange(4)
+                            .setUpdateInterval(20).setCustomClientFactory(EntityHeavyRainSwords::createInstance)
+                            .build(HeavyRainSwordsLoc.toString());
+                    helper.register(HeavyRainSwordsLoc, entity);
+                }
+
+                {
+                    EntityType<EntityJudgementCut> entity = JudgementCut = EntityType.Builder
+                            .of(EntityJudgementCut::new, MobCategory.MISC).sized(2.5F, 2.5F).setTrackingRange(4)
+                            .setUpdateInterval(20).setCustomClientFactory(EntityJudgementCut::createInstance)
+                            .build(JudgementCutLoc.toString());
+                    helper.register(JudgementCutLoc, entity);
+                }
+
+                {
+                    EntityType<BladeItemEntity> entity = BladeItem = EntityType.Builder
+                            .of(BladeItemEntity::new, MobCategory.MISC).sized(0.25F, 0.25F).setTrackingRange(4)
+                            .setUpdateInterval(20).setCustomClientFactory(BladeItemEntity::createInstanceFromPacket)
+                            .build(BladeItemEntityLoc.toString());
+                    helper.register(BladeItemEntityLoc, entity);
+                }
+
+                {
+                    EntityType<BladeStandEntity> entity = BladeStand = EntityType.Builder
+                            .of(BladeStandEntity::new, MobCategory.MISC).sized(0.5F, 0.5F).setTrackingRange(10)
+                            .setUpdateInterval(20).setShouldReceiveVelocityUpdates(false)
+                            .setCustomClientFactory(BladeStandEntity::createInstance)
+                            .build(BladeStandEntityLoc.toString());
+                    helper.register(BladeStandEntityLoc, entity);
+                }
+
+                {
+                    EntityType<EntitySlashEffect> entity = SlashEffect = EntityType.Builder
+                            .of(EntitySlashEffect::new, MobCategory.MISC).sized(3.0F, 3.0F).setTrackingRange(4)
+                            .setUpdateInterval(20).setCustomClientFactory(EntitySlashEffect::createInstance)
+                            .build(SlashEffectLoc.toString());
+                    helper.register(SlashEffectLoc, entity);
+                }
+
+                {
+                    EntityType<EntityDrive> entity = Drive = EntityType.Builder.of(EntityDrive::new, MobCategory.MISC)
+                            .sized(3.0F, 3.0F).setTrackingRange(4).setUpdateInterval(20)
+                            .setCustomClientFactory(EntityDrive::createInstance).build(DriveLoc.toString());
+                    helper.register(DriveLoc, entity);
+                }
+
+                {
+                    EntityType<PlacePreviewEntity> entity = PlacePreview = EntityType.Builder
+                            .of(PlacePreviewEntity::new, MobCategory.MISC).sized(0.5F, 0.5F).setTrackingRange(10)
+                            .setUpdateInterval(20).setShouldReceiveVelocityUpdates(false)
+                            .setCustomClientFactory(PlacePreviewEntity::createInstance)
+                            .build(PlacePreviewEntityLoc.toString());
+                    helper.register(PlacePreviewEntityLoc, entity);
+                }
+            });
+
+            event.register(ForgeRegistries.Keys.STAT_TYPES, helper -> {
+                SWORD_SUMMONED = registerCustomStat("sword_summoned");
+            });
 
 //            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(SlashBlade.MODID, "slashblade"), SLASHBLADE);
         }
 
         private static String classToString(Class<? extends Entity> entityClass) {
-            return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, entityClass.getSimpleName()).replace("entity_", "");
+            return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, entityClass.getSimpleName())
+                    .replace("entity_", "");
         }
 
         @SubscribeEvent
-        public static void onRegisterRenderers(final EntityRenderersEvent.RegisterRenderers event){
+        public static void onRegisterRenderers(final EntityRenderersEvent.RegisterRenderers event) {
             event.registerEntityRenderer(RegistryEvents.SummonedSword, SummonedSwordRenderer::new);
             event.registerEntityRenderer(RegistryEvents.StormSwords, SummonedSwordRenderer::new);
             event.registerEntityRenderer(RegistryEvents.SpiralSwords, SummonedSwordRenderer::new);
@@ -452,7 +410,7 @@ public class SlashBlade
         }
 
         @SubscribeEvent
-        public static void onRegisterCapability(final RegisterCapabilitiesEvent event){
+        public static void onRegisterCapability(final RegisterCapabilitiesEvent event) {
             CapabilitySlashBlade.register(event);
             CapabilityMobEffect.register(event);
             CapabilityInputState.register(event);
@@ -473,13 +431,13 @@ public class SlashBlade
          * /scoreboard objectives setdisplay sidebar stat
          */
     }
-    
+
     public static Registry<SlashBladeDefinition> getSlashBladeDefinitionRegistry(Level level) {
         if (level.isClientSide())
             return BladeModelManager.getClientSlashBladeRegistry();
         return SlashBlade.getSlashBladeDefinitionRegistry(level.registryAccess());
     }
-    
+
     public static Registry<SlashBladeDefinition> getSlashBladeDefinitionRegistry(RegistryAccess access) {
         return access.registryOrThrow(SlashBladeDefinition.REGISTRY_KEY);
     }

@@ -24,18 +24,19 @@ public record SlashBladeShapedRecipeSerializer<T extends Recipe<?>, U extends T>
             json.add("result", object);
         }
         T recipe = compose().fromJson(id, json);
-        if(json.has("blade")) {
+        if (json.has("blade")) {
             ResourceLocation output = new ResourceLocation(GsonHelper.getAsString(json, "blade"));
             return converter().apply(recipe, output);
         }
-        return converter().apply(recipe, new ResourceLocation(GsonHelper.getAsString(json.getAsJsonObject("result"), "item")));
+        return converter().apply(recipe,
+                new ResourceLocation(GsonHelper.getAsString(json.getAsJsonObject("result"), "item")));
     }
 
     @Override
     @NotNull
     public U fromNetwork(@NotNull ResourceLocation id, @NotNull FriendlyByteBuf buf) {
         T recipe = compose().fromNetwork(id, buf);
-        if(buf.readBoolean())
+        if (buf.readBoolean())
             return converter().apply(recipe, buf.readResourceLocation());
         return converter().apply(recipe, null);
     }
@@ -43,12 +44,12 @@ public record SlashBladeShapedRecipeSerializer<T extends Recipe<?>, U extends T>
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buf, @NotNull U recipe) {
         compose().toNetwork(buf, recipe);
-        if(recipe instanceof SlashBladeShapedRecipe bladeRecipe) {
+        if (recipe instanceof SlashBladeShapedRecipe bladeRecipe) {
             boolean hasName = bladeRecipe.getOutputBlade() != null;
             buf.writeBoolean(hasName);
-            if(hasName)
+            if (hasName)
                 buf.writeResourceLocation(bladeRecipe.getOutputBlade());
-        }else 
+        } else
             buf.writeBoolean(false);
     }
 }

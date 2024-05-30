@@ -81,7 +81,7 @@ public interface ISlashBladeState {
     int getProudSoulCount();
 
     void setProudSoulCount(int psCount);
-    
+
     int getKillCount();
 
     void setKillCount(int killCount);
@@ -99,8 +99,7 @@ public interface ISlashBladeState {
         ResourceLocation key = getSlashArtsKey();
         SlashArts result = null;
         if (key != null)
-            result = SlashArtsRegistry.REGISTRY.get().containsKey(key) 
-                    ? SlashArtsRegistry.REGISTRY.get().getValue(key)
+            result = SlashArtsRegistry.REGISTRY.get().containsKey(key) ? SlashArtsRegistry.REGISTRY.get().getValue(key)
                     : SlashArtsRegistry.JUDGEMENT_CUT.get();
 
         if (key == SlashArtsRegistry.NONE.getId())
@@ -222,7 +221,7 @@ public interface ISlashBladeState {
             return ComboStateRegistry.NONE.getId();
 
         ComboState current = ComboStateRegistry.REGISTRY.get().getValue(currentloc.getValue());
-        
+
         if (this.isBroken() || this.isSealed())
             return ComboStateRegistry.NONE.getId();
 
@@ -330,16 +329,11 @@ public interface ISlashBladeState {
 
         NBTHelper.getNBTCoupler(tag).put("BladeUniqueId", this.getUniqueId())
 
-                .put("lastActionTime", this.getLastActionTime())
-                .put("TargetEntity", this.getTargetEntityId())
-                .put("_onClick", this.onClick())
-                .put("fallDecreaseRate", this.getFallDecreaseRate())
-                .put("AttackAmplifier", this.getAttackAmplifier())
-                .put("currentCombo", this.getComboSeq().toString())
-                .put("proudSoul", this.getProudSoulCount())
-                .put("killCount", this.getKillCount())
-                .put("Damage", this.getDamage())
-                .put("isBroken", this.isBroken());
+                .put("lastActionTime", this.getLastActionTime()).put("TargetEntity", this.getTargetEntityId())
+                .put("_onClick", this.onClick()).put("fallDecreaseRate", this.getFallDecreaseRate())
+                .put("AttackAmplifier", this.getAttackAmplifier()).put("currentCombo", this.getComboSeq().toString())
+                .put("proudSoul", this.getProudSoulCount()).put("killCount", this.getKillCount())
+                .put("Damage", this.getDamage()).put("isBroken", this.isBroken());
 
         return tag;
     }
@@ -350,13 +344,10 @@ public interface ISlashBladeState {
 
                 .get("lastActionTime", this::setLastActionTime)
                 .get("TargetEntity", ((Integer id) -> this.setTargetEntityId(id))).get("_onClick", this::setOnClick)
-                .get("fallDecreaseRate", this::setFallDecreaseRate)
-                .get("AttackAmplifier", this::setAttackAmplifier)
+                .get("fallDecreaseRate", this::setFallDecreaseRate).get("AttackAmplifier", this::setAttackAmplifier)
                 .get("currentCombo", ((String s) -> this.setComboSeq(ResourceLocation.tryParse(s))))
-                .get("proudSoul", this::setProudSoulCount)
-                .get("killCount", this::setKillCount)
-                .get("Damage", this::setDamage)
-                .get("isBroken", this::setBroken);
+                .get("proudSoul", this::setProudSoulCount).get("killCount", this::setKillCount)
+                .get("Damage", this::setDamage).get("isBroken", this::setBroken);
 
         this.setHasChangedActiveState(false);
     }

@@ -35,57 +35,59 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Reference implementation of {@link ISlashBladeState}. Use/extend this or implement your own.
+ * Reference implementation of {@link ISlashBladeState}. Use/extend this or
+ * implement your own.
  *
- * Derived from the Redstone Flux power system designed by King Lemming and originally utilized in Thermal Expansion and related mods.
- * Created with consent and permission of King Lemming and Team CoFH. Released with permission under LGPL 2.1 when bundled with Forge.
+ * Derived from the Redstone Flux power system designed by King Lemming and
+ * originally utilized in Thermal Expansion and related mods. Created with
+ * consent and permission of King Lemming and Team CoFH. Released with
+ * permission under LGPL 2.1 when bundled with Forge.
  */
-public class SlashBladeState implements ISlashBladeState{
+public class SlashBladeState implements ISlashBladeState {
 
-    //action state
-    protected long lastActionTime; //lastActionTime
-    protected int targetEntityId; //TargetEntity
-    protected boolean _onClick; //_onClick
+    // action state
+    protected long lastActionTime; // lastActionTime
+    protected int targetEntityId; // TargetEntity
+    protected boolean _onClick; // _onClick
     protected float fallDecreaseRate;
-    protected boolean isCharged; //isCharged
-    protected float attackAmplifier; //AttackAmplifier
-    protected ResourceLocation comboSeq; //comboSeq
-    protected String lastPosHash; //lastPosHash
-    protected boolean isBroken; //isBroken
+    protected boolean isCharged; // isCharged
+    protected float attackAmplifier; // AttackAmplifier
+    protected ResourceLocation comboSeq; // comboSeq
+    protected String lastPosHash; // lastPosHash
+    protected boolean isBroken; // isBroken
 
-    //protected int lumbmanager; //lumbmanager EntityID
+    // protected int lumbmanager; //lumbmanager EntityID
 
-    //passive state
-    protected boolean isNoScabbard; //isNoScabbard
-    protected boolean isSealed; //isSealed
+    // passive state
+    protected boolean isNoScabbard; // isNoScabbard
+    protected boolean isSealed; // isSealed
 
-    protected float baseAttackModifier = 4F; //BaseAttackModifier
+    protected float baseAttackModifier = 4F; // BaseAttackModifier
 
-    protected int killCount; //killCount
-    protected int refine; //RepairCounter
+    protected int killCount; // killCount
+    protected int refine; // RepairCounter
 
-    protected UUID owner; //Owner
+    protected UUID owner; // Owner
 
-    protected UUID uniqueId = UUID.randomUUID(); //Owner
+    protected UUID uniqueId = UUID.randomUUID(); // Owner
 
     protected String translationKey = "";
 
-
-    //performance setting
-    protected ResourceLocation slashArtsKey; //SpecialAttackType
-    protected boolean isDestructable; //isDestructable
-    protected boolean isDefaultBewitched; //isDefaultBewitched
+    // performance setting
+    protected ResourceLocation slashArtsKey; // SpecialAttackType
+    protected boolean isDestructable; // isDestructable
+    protected boolean isDefaultBewitched; // isDefaultBewitched
 
     protected ResourceLocation comboRootName;
 
-    //render info
-    protected Optional<CarryType> carryType = Optional.empty(); //StandbyRenderType
-    protected Optional<Color> effectColor = Optional.empty(); //SummonedSwordColor
-    protected boolean effectColorInverse;//SummonedSwordColorInverse
-    protected Optional<Vec3> adjust = Optional.empty();//adjustXYZ
+    // render info
+    protected Optional<CarryType> carryType = Optional.empty(); // StandbyRenderType
+    protected Optional<Color> effectColor = Optional.empty(); // SummonedSwordColor
+    protected boolean effectColorInverse;// SummonedSwordColorInverse
+    protected Optional<Vec3> adjust = Optional.empty();// adjustXYZ
 
-    protected Optional<ResourceLocation> texture = Optional.empty(); //TextureName
-    protected Optional<ResourceLocation> model = Optional.empty();//ModelName
+    protected Optional<ResourceLocation> texture = Optional.empty(); // TextureName
+    protected Optional<ResourceLocation> model = Optional.empty();// ModelName
 
     private CompoundTag shareTag = null;
 
@@ -309,7 +311,7 @@ public class SlashBladeState implements ISlashBladeState{
     }
 
     LazyOptional<ResourceLocation> rootCombo = instantiateRootComboHolder();
-    
+
     @Override
     public ResourceLocation getComboRoot() {
         return this.comboRootName;
@@ -317,16 +319,16 @@ public class SlashBladeState implements ISlashBladeState{
 
     @Override
     public void setComboRoot(ResourceLocation rootLoc) {
-        this.comboRootName = ComboStateRegistry.REGISTRY.get().containsKey(rootLoc) ? rootLoc :
-            ComboStateRegistry.STANDBY.getId();
+        this.comboRootName = ComboStateRegistry.REGISTRY.get().containsKey(rootLoc) ? rootLoc
+                : ComboStateRegistry.STANDBY.getId();
         this.rootCombo = instantiateRootComboHolder();
     }
 
-    private LazyOptional<ResourceLocation> instantiateRootComboHolder(){
-        return LazyOptional.of(()->{
-            if(!ComboStateRegistry.REGISTRY.get().containsKey(this.getComboRoot())){
+    private LazyOptional<ResourceLocation> instantiateRootComboHolder() {
+        return LazyOptional.of(() -> {
+            if (!ComboStateRegistry.REGISTRY.get().containsKey(this.getComboRoot())) {
                 return ComboStateRegistry.STANDBY.getId();
-            }else{
+            } else {
                 return this.getComboRoot();
             }
         });
@@ -343,6 +345,7 @@ public class SlashBladeState implements ISlashBladeState{
     }
 
     boolean isChangedActiveState = false;
+
     @Override
     public boolean hasChangedActiveState() {
         return this.isChangedActiveState;
@@ -362,7 +365,7 @@ public class SlashBladeState implements ISlashBladeState{
     public void setUniqueId(UUID uniqueId) {
         this.uniqueId = uniqueId;
     }
-    
+
     private int maxDamage = 40;
     private int damage = 0;
 
@@ -388,7 +391,7 @@ public class SlashBladeState implements ISlashBladeState{
     }
 
     private int proudSoul = 0;
-    
+
     @Override
     public int getProudSoulCount() {
         return this.proudSoul;

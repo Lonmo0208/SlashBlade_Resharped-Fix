@@ -9,21 +9,23 @@ import mods.flammpfeil.slashblade.util.VectorHelper;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
-public class Drive
-{
-    public static EntityDrive doSlash(LivingEntity playerIn, Vec3 centerOffset, boolean critical, double damage, float speed) {
-        return doSlash(playerIn, centerOffset, critical, damage, KnockBacks.cancel, speed);
+public class Drive {
+    public static EntityDrive doSlash(LivingEntity playerIn, float roll, int lifetime, Vec3 centerOffset,
+            boolean critical, double damage, float speed) {
+        return doSlash(playerIn, roll, lifetime, centerOffset, critical, damage, KnockBacks.cancel, speed);
     }
 
-    public static EntityDrive doSlash(LivingEntity playerIn, Vec3 centerOffset, boolean critical, double damage, KnockBacks knockback, float speed) {
+    public static EntityDrive doSlash(LivingEntity playerIn, float roll, int lifetime, Vec3 centerOffset,
+            boolean critical, double damage, KnockBacks knockback, float speed) {
 
         int colorCode = playerIn.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
-                .map(state -> state.getColorCode()).orElseGet(() -> 0xFFFFFF);
+                .map(state -> state.getColorCode()).orElse(0xFF3333FF);
 
-        return doSlash(playerIn, colorCode, centerOffset, critical, damage, knockback, speed);
+        return doSlash(playerIn, roll, lifetime, colorCode, centerOffset, critical, damage, knockback, speed);
     }
-    
-    public static EntityDrive doSlash(LivingEntity playerIn, int colorCode, Vec3 centerOffset, boolean critical, double damage, KnockBacks knockback, float speed) {
+
+    public static EntityDrive doSlash(LivingEntity playerIn, float roll, int lifetime, int colorCode, Vec3 centerOffset,
+            boolean critical, double damage, KnockBacks knockback, float speed) {
 
         if (playerIn.level().isClientSide())
             return null;
@@ -35,9 +37,10 @@ public class Drive
                 .add(VectorHelper.getVectorForRotation(0, playerIn.getViewYRot(0) + 90).scale(centerOffset.z))
                 .add(playerIn.getLookAngle().scale(centerOffset.z));
         EntityDrive drive = new EntityDrive(SlashBlade.RegistryEvents.Drive, playerIn.level());
-        
+
         drive.setPos(pos.x, pos.y, pos.z);
         drive.setOwner(playerIn);
+        drive.setRotationRoll(roll);
         drive.setYRot(playerIn.getYRot());
         drive.setXRot(0);
 
@@ -47,12 +50,15 @@ public class Drive
         drive.setSpeed(speed);
         drive.setKnockBack(knockback);
 
+        drive.setLifetime(lifetime);
+
         if (playerIn != null)
             playerIn.getCapability(ConcentrationRankCapabilityProvider.RANK_POINT)
                     .ifPresent(rank -> drive.setRank(rank.getRankLevel(playerIn.level().getGameTime())));
 
         playerIn.level().addFreshEntity(drive);
-        drive.shoot(playerIn.getLookAngle().x, playerIn.getLookAngle().y, playerIn.getLookAngle().z, drive.getSpeed(), 0);
+        drive.shoot(playerIn.getLookAngle().x, playerIn.getLookAngle().y, playerIn.getLookAngle().z, drive.getSpeed(),
+                0);
 
         return drive;
     }

@@ -77,15 +77,16 @@ public class ItemSlashBlade extends SwordItem {
     public static final Capability<IInputState> INPUT_STATE = CapabilityManager.get(new CapabilityToken<>() {
     });
 
-    public static final List<Enchantment> exEnchantment = List.of(Enchantments.SOUL_SPEED, Enchantments.POWER_ARROWS, Enchantments.FALL_PROTECTION);
-    
+    public static final List<Enchantment> exEnchantment = List.of(Enchantments.SOUL_SPEED, Enchantments.POWER_ARROWS,
+            Enchantments.FALL_PROTECTION);
+
     public ItemSlashBlade(Tier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
         super(tier, attackDamageIn, attackSpeedIn, builder);
     }
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        if(exEnchantment.contains(enchantment))
+        if (exEnchantment.contains(enchantment))
             return true;
         return super.canApplyAtEnchantingTable(stack, enchantment);
     }
@@ -111,12 +112,13 @@ public class ItemSlashBlade extends SwordItem {
                 float attackAmplifier = s.getAttackAmplifier() - 1F;
                 if (s.isBroken() || s.isSealed())
                     attackAmplifier = 2 - baseAttackModifier;
-                else 
-                    attackAmplifier += swordType.contains(SwordType.FIERCEREDGE) ? s.getRefine() : s.getRefine() * SlashBladeConfig.REFINE_BOUNS.get();
-                
+                else
+                    attackAmplifier += swordType.contains(SwordType.FIERCEREDGE) ? s.getRefine()
+                            : s.getRefine() * SlashBladeConfig.REFINE_BOUNS.get();
+
                 AttributeModifier amplifier = new AttributeModifier(ATTACK_DAMAGE_AMPLIFIER, "Weapon amplifier",
                         (double) attackAmplifier, AttributeModifier.Operation.ADDITION);
-                
+
                 result.remove(Attributes.ATTACK_DAMAGE, amplifier);
                 result.put(Attributes.ATTACK_DAMAGE, amplifier);
 
@@ -236,12 +238,12 @@ public class ItemSlashBlade extends SwordItem {
 
             var state = stack.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
             ItemStack soul = new ItemStack(SBItems.proudsoul_tiny);
-            
+
             int count = state.getProudSoulCount() >= 1000 ? 10 : Math.max(1, state.getProudSoulCount() / 100);
-            
+
             soul.setCount(count);
             state.setProudSoulCount(state.getProudSoulCount() - (count * 100));
-            
+
             ItemEntity itementity = new ItemEntity(user.level(), user.getX(), user.getY(), user.getZ(), soul);
             BladeItemEntity e = new BladeItemEntity(SlashBlade.RegistryEvents.BladeItem, user.level()) {
                 static final String isReleased = "isReleased";
@@ -326,9 +328,9 @@ public class ItemSlashBlade extends SwordItem {
             stack.getCapability(BLADESTATE).ifPresent((state) -> {
 
                 var swordType = SwordType.from(stack);
-                if(state.isBroken() || state.isSealed() || !(swordType.contains(SwordType.ENCHANTED)))
+                if (state.isBroken() || state.isSealed() || !(swordType.contains(SwordType.ENCHANTED)))
                     return;
-                
+
                 ResourceLocation sa = state.doChargeAction(entityLiving, elapsed);
 
                 // sa.tickAction(entityLiving);
@@ -349,7 +351,7 @@ public class ItemSlashBlade extends SwordItem {
                     ? ComboStateRegistry.REGISTRY.get().getValue(state.getComboSeq())
                     : ComboStateRegistry.NONE.get()).holdAction(player);
             var swordType = SwordType.from(stack);
-            if(state.isBroken() || state.isSealed() || !(swordType.contains(SwordType.ENCHANTED)))
+            if (state.isBroken() || state.isSealed() || !(swordType.contains(SwordType.ENCHANTED)))
                 return;
             if (!player.level().isClientSide()) {
                 int ticks = player.getTicksUsingItem();
@@ -374,11 +376,12 @@ public class ItemSlashBlade extends SwordItem {
                 var swordType = SwordType.from(stack);
                 if (entityIn instanceof Player player) {
                     boolean hasHunger = player.hasEffect(MobEffects.HUNGER) && SlashBladeConfig.HUNGER_CAN_REPAIR.get();
-                    if(swordType.contains(SwordType.BEWITCHED) || hasHunger) {
+                    if (swordType.contains(SwordType.BEWITCHED) || hasHunger) {
                         if (stack.getDamageValue() > 0 && player.getFoodData().getFoodLevel() > 0) {
                             int hungerAmplifier = hasHunger ? player.getEffect(MobEffects.HUNGER).getAmplifier() : 0;
                             int level = 1 + Math.abs(hungerAmplifier);
-                            player.causeFoodExhaustion(SlashBladeConfig.BEWITCHED_HUNGER_EXHAUSTION.get().floatValue() * level);
+                            player.causeFoodExhaustion(
+                                    SlashBladeConfig.BEWITCHED_HUNGER_EXHAUSTION.get().floatValue() * level);
                             stack.setDamageValue(stack.getDamageValue() - level);
                         }
                     }
@@ -387,7 +390,6 @@ public class ItemSlashBlade extends SwordItem {
 
             return;
         }
-        
 
         if (stack == null)
             return;
@@ -540,13 +542,12 @@ public class ItemSlashBlade extends SwordItem {
 
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
     }
-    
+
     public void appendSlashArt(ItemStack stack, List<Component> tooltip, @NotNull ISlashBladeState s) {
         var swordType = SwordType.from(stack);
-        if(swordType.contains(SwordType.BEWITCHED) && !swordType.contains(SwordType.SEALED)) {
+        if (swordType.contains(SwordType.BEWITCHED) && !swordType.contains(SwordType.SEALED)) {
             tooltip.add(Component.translatable("slashblade.tooltip.slash_art", s.getSlashArts().getDescription())
-                    .withStyle(ChatFormatting.GRAY)
-                    );
+                    .withStyle(ChatFormatting.GRAY));
         }
     }
 
@@ -556,13 +557,13 @@ public class ItemSlashBlade extends SwordItem {
                     .withStyle((ChatFormatting) refineColor.get(s.getRefine())));
         }
     }
-    
+
     public void appendProudSoulCount(List<Component> tooltip, @NotNull ISlashBladeState s) {
         if (s.getProudSoulCount() > 0) {
-            MutableComponent countComponent = 
-                    Component.translatable("slashblade.tooltip.proud_soul", s.getProudSoulCount())
+            MutableComponent countComponent = Component
+                    .translatable("slashblade.tooltip.proud_soul", s.getProudSoulCount())
                     .withStyle(ChatFormatting.GRAY);
-            if(s.getProudSoulCount() > 1000)
+            if (s.getProudSoulCount() > 1000)
                 countComponent = countComponent.withStyle(ChatFormatting.DARK_PURPLE);
             tooltip.add(countComponent);
         }
@@ -570,24 +571,22 @@ public class ItemSlashBlade extends SwordItem {
 
     public void appendKillCount(List<Component> tooltip, @NotNull ISlashBladeState s) {
         if (s.getKillCount() > 0) {
-            MutableComponent killCountComponent = 
-                    Component.translatable("slashblade.tooltip.killcount", s.getKillCount())
-                    .withStyle(ChatFormatting.GRAY);
-            if(s.getKillCount() > 1000)
+            MutableComponent killCountComponent = Component
+                    .translatable("slashblade.tooltip.killcount", s.getKillCount()).withStyle(ChatFormatting.GRAY);
+            if (s.getKillCount() > 1000)
                 killCountComponent = killCountComponent.withStyle(ChatFormatting.DARK_PURPLE);
             tooltip.add(killCountComponent);
         }
     }
 
-    public void appendSwordType(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip,
-            TooltipFlag flagIn) {
+    public void appendSwordType(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         var swordType = SwordType.from(stack);
-        if(swordType.contains(SwordType.BEWITCHED)) {
-            tooltip.add(Component.translatable("slashblade.sword_type.bewitched").withStyle(ChatFormatting.DARK_PURPLE));
-        }
-        else if(swordType.contains(SwordType.ENCHANTED)){
+        if (swordType.contains(SwordType.BEWITCHED)) {
+            tooltip.add(
+                    Component.translatable("slashblade.sword_type.bewitched").withStyle(ChatFormatting.DARK_PURPLE));
+        } else if (swordType.contains(SwordType.ENCHANTED)) {
             tooltip.add(Component.translatable("slashblade.sword_type.enchanted").withStyle(ChatFormatting.DARK_AQUA));
-        }else {
+        } else {
             tooltip.add(Component.translatable("slashblade.sword_type.noname").withStyle(ChatFormatting.DARK_GRAY));
         }
     }

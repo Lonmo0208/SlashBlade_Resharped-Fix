@@ -22,12 +22,14 @@ import java.util.UUID;
  */
 public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, INBTSerializable<Tag> {
 
-    public static final Capability<ISlashBladeState> CAP = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<ISlashBladeState> CAP = CapabilityManager.get(new CapabilityToken<>() {
+    });
 
     protected LazyOptional<ISlashBladeState> state;
 
-    public SimpleBladeStateCapabilityProvider(ResourceLocation model, ResourceLocation texture, float attack, int damage){
-        state = LazyOptional.of( () -> new SimpleSlashBladeState(model, texture, attack, damage));
+    public SimpleBladeStateCapabilityProvider(ResourceLocation model, ResourceLocation texture, float attack,
+            int damage) {
+        state = LazyOptional.of(() -> new SimpleSlashBladeState(model, texture, attack, damage));
     }
 
     @Nonnull
@@ -40,8 +42,8 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
     public Tag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         state.ifPresent(instance -> {
-            //action state
-            tag.putLong("lastActionTime" , instance.getLastActionTime());
+            // action state
+            tag.putLong("lastActionTime", instance.getLastActionTime());
             tag.putInt("TargetEntity", instance.getTargetEntityId());
             tag.putBoolean("_onClick", instance.onClick());
             tag.putFloat("fallDecreaseRate", instance.getFallDecreaseRate());
@@ -51,7 +53,7 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
             tag.putInt("proudSoul", instance.getProudSoulCount());
             tag.putBoolean("isBroken", instance.isBroken());
 
-            //passive state
+            // passive state
             tag.putBoolean("isSealed", instance.isSealed());
 
             tag.putInt("killCount", instance.getKillCount());
@@ -60,18 +62,19 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
             UUID bladeId = instance.getUniqueId();
             tag.putUUID("BladeUniqueId", bladeId);
 
+            // performance setting
 
-            //performance setting
-
-            tag.putString("SpecialAttackType", Optional.ofNullable(instance.getSlashArtsKey()).orElse(SlashArtsRegistry.JUDGEMENT_CUT.getId()).toString());
-            //render info
-            tag.putByte("StandbyRenderType", (byte)instance.getCarryType().ordinal());
+            tag.putString("SpecialAttackType", Optional.ofNullable(instance.getSlashArtsKey())
+                    .orElse(SlashArtsRegistry.JUDGEMENT_CUT.getId()).toString());
+            // render info
+            tag.putByte("StandbyRenderType", (byte) instance.getCarryType().ordinal());
             tag.putInt("SummonedSwordColor", instance.getColorCode());
             tag.putBoolean("SummonedSwordColorInverse", instance.isEffectColorInverse());
-            tag.put("adjustXYZ" , NBTHelper.newDoubleNBTList(instance.getAdjust()));
-            
-            tag.putString("ComboRoot", Optional.ofNullable(instance.getComboRoot()).orElse(ComboStateRegistry.STANDBY.getId()).toString());
-            
+            tag.put("adjustXYZ", NBTHelper.newDoubleNBTList(instance.getAdjust()));
+
+            tag.putString("ComboRoot",
+                    Optional.ofNullable(instance.getComboRoot()).orElse(ComboStateRegistry.STANDBY.getId()).toString());
+
         });
 
         return tag;
@@ -82,10 +85,10 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
 
         Tag baseTag = inTag;
 
-        state.ifPresent(instance->{
-            CompoundTag tag = (CompoundTag)baseTag;
+        state.ifPresent(instance -> {
+            CompoundTag tag = (CompoundTag) baseTag;
 
-            //action state
+            // action state
             instance.setLastActionTime(tag.getLong("lastActionTime"));
             instance.setTargetEntityId(tag.getInt("TargetEntity"));
             instance.setOnClick(tag.getBoolean("_onClick"));
@@ -98,14 +101,15 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
             instance.setBroken(tag.getBoolean("isBroken"));
             instance.setHasChangedActiveState(true);
 
-            //passive state
+            // passive state
             instance.setSealed(tag.getBoolean("isSealed"));
             instance.setKillCount(tag.getInt("killCount"));
             instance.setRefine(tag.getInt("RepairCounter"));
             instance.setUniqueId(tag.hasUUID("BladeUniqueId") ? tag.getUUID("BladeUniqueId") : UUID.randomUUID());
 
-            //render info
-            instance.setCarryType(EnumSetConverter.fromOrdinal(CarryType.values(), tag.getByte("StandbyRenderType"), CarryType.DEFAULT));
+            // render info
+            instance.setCarryType(EnumSetConverter.fromOrdinal(CarryType.values(), tag.getByte("StandbyRenderType"),
+                    CarryType.DEFAULT));
             instance.setColorCode(tag.getInt("SummonedSwordColor"));
             instance.setEffectColorInverse(tag.getBoolean("SummonedSwordColorInverse"));
             instance.setAdjust(NBTHelper.getVector3d(tag, "adjustXYZ"));

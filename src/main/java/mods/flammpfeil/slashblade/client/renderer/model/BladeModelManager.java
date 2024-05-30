@@ -31,9 +31,10 @@ public class BladeModelManager {
     }
 
     public static Registry<SlashBladeDefinition> getClientSlashBladeRegistry() {
-        return Minecraft.getInstance().getConnection().registryAccess().registryOrThrow(SlashBladeDefinition.REGISTRY_KEY);
+        return Minecraft.getInstance().getConnection().registryAccess()
+                .registryOrThrow(SlashBladeDefinition.REGISTRY_KEY);
     }
-    
+
     WavefrontObject defaultModel;
 
     LoadingCache<ResourceLocation, WavefrontObject> cache;
@@ -42,30 +43,28 @@ public class BladeModelManager {
         defaultModel = new WavefrontObject(DefaultResources.resourceDefaultModel);
 
         cache = CacheBuilder.newBuilder()
-                .build(
-                CacheLoader.asyncReloading(new CacheLoader<ResourceLocation, WavefrontObject>() {
+                .build(CacheLoader.asyncReloading(new CacheLoader<ResourceLocation, WavefrontObject>() {
                     @Override
                     public WavefrontObject load(ResourceLocation key) throws Exception {
-                        try{
+                        try {
                             return new WavefrontObject(key);
-                        }catch(Exception e){
+                        } catch (Exception e) {
                             return defaultModel;
                         }
                     }
 
-                }, Executors.newCachedThreadPool())
-        );
+                }, Executors.newCachedThreadPool()));
     }
 
     @SubscribeEvent
-    public void reload(TextureStitchEvent.Post event){
+    public void reload(TextureStitchEvent.Post event) {
         cache.invalidateAll();
 
         defaultModel = new WavefrontObject(DefaultResources.resourceDefaultModel);
     }
 
     public WavefrontObject getModel(ResourceLocation loc) {
-        if(loc != null){
+        if (loc != null) {
             try {
                 return cache.get(loc);
             } catch (Exception e) {

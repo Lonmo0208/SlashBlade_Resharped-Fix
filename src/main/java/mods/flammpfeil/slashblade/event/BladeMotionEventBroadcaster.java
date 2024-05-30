@@ -13,17 +13,22 @@ public class BladeMotionEventBroadcaster {
     private static final class SingletonHolder {
         private static final BladeMotionEventBroadcaster instance = new BladeMotionEventBroadcaster();
     }
+
     public static BladeMotionEventBroadcaster getInstance() {
         return BladeMotionEventBroadcaster.SingletonHolder.instance;
     }
-    private BladeMotionEventBroadcaster(){}
-    public void register(){
+
+    private BladeMotionEventBroadcaster() {
+    }
+
+    public void register() {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
-    public void onBladeMotion(BladeMotionEvent event){
-        if(!(event.getEntity() instanceof ServerPlayer)) return;
+    public void onBladeMotion(BladeMotionEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer))
+            return;
 
         ServerPlayer sp = (ServerPlayer) event.getEntity();
 
@@ -31,9 +36,10 @@ public class BladeMotionEventBroadcaster {
         msg.playerId = sp.getUUID();
         msg.combo = ComboStateRegistry.REGISTRY.get().getKey(event.getCombo()).toString();
 
-        //if(msg.combo == Extra.EX_JUDGEMENT_CUT.getName())
+        // if(msg.combo == Extra.EX_JUDGEMENT_CUT.getName())
         {
-            NetworkManager.INSTANCE.send(PacketDistributor.NEAR.with(()->new PacketDistributor.TargetPoint(sp.getX(), sp.getY(),sp.getZ(), 20, sp.serverLevel().dimension())), msg);
+            NetworkManager.INSTANCE.send(PacketDistributor.NEAR.with(() -> new PacketDistributor.TargetPoint(sp.getX(),
+                    sp.getY(), sp.getZ(), 20, sp.serverLevel().dimension())), msg);
         }
 
     }

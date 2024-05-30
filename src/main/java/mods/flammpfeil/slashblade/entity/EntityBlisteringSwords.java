@@ -29,13 +29,14 @@ import net.minecraftforge.network.PlayMessages;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class EntityBlisteringSwords extends EntityAbstractSummonedSword{
-    private static final EntityDataAccessor<Boolean> IT_FIRED = SynchedEntityData.defineId(EntityBlisteringSwords.class, EntityDataSerializers.BOOLEAN);
+public class EntityBlisteringSwords extends EntityAbstractSummonedSword {
+    private static final EntityDataAccessor<Boolean> IT_FIRED = SynchedEntityData.defineId(EntityBlisteringSwords.class,
+            EntityDataSerializers.BOOLEAN);
 
     public EntityBlisteringSwords(EntityType<? extends Projectile> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
 
-        this.setPierce((byte)5);
+        this.setPierce((byte) 5);
     }
 
     @Override
@@ -45,14 +46,15 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword{
         this.entityData.define(IT_FIRED, false);
     }
 
-    public void doFire(){
-        this.getEntityData().set(IT_FIRED,true);
+    public void doFire() {
+        this.getEntityData().set(IT_FIRED, true);
     }
-    public boolean itFired(){
+
+    public boolean itFired() {
         return this.getEntityData().get(IT_FIRED);
     }
 
-    public static EntityBlisteringSwords createInstance(PlayMessages.SpawnEntity packet, Level worldIn){
+    public static EntityBlisteringSwords createInstance(PlayMessages.SpawnEntity packet, Level worldIn) {
         return new EntityBlisteringSwords(SlashBlade.RegistryEvents.BlisteringSwords, worldIn);
     }
 
@@ -60,10 +62,10 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword{
 
     @Override
     public void tick() {
-        if(!itFired()){
-            if(level().isClientSide()){
-                if(getVehicle() == null){
-                    startRiding(this.getOwner(),true);
+        if (!itFired()) {
+            if (level().isClientSide()) {
+                if (getVehicle() == null) {
+                    startRiding(this.getOwner(), true);
                 }
             }
         }
@@ -72,13 +74,13 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword{
     }
 
     @Override
-    public void rideTick(){
-        if(itFired() && fireTime <= tickCount){
+    public void rideTick() {
+        if (itFired() && fireTime <= tickCount) {
             faceEntityStandby();
             Entity vehicle = getVehicle();
             Vec3 dir = this.getViewVector(0);
-            if(!(vehicle instanceof LivingEntity)) {
-                ((EntityBlisteringSwords)this).shoot(dir.x,dir.y,dir.z, 3.0f, 1.0f);
+            if (!(vehicle instanceof LivingEntity)) {
+                ((EntityBlisteringSwords) this).shoot(dir.x, dir.y, dir.z, 3.0f, 1.0f);
                 return;
             }
 
@@ -87,69 +89,67 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword{
 
             this.tickCount = 0;
 
-
             Level worldIn = sender.level();
             Entity lockTarget = null;
-            if(sender instanceof LivingEntity){
+            if (sender instanceof LivingEntity) {
                 lockTarget = ((LivingEntity) sender).getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
-                        .filter(state->state.getTargetEntity(worldIn) != null)
-                        .map(state->state.getTargetEntity(worldIn))
-                        .orElse(null);
+                        .filter(state -> state.getTargetEntity(worldIn) != null)
+                        .map(state -> state.getTargetEntity(worldIn)).orElse(null);
             }
 
-            Optional<Entity> foundTarget = Stream.of(Optional.ofNullable(lockTarget)
-                            , RayTraceHelper.rayTrace(sender.level(), sender, sender.getEyePosition(1.0f) , sender.getLookAngle(), 12,12, (e)->true)
-                                    .filter(r->r.getType() == HitResult.Type.ENTITY)
-                                    .filter(r->{
-                                        EntityHitResult er = (EntityHitResult)r;
+            Optional<Entity> foundTarget = Stream
+                    .of(Optional.ofNullable(lockTarget),
+                            RayTraceHelper
+                                    .rayTrace(sender.level(), sender, sender.getEyePosition(1.0f),
+                                            sender.getLookAngle(), 12, 12, (e) -> true)
+                                    .filter(r -> r.getType() == HitResult.Type.ENTITY).filter(r -> {
+                                        EntityHitResult er = (EntityHitResult) r;
                                         Entity target = er.getEntity();
 
                                         boolean isMatch = true;
-                                        if(target instanceof LivingEntity)
-                                            isMatch = TargetSelector.lockon_focus.test(sender, (LivingEntity)target);
+                                        if (target instanceof LivingEntity)
+                                            isMatch = TargetSelector.lockon_focus.test(sender, (LivingEntity) target);
 
-                                        if(target instanceof IShootable)
+                                        if (target instanceof IShootable)
                                             isMatch = ((IShootable) target).getShooter() != sender;
 
                                         return isMatch;
-                                    }).map(r->((EntityHitResult) r).getEntity()))
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .findFirst();
+                                    }).map(r -> ((EntityHitResult) r).getEntity()))
+                    .filter(Optional::isPresent).map(Optional::get).findFirst();
 
-            Vec3 targetPos = foundTarget.map((e)->new Vec3(e.getX(), e.getY() + e.getEyeHeight() * 0.5, e.getZ()))
-                    .orElseGet(()->{
+            Vec3 targetPos = foundTarget.map((e) -> new Vec3(e.getX(), e.getY() + e.getEyeHeight() * 0.5, e.getZ()))
+                    .orElseGet(() -> {
                         Vec3 start = sender.getEyePosition(1.0f);
                         Vec3 end = start.add(sender.getLookAngle().scale(40));
-                        HitResult result = worldIn.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, sender));
+                        HitResult result = worldIn.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER,
+                                ClipContext.Fluid.NONE, sender));
                         return result.getLocation();
                     });
-
 
             Vec3 pos = this.getPosition(0.0f);
             dir = targetPos.subtract(pos).normalize();
 
-            ((EntityBlisteringSwords)this).shoot(dir.x,dir.y,dir.z, 3.0f, 1.0f);
-            if(sender instanceof ServerPlayer){
-                ((ServerPlayer)sender).playNotifySound(SoundEvents.ENDER_DRAGON_FLAP, SoundSource.PLAYERS, 1.0F, 1.0F);
+            ((EntityBlisteringSwords) this).shoot(dir.x, dir.y, dir.z, 3.0f, 1.0f);
+            if (sender instanceof ServerPlayer) {
+                ((ServerPlayer) sender).playNotifySound(SoundEvents.ENDER_DRAGON_FLAP, SoundSource.PLAYERS, 1.0F, 1.0F);
             }
 
             return;
         }
 
-        //this.startRiding()
+        // this.startRiding()
         this.setDeltaMovement(Vec3.ZERO);
         if (canUpdate())
             this.baseTick();
 
         faceEntityStandby();
-        //this.getVehicle().positionRider(this);
+        // this.getVehicle().positionRider(this);
 
-        //lifetime check
-        if(!itFired() && getVehicle() instanceof LivingEntity){
+        // lifetime check
+        if (!itFired() && getVehicle() instanceof LivingEntity) {
             LivingEntity owner = (LivingEntity) getVehicle();
-            owner.getCapability(InputStateCapabilityProvider.INPUT_STATE).ifPresent(s->{
-                if(!s.getCommands().contains(InputCommand.M_DOWN)){
+            owner.getCapability(InputStateCapabilityProvider.INPUT_STATE).ifPresent(s -> {
+                if (!s.getCommands().contains(InputCommand.M_DOWN)) {
 
                     fireTime = tickCount + getDelay();
                     doFire();
@@ -158,33 +158,33 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword{
         }
 
         /*
-        if(!level().isClientSide())
-            hitCheck();
-        */
+         * if(!level().isClientSide()) hitCheck();
+         */
     }
 
-    private void hitCheck(){
+    private void hitCheck() {
         Vec3 positionVec = this.position();
         Vec3 dirVec = this.getViewVector(1.0f);
         EntityHitResult raytraceresult = null;
 
-
-        //todo : replace TargetSelector
+        // todo : replace TargetSelector
         EntityHitResult entityraytraceresult = this.getRayTrace(positionVec, dirVec);
         if (entityraytraceresult != null) {
             raytraceresult = entityraytraceresult;
         }
 
         if (raytraceresult != null && raytraceresult.getType() == HitResult.Type.ENTITY) {
-            Entity entity = ((EntityHitResult)raytraceresult).getEntity();
+            Entity entity = ((EntityHitResult) raytraceresult).getEntity();
             Entity entity1 = this.getShooter();
-            if (entity instanceof Player && entity1 instanceof Player && !((Player)entity1).canHarmPlayer((Player)entity)) {
+            if (entity instanceof Player && entity1 instanceof Player
+                    && !((Player) entity1).canHarmPlayer((Player) entity)) {
                 raytraceresult = null;
                 entityraytraceresult = null;
             }
         }
 
-        if (raytraceresult != null && raytraceresult.getType() == HitResult.Type.ENTITY && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
+        if (raytraceresult != null && raytraceresult.getType() == HitResult.Type.ENTITY
+                && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
             this.onHit(raytraceresult);
             this.resetAlreadyHits();
             this.hasImpulse = true;
@@ -197,15 +197,14 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword{
         boolean isRight = spawnNum % 2 == 0;
         int level = spawnNum / 2;
 
-        Vec3 pos = new Vec3(0,0,0);
+        Vec3 pos = new Vec3(0, 0, 0);
 
-        if(this.getVehicle() == null){
+        if (this.getVehicle() == null) {
             doFire();
             return;
         }
 
-        pos = pos.add(this.getVehicle().position())
-                .add(0, this.getVehicle().getEyeHeight() * 0.8, 0);
+        pos = pos.add(this.getVehicle().position()).add(0, this.getVehicle().getEyeHeight() * 0.8, 0);
 
         double xOffset = (1 - 0.1 * level) * (isRight ? 1 : -1);
         double yOffset = 0.25 * level;
@@ -213,18 +212,18 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword{
 
         Vec3 offset = new Vec3(xOffset, yOffset, zOffset);
 
-        offset = offset.xRot((float)Math.toRadians(-this.getVehicle().getXRot()));
-        offset = offset.yRot((float)Math.toRadians(-this.getVehicle().getYRot()));
+        offset = offset.xRot((float) Math.toRadians(-this.getVehicle().getXRot()));
+        offset = offset.yRot((float) Math.toRadians(-this.getVehicle().getYRot()));
 
         pos = pos.add(offset);
 
         this.xRotO = this.getXRot();
         this.yRotO = this.getYRot();
 
-        //■初期位置・初期角度等の設定
+        // ■初期位置・初期角度等の設定
         setPos(pos);
 
-        setRot(-this.getVehicle().getYRot(),-this.getVehicle().getXRot());
+        setRot(-this.getVehicle().getYRot(), -this.getVehicle().getXRot());
 
     }
 
@@ -237,7 +236,7 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword{
     protected void onHitEntity(EntityHitResult p_213868_1_) {
 
         Entity targetEntity = p_213868_1_.getEntity();
-        if(targetEntity instanceof LivingEntity) {
+        if (targetEntity instanceof LivingEntity) {
             KnockBacks.cancel.action.accept((LivingEntity) targetEntity);
             StunManager.setStun((LivingEntity) targetEntity);
         }

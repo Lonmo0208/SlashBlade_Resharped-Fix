@@ -26,55 +26,62 @@ public class FallHandler {
     private static final class SingletonHolder {
         private static final FallHandler instance = new FallHandler();
     }
+
     public static FallHandler getInstance() {
         return SingletonHolder.instance;
     }
-    private FallHandler(){}
-    public void register(){
+
+    private FallHandler() {
+    }
+
+    public void register() {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
-    public void onFall(LivingFallEvent event){
+    public void onFall(LivingFallEvent event) {
         resetState(event.getEntity());
     }
 
     @SubscribeEvent
-    public void onFlyableFall(PlayerFlyableFallEvent event){
+    public void onFlyableFall(PlayerFlyableFallEvent event) {
         resetState(event.getEntity());
     }
 
-    public static void resetState(LivingEntity user){
-        user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state)->{
+    public static void resetState(LivingEntity user) {
+        user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
             state.setFallDecreaseRate(0);
 
-            ComboState combo = ComboStateRegistry.REGISTRY.get().getValue(state.getComboSeq()) != null 
-                    ? ComboStateRegistry.REGISTRY.get().getValue(state.getComboSeq()) : ComboStateRegistry.NONE.get();
-            if(combo.isAerial()){
+            ComboState combo = ComboStateRegistry.REGISTRY.get().getValue(state.getComboSeq()) != null
+                    ? ComboStateRegistry.REGISTRY.get().getValue(state.getComboSeq())
+                    : ComboStateRegistry.NONE.get();
+            if (combo.isAerial()) {
                 state.setComboSeq(combo.getNextOfTimeout(user));
             }
         });
 
     }
 
-    public static void spawnLandingParticle(LivingEntity user , float fallFactor){
+    public static void spawnLandingParticle(LivingEntity user, float fallFactor) {
         if (!user.level().isClientSide()) {
             int x = Mth.floor(user.getX());
-            int y = Mth.floor(user.getY() - (double)0.5F);
+            int y = Mth.floor(user.getY() - (double) 0.5F);
             int z = Mth.floor(user.getZ());
             BlockPos pos = new BlockPos(x, y, z);
             BlockState state = user.level().getBlockState(pos);
 
             float f = (float) Mth.ceil(fallFactor);
             if (!state.isAir()) {
-                double d0 = Math.min((double)(0.2F + f / 15.0F), 2.5D);
-                int i = (int)(150.0D * d0);
-                if (!state.addLandingEffects((ServerLevel)user.level(), pos, state, user, i))
-                    ((ServerLevel)user.level()).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state), user.getX(), user.getY(), user.getZ(), i, 0.0D, 0.0D, 0.0D, (double)0.15F);
+                double d0 = Math.min((double) (0.2F + f / 15.0F), 2.5D);
+                int i = (int) (150.0D * d0);
+                if (!state.addLandingEffects((ServerLevel) user.level(), pos, state, user, i))
+                    ((ServerLevel) user.level()).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state),
+                            user.getX(), user.getY(), user.getZ(), i, 0.0D, 0.0D, 0.0D, (double) 0.15F);
             }
         }
     }
-    public static void spawnLandingParticle(Entity user, Vec3 targetPos, Vec3 normal, float fallFactor){
+
+    public static void spawnLandingParticle(Entity user, Vec3 targetPos, Vec3 normal, float fallFactor) {
         if (!user.level().isClientSide()) {
 
             Vec3 blockPos = targetPos.add(normal.normalize().scale(0.5f));
@@ -87,19 +94,19 @@ public class FallHandler {
 
             float f = (float) Mth.ceil(fallFactor);
             if (!state.isAir()) {
-                double d0 = Math.min((double)(0.2F + f / 15.0F), 2.5D);
-                int i = (int)(150.0D * d0);
-                ((ServerLevel)user.level()).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state), targetPos.x(), targetPos.y(), targetPos.z(), i, 0.0D, 0.0D, 0.0D, (double)0.15F);
+                double d0 = Math.min((double) (0.2F + f / 15.0F), 2.5D);
+                int i = (int) (150.0D * d0);
+                ((ServerLevel) user.level()).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state),
+                        targetPos.x(), targetPos.y(), targetPos.z(), i, 0.0D, 0.0D, 0.0D, (double) 0.15F);
             }
         }
     }
 
-    public static void fallDecrease(LivingEntity user){
-        if(!user.isNoGravity() && !user.onGround()){
+    public static void fallDecrease(LivingEntity user) {
+        if (!user.isNoGravity() && !user.onGround()) {
             user.fallDistance = 1;
 
-            float currentRatio = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).map((state)->
-            {
+            float currentRatio = user.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).map((state) -> {
                 float decRatio = state.getFallDecreaseRate();
 
                 float newDecRatio = decRatio + 0.05f;
@@ -107,13 +114,12 @@ public class FallHandler {
                 state.setFallDecreaseRate(newDecRatio);
 
                 return decRatio;
-            }).orElseGet(()->1.0f);
-
+            }).orElseGet(() -> 1.0f);
 
             double gravityReductionFactor = 0.85f;
 
             int level = EnchantmentHelper.getEnchantmentLevel(Enchantments.FALL_PROTECTION, user);
-            if(0 < level){
+            if (0 < level) {
                 gravityReductionFactor = Math.min(0.93, gravityReductionFactor + 0.2 * level);
                 AdvancementHelper.grantedIf(Enchantments.FALL_PROTECTION, user);
             }
@@ -122,19 +128,19 @@ public class FallHandler {
             double g = gravity.getValue() * gravityReductionFactor;
 
             Vec3 motion = user.getDeltaMovement();
-            if(motion.y < 0)
+            if (motion.y < 0)
                 user.setDeltaMovement(motion.x, (motion.y + g) * currentRatio, motion.z);
         }
     }
 
-    public static void fallResist(LivingEntity user){
-        if(!user.isNoGravity() && !user.onGround()){
+    public static void fallResist(LivingEntity user) {
+        if (!user.isNoGravity() && !user.onGround()) {
             user.fallDistance = 1;
 
             Vec3 motion = user.getDeltaMovement();
             AttributeInstance gravity = user.getAttribute(ForgeMod.ENTITY_GRAVITY.get());
             double g = gravity.getValue();
-            if(motion.y < 0)
+            if (motion.y < 0)
                 user.setDeltaMovement(motion.x, (motion.y + g + 0.002f), motion.z);
         }
     }

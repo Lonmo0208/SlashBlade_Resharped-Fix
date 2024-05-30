@@ -8,7 +8,8 @@ public class ItemTierSlashBlade implements Tier {
 
     private final int uses;
     private final float attack;
-    public ItemTierSlashBlade(int uses, float attack){
+
+    public ItemTierSlashBlade(int uses, float attack) {
         this.attack = attack;
         this.uses = uses;
     }

@@ -41,12 +41,12 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
     @Override
     public ItemStack getResultItem(RegistryAccess access) {
         ItemStack result = SlashBladeShapedRecipe.getResultBlade(this.getOutputBlade());
-        
+
         if (!ForgeRegistries.ITEMS.getKey(result.getItem()).equals(getOutputBlade())) {
             result = SlashBlade.getSlashBladeDefinitionRegistry(access).get(getOutputBlade())
                     .getBlade(result.getItem());
         }
-        
+
         return result;
     }
 
@@ -62,7 +62,7 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
             if (!(stack.getItem() instanceof ItemSlashBlade))
                 continue;
             var ingredientState = stack.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
-            
+
             resultState.setProudSoulCount(resultState.getProudSoulCount() + ingredientState.getProudSoulCount());
             resultState.setKillCount(resultState.getKillCount() + ingredientState.getKillCount());
             resultState.setRefine(resultState.getRefine() + ingredientState.getRefine());

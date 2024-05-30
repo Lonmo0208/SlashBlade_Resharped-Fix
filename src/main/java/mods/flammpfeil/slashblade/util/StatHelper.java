@@ -10,13 +10,13 @@ public class StatHelper {
 
     static final long MAX_VALUE = Integer.MAX_VALUE;
 
-    static public int increase(ServerPlayer player, ResourceLocation loc, int amount){
+    static public int increase(ServerPlayer player, ResourceLocation loc, int amount) {
         Stat<?> stat = Stats.CUSTOM.get(loc);
         ServerStatsCounter stats = player.getStats();
 
         int oldValue = stats.getValue(stat);
-        int newValue = (int)Math.min((long)oldValue + (long)amount, MAX_VALUE);
-        if(oldValue == newValue){
+        int newValue = (int) Math.min((long) oldValue + (long) amount, MAX_VALUE);
+        if (oldValue == newValue) {
             newValue--;
         }
 

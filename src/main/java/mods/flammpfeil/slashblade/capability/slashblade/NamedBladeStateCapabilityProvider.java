@@ -22,11 +22,12 @@ import java.util.UUID;
  */
 public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, INBTSerializable<Tag> {
 
-    public static final Capability<ISlashBladeState> CAP = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<ISlashBladeState> CAP = CapabilityManager.get(new CapabilityToken<>() {
+    });
 
     protected LazyOptional<ISlashBladeState> state = LazyOptional.of(SlashBladeState::new);
 
-    public NamedBladeStateCapabilityProvider(){
+    public NamedBladeStateCapabilityProvider() {
     }
 
     @Nonnull
@@ -39,8 +40,8 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
     public Tag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         state.ifPresent(instance -> {
-            //action state
-            tag.putLong("lastActionTime" , instance.getLastActionTime());
+            // action state
+            tag.putLong("lastActionTime", instance.getLastActionTime());
             tag.putInt("TargetEntity", instance.getTargetEntityId());
             tag.putBoolean("_onClick", instance.onClick());
             tag.putFloat("fallDecreaseRate", instance.getFallDecreaseRate());
@@ -51,7 +52,7 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
             tag.putInt("proudSoul", instance.getProudSoulCount());
             tag.putBoolean("isBroken", instance.isBroken());
 
-            //passive state
+            // passive state
             tag.putBoolean("isSealed", instance.isSealed());
 
             tag.putFloat("baseAttackModifier", instance.getBaseAttackModifier());
@@ -62,26 +63,25 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
             UUID bladeId = instance.getUniqueId();
             tag.putUUID("BladeUniqueId", bladeId);
 
+            // performance setting
 
-            //performance setting
-
-            tag.putString("SpecialAttackType", Optional.ofNullable(instance.getSlashArtsKey()).orElse(SlashArtsRegistry.JUDGEMENT_CUT.getId()).toString());
+            tag.putString("SpecialAttackType", Optional.ofNullable(instance.getSlashArtsKey())
+                    .orElse(SlashArtsRegistry.JUDGEMENT_CUT.getId()).toString());
             tag.putBoolean("isDefaultBewitched", instance.isDefaultBewitched());
             tag.putString("translationKey", instance.getTranslationKey());
 
-            //render info
-            tag.putByte("StandbyRenderType", (byte)instance.getCarryType().ordinal());
+            // render info
+            tag.putByte("StandbyRenderType", (byte) instance.getCarryType().ordinal());
             tag.putInt("SummonedSwordColor", instance.getColorCode());
             tag.putBoolean("SummonedSwordColorInverse", instance.isEffectColorInverse());
-            tag.put("adjustXYZ" , NBTHelper.newDoubleNBTList(instance.getAdjust()));
+            tag.put("adjustXYZ", NBTHelper.newDoubleNBTList(instance.getAdjust()));
 
-            instance.getTexture()
-                    .ifPresent(loc ->  tag.putString("TextureName", loc.toString()));
-            instance.getModel()
-                    .ifPresent(loc ->  tag.putString("ModelName", loc.toString()));
+            instance.getTexture().ifPresent(loc -> tag.putString("TextureName", loc.toString()));
+            instance.getModel().ifPresent(loc -> tag.putString("ModelName", loc.toString()));
 
-            tag.putString("ComboRoot", Optional.ofNullable(instance.getComboRoot()).orElse(ComboStateRegistry.STANDBY.getId()).toString());
-            
+            tag.putString("ComboRoot",
+                    Optional.ofNullable(instance.getComboRoot()).orElse(ComboStateRegistry.STANDBY.getId()).toString());
+
         });
 
         return tag;
@@ -91,11 +91,11 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
     public void deserializeNBT(Tag inTag) {
 
         Tag baseTag = inTag;
-        
-        state.ifPresent(instance->{
-            CompoundTag tag = (CompoundTag)baseTag;
 
-            //action state
+        state.ifPresent(instance -> {
+            CompoundTag tag = (CompoundTag) baseTag;
+
+            // action state
             instance.setLastActionTime(tag.getLong("lastActionTime"));
             instance.setTargetEntityId(tag.getInt("TargetEntity"));
             instance.setOnClick(tag.getBoolean("_onClick"));
@@ -109,8 +109,7 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
 
             instance.setHasChangedActiveState(true);
 
-
-            //passive state
+            // passive state
             instance.setSealed(tag.getBoolean("isSealed"));
 
             instance.setBaseAttackModifier(tag.getFloat("baseAttackModifier"));
@@ -120,26 +119,26 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
 
             instance.setUniqueId(tag.hasUUID("BladeUniqueId") ? tag.getUUID("BladeUniqueId") : UUID.randomUUID());
 
-            //performance setting
-
+            // performance setting
 
             instance.setSlashArtsKey(ResourceLocation.tryParse(tag.getString("SpecialAttackType")));
             instance.setDefaultBewitched(tag.getBoolean("isDefaultBewitched"));
 
             instance.setTranslationKey(tag.getString("translationKey"));
 
-            //render info
-            instance.setCarryType(EnumSetConverter.fromOrdinal(CarryType.values(), tag.getByte("StandbyRenderType"), CarryType.DEFAULT));
+            // render info
+            instance.setCarryType(EnumSetConverter.fromOrdinal(CarryType.values(), tag.getByte("StandbyRenderType"),
+                    CarryType.DEFAULT));
             instance.setColorCode(tag.getInt("SummonedSwordColor"));
             instance.setEffectColorInverse(tag.getBoolean("SummonedSwordColorInverse"));
             instance.setAdjust(NBTHelper.getVector3d(tag, "adjustXYZ"));
 
-            if(tag.contains("TextureName"))
+            if (tag.contains("TextureName"))
                 instance.setTexture(new ResourceLocation(tag.getString("TextureName")));
             else
                 instance.setTexture(null);
 
-            if(tag.contains("ModelName"))
+            if (tag.contains("ModelName"))
                 instance.setModel(new ResourceLocation(tag.getString("ModelName")));
             else
                 instance.setModel(null);

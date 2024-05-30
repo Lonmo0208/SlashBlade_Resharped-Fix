@@ -41,24 +41,22 @@ public class BladeMotionManager {
         }
 
         cache = CacheBuilder.newBuilder()
-                .build(
-                CacheLoader.asyncReloading(new CacheLoader<ResourceLocation, MmdVmdMotionMc>() {
+                .build(CacheLoader.asyncReloading(new CacheLoader<ResourceLocation, MmdVmdMotionMc>() {
                     @Override
                     public MmdVmdMotionMc load(ResourceLocation key) throws Exception {
-                        try{
+                        try {
                             return new MmdVmdMotionMc(key);
-                        }catch(Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                             return defaultMotion;
                         }
                     }
 
-                }, Executors.newCachedThreadPool())
-        );
+                }, Executors.newCachedThreadPool()));
     }
 
     @SubscribeEvent
-    public void reload(TextureStitchEvent.Post event){
+    public void reload(TextureStitchEvent.Post event) {
         cache.invalidateAll();
 
         try {
@@ -71,7 +69,7 @@ public class BladeMotionManager {
     }
 
     public MmdVmdMotionMc getMotion(ResourceLocation loc) {
-        if(loc != null){
+        if (loc != null) {
             try {
                 return cache.get(loc);
             } catch (Exception e) {

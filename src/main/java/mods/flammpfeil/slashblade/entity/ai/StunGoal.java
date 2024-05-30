@@ -11,7 +11,7 @@ public class StunGoal extends Goal {
 
     public StunGoal(PathfinderMob creature) {
         this.entity = creature;
-        this.setFlags(EnumSet.of(Flag.MOVE,Flag.JUMP,Flag.LOOK,Flag.TARGET));
+        this.setFlags(EnumSet.of(Flag.MOVE, Flag.JUMP, Flag.LOOK, Flag.TARGET));
     }
 
     /**
@@ -19,19 +19,18 @@ public class StunGoal extends Goal {
      */
     public boolean canUse() {
         boolean onStun = this.entity.getCapability(CapabilityMobEffect.MOB_EFFECT)
-                .filter((state)->state.isStun(this.entity.level().getGameTime()))
-                .isPresent();
+                .filter((state) -> state.isStun(this.entity.level().getGameTime())).isPresent();
 
         return onStun;
     }
 
     /**
-     * Reset the task's internal state. Called when this task is interrupted by another one
+     * Reset the task's internal state. Called when this task is interrupted by
+     * another one
      */
     public void stop() {
-        this.entity.getCapability(CapabilityMobEffect.MOB_EFFECT)
-                .ifPresent((state)->{
-                    state.clearStunTimeOut();
-                });
+        this.entity.getCapability(CapabilityMobEffect.MOB_EFFECT).ifPresent((state) -> {
+            state.clearStunTimeOut();
+        });
     }
 }

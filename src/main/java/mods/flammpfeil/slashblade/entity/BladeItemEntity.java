@@ -24,8 +24,11 @@ import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
 
 public class BladeItemEntity extends ItemEntity {
-    private static final EntityDataAccessor<String> DATA_MODEL = SynchedEntityData.defineId(BladeItemEntity.class, EntityDataSerializers.STRING);
-    private static final EntityDataAccessor<String> DATA_TEXTURE = SynchedEntityData.defineId(BladeItemEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> DATA_MODEL = SynchedEntityData.defineId(BladeItemEntity.class,
+            EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> DATA_TEXTURE = SynchedEntityData.defineId(BladeItemEntity.class,
+            EntityDataSerializers.STRING);
+
     public BladeItemEntity(EntityType<? extends BladeItemEntity> p_i50217_1_, Level p_i50217_2_) {
         super(p_i50217_1_, p_i50217_2_);
     }
@@ -36,7 +39,7 @@ public class BladeItemEntity extends ItemEntity {
         this.getEntityData().define(DATA_MODEL, DefaultResources.resourceDefaultModel.toString());
         this.getEntityData().define(DATA_TEXTURE, DefaultResources.resourceDefaultTexture.toString());
     }
-    
+
     public ResourceLocation getModel() {
         return ResourceLocation.tryParse(this.getEntityData().get(DATA_MODEL));
     }
@@ -53,17 +56,17 @@ public class BladeItemEntity extends ItemEntity {
         this.getEntityData().set(DATA_TEXTURE, texture.toString());
     }
 
-    public void init(){
+    public void init() {
         this.setInvulnerable(true);
 
         CompoundTag compoundnbt = this.saveWithoutId(new CompoundTag());
         compoundnbt.remove("Dimension");
-        compoundnbt.putShort("Health", (short)100);
+        compoundnbt.putShort("Health", (short) 100);
         compoundnbt.putShort("Age", Short.MIN_VALUE);
         this.load(compoundnbt);
     }
 
-    public static BladeItemEntity createInstanceFromPacket(PlayMessages.SpawnEntity packet, Level worldIn){
+    public static BladeItemEntity createInstanceFromPacket(PlayMessages.SpawnEntity packet, Level worldIn) {
         return new BladeItemEntity(SlashBlade.RegistryEvents.BladeItem, worldIn);
     }
 
@@ -73,33 +76,36 @@ public class BladeItemEntity extends ItemEntity {
 
     @Override
     public void tick() {
-        if(onGround() && tickCount % 40 == 0){
-            tickCount ++;
+        if (onGround() && tickCount % 40 == 0) {
+            tickCount++;
         }
         super.tick();
 
-        if(!this.isInWater() && !onGround() && tickCount % 6 == 0){
+        if (!this.isInWater() && !onGround() && tickCount % 6 == 0) {
             this.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 0.5F, 2.5F);
         }
 
-
-        if(this.level().isClientSide()){
+        if (this.level().isClientSide()) {
             if (random.nextInt(5) == 0 && getAirSupply() < 0) {
                 Direction direction = Direction.UP;
-                double d0 = (double)this.getX() - (double)(random.nextFloat() * 0.1F);
-                double d1 = (double)this.getY() - (double)(random.nextFloat() * 0.1F);
-                double d2 = (double)this.getZ() - (double)(random.nextFloat() * 0.1F);
-                double d3 = (double)(0.4F - (random.nextFloat() + random.nextFloat()) * 0.4F);
-                this.level().addParticle(ParticleTypes.PORTAL, d0 + (double)direction.getStepX() * d3, d1 + 2 + (double)direction.getStepY() * d3, d2 + (double)direction.getStepZ() * d3, random.nextGaussian() * 0.005D, -2, random.nextGaussian() * 0.005D);
+                double d0 = (double) this.getX() - (double) (random.nextFloat() * 0.1F);
+                double d1 = (double) this.getY() - (double) (random.nextFloat() * 0.1F);
+                double d2 = (double) this.getZ() - (double) (random.nextFloat() * 0.1F);
+                double d3 = (double) (0.4F - (random.nextFloat() + random.nextFloat()) * 0.4F);
+                this.level().addParticle(ParticleTypes.PORTAL, d0 + (double) direction.getStepX() * d3,
+                        d1 + 2 + (double) direction.getStepY() * d3, d2 + (double) direction.getStepZ() * d3,
+                        random.nextGaussian() * 0.005D, -2, random.nextGaussian() * 0.005D);
             }
 
             if (!this.onGround() && !this.isInWater() && random.nextInt(3) == 0) {
                 Direction direction = Direction.UP;
-                double d0 = (double)this.getX() - (double)(random.nextFloat() * 0.1F);
-                double d1 = (double)this.getY() - (double)(random.nextFloat() * 0.1F);
-                double d2 = (double)this.getZ() - (double)(random.nextFloat() * 0.1F);
-                double d3 = (double)(0.4F - (random.nextFloat() + random.nextFloat()) * 0.4F);
-                this.level().addParticle(ParticleTypes.END_ROD, d0 + (double)direction.getStepX() * d3, d1 + (double)direction.getStepY() * d3, d2 + (double)direction.getStepZ() * d3, random.nextGaussian() * 0.005D, random.nextGaussian() * 0.005D, random.nextGaussian() * 0.005D);
+                double d0 = (double) this.getX() - (double) (random.nextFloat() * 0.1F);
+                double d1 = (double) this.getY() - (double) (random.nextFloat() * 0.1F);
+                double d2 = (double) this.getZ() - (double) (random.nextFloat() * 0.1F);
+                double d3 = (double) (0.4F - (random.nextFloat() + random.nextFloat()) * 0.4F);
+                this.level().addParticle(ParticleTypes.END_ROD, d0 + (double) direction.getStepX() * d3,
+                        d1 + (double) direction.getStepY() * d3, d2 + (double) direction.getStepZ() * d3,
+                        random.nextGaussian() * 0.005D, random.nextGaussian() * 0.005D, random.nextGaussian() * 0.005D);
             }
         }
     }
@@ -116,9 +122,9 @@ public class BladeItemEntity extends ItemEntity {
         int i = Mth.ceil(distance);
         if (i > 0) {
             this.playSound(SoundEvents.GENERIC_BIG_FALL, 1.0F, 1.0F);
-            this.hurt(this.level().damageSources().fall(), (float)i);
+            this.hurt(this.level().damageSources().fall(), (float) i);
             int j = Mth.floor(this.getX());
-            int k = Mth.floor(this.getY() - (double)0.2F);
+            int k = Mth.floor(this.getY() - (double) 0.2F);
             int l = Mth.floor(this.getZ());
             BlockState blockstate = this.level().getBlockState(new BlockPos(j, k, l));
             if (!blockstate.isAir()) {
@@ -126,7 +132,7 @@ public class BladeItemEntity extends ItemEntity {
                 this.playSound(soundtype.getFallSound(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
             }
 
-            if(this.isCurrentlyGlowing() && getAirSupply() < 0){
+            if (this.isCurrentlyGlowing() && getAirSupply() < 0) {
                 this.setGlowingTag(false);
             }
         }
@@ -137,7 +143,7 @@ public class BladeItemEntity extends ItemEntity {
     @SuppressWarnings("deprecation")
     @Override
     public float getLightLevelDependentMagicValue() {
-        if(getAirSupply() < 0)
+        if (getAirSupply() < 0)
             return 15728880;
         return super.getLightLevelDependentMagicValue();
     }

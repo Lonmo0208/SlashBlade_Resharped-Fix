@@ -52,7 +52,7 @@ public class SlashBladeShapedRecipeBuilder extends CraftingRecipeBuilder impleme
     public static SlashBladeShapedRecipeBuilder shaped(ResourceLocation blade) {
         return shaped(SBItems.slashblade, 1).blade(blade);
     }
-    
+
     public static SlashBladeShapedRecipeBuilder shaped(ItemLike result) {
         return shaped(result, 1);
     }
@@ -112,10 +112,10 @@ public class SlashBladeShapedRecipeBuilder extends CraftingRecipeBuilder impleme
     public Item getResult() {
         return this.result;
     }
-    
+
     @Override
     public void save(Consumer<FinishedRecipe> consumer) {
-        this.save(consumer, this.blade !=null ? this.blade : ForgeRegistries.ITEMS.getKey(this.getResult()));
+        this.save(consumer, this.blade != null ? this.blade : ForgeRegistries.ITEMS.getKey(this.getResult()));
     }
 
     public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
@@ -171,10 +171,9 @@ public class SlashBladeShapedRecipeBuilder extends CraftingRecipeBuilder impleme
         private final ResourceLocation bladeId;
         private final boolean showNotification;
 
-        public Result(ResourceLocation id, Item result, int count, ResourceLocation bladeId,
-                String group, List<String> pattern,
-                Map<Character, Ingredient> key, Advancement.Builder advancement, ResourceLocation advancementId,
-                boolean showNotification) {
+        public Result(ResourceLocation id, Item result, int count, ResourceLocation bladeId, String group,
+                List<String> pattern, Map<Character, Ingredient> key, Advancement.Builder advancement,
+                ResourceLocation advancementId, boolean showNotification) {
             super(CraftingBookCategory.EQUIPMENT);
             this.id = id;
             this.result = result;
@@ -206,7 +205,7 @@ public class SlashBladeShapedRecipeBuilder extends CraftingRecipeBuilder impleme
             for (Map.Entry<Character, Ingredient> entry : this.key.entrySet()) {
                 jsonobject.add(String.valueOf(entry.getKey()), entry.getValue().toJson());
             }
-            
+
             json.add("key", jsonobject);
             JsonObject jsonobject1 = new JsonObject();
             jsonobject1.addProperty("item", ForgeRegistries.ITEMS.getKey(this.result).toString());
@@ -215,10 +214,10 @@ public class SlashBladeShapedRecipeBuilder extends CraftingRecipeBuilder impleme
             }
 
             json.add("result", jsonobject1);
-            
-            if(this.bladeId !=null)
+
+            if (this.bladeId != null)
                 json.addProperty("blade", this.bladeId.toString());
-            
+
             json.addProperty("show_notification", this.showNotification);
         }
 

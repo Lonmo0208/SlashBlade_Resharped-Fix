@@ -13,6 +13,7 @@
   "properties": {
     "attack_base": 5.0,
     "max_damage": 70,
+    "slash_art": "slashblade:drive_horizontal",
     "sword_type": [
       "bewitched"
     ]

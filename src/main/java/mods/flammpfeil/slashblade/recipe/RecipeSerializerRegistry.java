@@ -7,9 +7,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class RecipeSerializerRegistry {
-    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZER = 
-            DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, SlashBlade.MODID);
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZER = DeferredRegister
+            .create(ForgeRegistries.RECIPE_SERIALIZERS, SlashBlade.MODID);
 
-    public static final RegistryObject<RecipeSerializer<?>> SLASHBLADE_SHAPED = RECIPE_SERIALIZER.register("shaped_blade",
-            () -> SlashBladeShapedRecipe.SERIALIZER);
+    public static final RegistryObject<RecipeSerializer<?>> SLASHBLADE_SHAPED = RECIPE_SERIALIZER
+            .register("shaped_blade", () -> SlashBladeShapedRecipe.SERIALIZER);
 }

@@ -34,24 +34,25 @@ public class RankRenderer {
     public void register() {
         MinecraftForge.EVENT_BUS.register(this);
     }
-    
 
-    static ResourceLocation RankImg = new ResourceLocation(SlashBlade.MODID,"textures/gui/rank.png");
+    static ResourceLocation RankImg = new ResourceLocation(SlashBlade.MODID, "textures/gui/rank.png");
 
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public void renderTick(RenderGuiOverlayEvent.Post event) {
 
         Minecraft mc = Minecraft.getInstance();
-        if(mc.player == null) return;
-        //if(!mc.isGameFocused()) return;
-        if(!Minecraft.renderNames()) return;
-        if(mc.screen != null) {
-            if(!(mc.screen instanceof ChatScreen))
+        if (mc.player == null)
+            return;
+        // if(!mc.isGameFocused()) return;
+        if (!Minecraft.renderNames())
+            return;
+        if (mc.screen != null) {
+            if (!(mc.screen instanceof ChatScreen))
                 return;
         }
 
-        LocalPlayer player= mc.player;
+        LocalPlayer player = mc.player;
         long time = System.currentTimeMillis();
 
         renderRankHud(event.getPartialTick(), player, time);
@@ -60,36 +61,33 @@ public class RankRenderer {
     private void renderRankHud(Float partialTicks, LocalPlayer player, long time) {
         Minecraft mc = Minecraft.getInstance();
 
-        player.getCapability(CapabilityConcentrationRank.RANK_POINT).ifPresent(cr->{
+        player.getCapability(CapabilityConcentrationRank.RANK_POINT).ifPresent(cr -> {
             long now = player.level().getGameTime();
 
             IConcentrationRank.ConcentrationRanks rank = cr.getRank(now);
 
-            /* debug
-            rank = IConcentrationRank.ConcentrationRanks.C;
-            now = cr.getLastUpdate();
-            */
+            /*
+             * debug rank = IConcentrationRank.ConcentrationRanks.C; now =
+             * cr.getLastUpdate();
+             */
 
-            if(rank == IConcentrationRank.ConcentrationRanks.NONE)
+            if (rank == IConcentrationRank.ConcentrationRanks.NONE)
                 return;
 
-
-            //todo : korenani loadGUIRenderMatrix
-            //mc.getMainWindow().loadGUIRenderMatrix(Minecraft.IS_RUNNING_ON_MAC);
-
-
+            // todo : korenani loadGUIRenderMatrix
+            // mc.getMainWindow().loadGUIRenderMatrix(Minecraft.IS_RUNNING_ON_MAC);
 
             int k = mc.getWindow().getGuiScaledWidth();
             int l = mc.getWindow().getGuiScaledHeight();
 
             PoseStack poseStack = new PoseStack();
-            //position
+            // position
             poseStack.translate(k * 2 / 3, l / 5, 0);
 
-            //RenderSystem.enableTexture();
+            // RenderSystem.enableTexture();
             RenderSystem.disableDepthTest();
             TextureManager texturemanager = Minecraft.getInstance().getTextureManager();
-            texturemanager.getTexture(RankImg).setFilter(false,false);
+            texturemanager.getTexture(RankImg).setFilter(false, false);
             RenderSystem.setShaderTexture(0, RankImg);
 
             boolean showTextRank = false;
@@ -97,35 +95,37 @@ public class RankRenderer {
             long textTimeout = cr.getLastRankRise() + 20;
             long visibleTimeout = cr.getLastUpdate() + 120;
 
-            if(now < textTimeout)
+            if (now < textTimeout)
                 showTextRank = true;
 
-            if(now < visibleTimeout){
+            if (now < visibleTimeout) {
                 int rankOffset = 32 * (rank.level - 1);
                 int textOffset = showTextRank ? 128 : 0;
 
-                int progress = (int)(33 * cr.getRankProgress(now));
+                int progress = (int) (33 * cr.getRankProgress(now));
 
-                int progressIcon = (int)(18 * cr.getRankProgress(now));
+                int progressIcon = (int) (18 * cr.getRankProgress(now));
                 int progressIconInv = 17 - progressIcon;
 
-                //GL11.glScalef(3,3,3);
-                //iconFrame
-                drawTexturedQuad(poseStack,0, 0, 0+ textOffset + 64, rankOffset, 64, 32, -95f);
-                //icon
-                drawTexturedQuad(poseStack,0, progressIconInv + 7, 0+ textOffset, rankOffset + progressIconInv + 7, 64, progressIcon, -90f);
+                // GL11.glScalef(3,3,3);
+                // iconFrame
+                drawTexturedQuad(poseStack, 0, 0, 0 + textOffset + 64, rankOffset, 64, 32, -95f);
+                // icon
+                drawTexturedQuad(poseStack, 0, progressIconInv + 7, 0 + textOffset, rankOffset + progressIconInv + 7,
+                        64, progressIcon, -90f);
 
-                //gauge frame
-                drawTexturedQuad(poseStack,0 , 32, 0 ,256-16, 64, 16, -90f);
-                //gause fill
-                drawTexturedQuad(poseStack,16, 32, 16,256-32, progress, 16, -95f);
+                // gauge frame
+                drawTexturedQuad(poseStack, 0, 32, 0, 256 - 16, 64, 16, -90f);
+                // gause fill
+                drawTexturedQuad(poseStack, 16, 32, 16, 256 - 32, progress, 16, -95f);
             }
 
         });
 
     }
 
-    public static void drawTexturedQuad(PoseStack poseStack, int x, int y, int u, int v, int width, int height, float zLevel) {
+    public static void drawTexturedQuad(PoseStack poseStack, int x, int y, int u, int v, int width, int height,
+            float zLevel) {
         float var7 = 0.00390625F; // 1/256 texturesize
         float var8 = 0.00390625F;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -136,12 +136,12 @@ public class RankRenderer {
 
         Matrix4f m = poseStack.last().pose();
 
-        wr.vertex(m,x + 0, y + height, zLevel).uv((u + 0.0f) * var7, (v + height) * var8).endVertex();
-        wr.vertex(m,x + width, y + height, zLevel).uv((u + width) * var7, (v + height) * var8).endVertex();
-        wr.vertex(m,x + width, y + 0, zLevel).uv((u + width) * var7, (v + 0) * var8).endVertex();
-        wr.vertex(m,x + 0, y + 0, zLevel).uv(  (u + 0) * var7,  (v + 0) * var8).endVertex();
+        wr.vertex(m, x + 0, y + height, zLevel).uv((u + 0.0f) * var7, (v + height) * var8).endVertex();
+        wr.vertex(m, x + width, y + height, zLevel).uv((u + width) * var7, (v + height) * var8).endVertex();
+        wr.vertex(m, x + width, y + 0, zLevel).uv((u + width) * var7, (v + 0) * var8).endVertex();
+        wr.vertex(m, x + 0, y + 0, zLevel).uv((u + 0) * var7, (v + 0) * var8).endVertex();
 
-        //tessellator.end();
+        // tessellator.end();
         BufferUploader.drawWithShader(wr.end());
     }
 }

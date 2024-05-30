@@ -15,11 +15,15 @@ public class BladeMaterialTooltips {
     private static final class SingletonHolder {
         private static final BladeMaterialTooltips instance = new BladeMaterialTooltips();
     }
+
     public static BladeMaterialTooltips getInstance() {
         return SingletonHolder.instance;
     }
-    private BladeMaterialTooltips(){}
-    public void register(){
+
+    private BladeMaterialTooltips() {
+    }
+
+    public void register() {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -31,12 +35,10 @@ public class BladeMaterialTooltips {
 
         ItemStack stack = event.getItemStack();
 
-        if(stack.hasTag() && stack.getTag().contains(BLADE_DATA)){
+        if (stack.hasTag() && stack.getTag().contains(BLADE_DATA)) {
             CompoundTag bladeData = stack.getTag().getCompound(BLADE_DATA);
 
-            String translationKey = NBTHelper.getNBTCoupler(bladeData)
-                    .getChild("tag")
-                    .getChild("ShareTag")
+            String translationKey = NBTHelper.getNBTCoupler(bladeData).getChild("tag").getChild("ShareTag")
                     .getRawCompound().getString("translationKey");
 
             event.getToolTip().add(Component.translatable(translationKey));

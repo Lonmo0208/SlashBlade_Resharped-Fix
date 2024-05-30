@@ -9,16 +9,19 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-
 public class PlacePreviewEntryPoint {
     private static final class SingletonHolder {
         private static final PlacePreviewEntryPoint instance = new PlacePreviewEntryPoint();
     }
+
     public static PlacePreviewEntryPoint getInstance() {
         return SingletonHolder.instance;
     }
-    private PlacePreviewEntryPoint(){}
-    public void register(){
+
+    private PlacePreviewEntryPoint() {
+    }
+
+    public void register() {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -26,25 +29,31 @@ public class PlacePreviewEntryPoint {
     public void onClick(PlayerInteractEvent.RightClickItem event) {
         Player trueSource = event.getEntity();
 
-        if (!(trueSource instanceof LivingEntity)) return;
+        if (!(trueSource instanceof LivingEntity))
+            return;
 
         ItemStack stack = event.getItemStack();
-        if(stack.isEmpty()) return;
-        if(stack.getItem() != SBItems.proudsoul) return;
+        if (stack.isEmpty())
+            return;
+        if (stack.getItem() != SBItems.proudsoul)
+            return;
 
         Level worldIn = trueSource.getCommandSenderWorld();
 
         /*
-        PlacePreviewEntity ss = new PlacePreviewEntity(SlashBlade.RegistryEvents.PlacePreview, worldIn);
-
-        Vector3d pos = trueSource.getEyePosition(1.0f).add(trueSource.getLookVec().scale(3.0)).align(EnumSet.of(Direction.Axis.X,Direction.Axis.Y,Direction.Axis.Z));
-
-        ss.setPosition(pos.x, pos.y, pos.z);
-
-
-        //ss.setShooter(trueSource);
-
-        worldIn.addEntity(ss);
-        */
+         * PlacePreviewEntity ss = new
+         * PlacePreviewEntity(SlashBlade.RegistryEvents.PlacePreview, worldIn);
+         * 
+         * Vector3d pos =
+         * trueSource.getEyePosition(1.0f).add(trueSource.getLookVec().scale(3.0)).align
+         * (EnumSet.of(Direction.Axis.X,Direction.Axis.Y,Direction.Axis.Z));
+         * 
+         * ss.setPosition(pos.x, pos.y, pos.z);
+         * 
+         * 
+         * //ss.setShooter(trueSource);
+         * 
+         * worldIn.addEntity(ss);
+         */
     }
 }

@@ -13,9 +13,10 @@ import javax.annotation.Nullable;
 
 public class InputStateCapabilityProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
-    public static final Capability<IInputState> INPUT_STATE = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<IInputState> INPUT_STATE = CapabilityManager.get(new CapabilityToken<>() {
+    });
 
-    protected LazyOptional<IInputState> state = LazyOptional.of(()->new InputState());
+    protected LazyOptional<IInputState> state = LazyOptional.of(() -> new InputState());
 
     @Nonnull
     @Override
@@ -38,9 +39,8 @@ public class InputStateCapabilityProvider implements ICapabilityProvider, INBTSe
 
     @Override
     public void deserializeNBT(CompoundTag baseTag) {
-        state.ifPresent(instance ->{
-            instance.getCommands().addAll(
-                    EnumSetConverter.convertToEnumSet(InputCommand.class, baseTag.getInt(KEY)));
+        state.ifPresent(instance -> {
+            instance.getCommands().addAll(EnumSetConverter.convertToEnumSet(InputCommand.class, baseTag.getInt(KEY)));
         });
     }
 }

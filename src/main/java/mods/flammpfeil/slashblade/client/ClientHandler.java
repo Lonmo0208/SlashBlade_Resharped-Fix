@@ -39,7 +39,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
-
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 @OnlyIn(Dist.CLIENT)
 public class ClientHandler {
@@ -51,7 +50,7 @@ public class ClientHandler {
 
         SneakingMotionCanceller.getInstance().register();
 
-        if(LoaderUtil.isClassAvailable("dev.kosmx.playerAnim.api.layered.AnimationStack")){
+        if (LoaderUtil.isClassAvailable("dev.kosmx.playerAnim.api.layered.AnimationStack")) {
             PlayerAnimationOverrider.getInstance().register();
         } else {
             UserPoseOverrider.getInstance().register();
@@ -61,59 +60,68 @@ public class ClientHandler {
         AdvancementsRecipeRenderer.getInstance().register();
         BladeMotionEventBroadcaster.getInstance().register();
 
-
         RankRenderer.getInstance().register();
 
-        ItemProperties.register(SBItems.slashblade, new ResourceLocation("slashblade:user"), new ClampedItemPropertyFunction() {
-            @Override
-            public float unclampedCall(ItemStack p_174564_, @Nullable ClientLevel p_174565_, @Nullable LivingEntity p_174566_, int p_174567_) {
-                BladeModel.user = p_174566_;
-                return 0;
-            }
-        });
-        
-        ItemProperties.register(SBItems.slashblade_bamboo, new ResourceLocation("slashblade:user"), new ClampedItemPropertyFunction() {
-            @Override
-            public float unclampedCall(ItemStack p_174564_, @Nullable ClientLevel p_174565_, @Nullable LivingEntity p_174566_, int p_174567_) {
-                BladeModel.user = p_174566_;
-                return 0;
-            }
-        });
-        
-        ItemProperties.register(SBItems.slashblade_silverbamboo, new ResourceLocation("slashblade:user"), new ClampedItemPropertyFunction() {
-            @Override
-            public float unclampedCall(ItemStack p_174564_, @Nullable ClientLevel p_174565_, @Nullable LivingEntity p_174566_, int p_174567_) {
-                BladeModel.user = p_174566_;
-                return 0;
-            }
-        });
-        
-        ItemProperties.register(SBItems.slashblade_white, new ResourceLocation("slashblade:user"), new ClampedItemPropertyFunction() {
-            @Override
-            public float unclampedCall(ItemStack p_174564_, @Nullable ClientLevel p_174565_, @Nullable LivingEntity p_174566_, int p_174567_) {
-                BladeModel.user = p_174566_;
-                return 0;
-            }
-        });
-        
-        ItemProperties.register(SBItems.slashblade_wood, new ResourceLocation("slashblade:user"), new ClampedItemPropertyFunction() {
-            @Override
-            public float unclampedCall(ItemStack p_174564_, @Nullable ClientLevel p_174565_, @Nullable LivingEntity p_174566_, int p_174567_) {
-                BladeModel.user = p_174566_;
-                return 0;
-            }
-        });
+        ItemProperties.register(SBItems.slashblade, new ResourceLocation("slashblade:user"),
+                new ClampedItemPropertyFunction() {
+                    @Override
+                    public float unclampedCall(ItemStack p_174564_, @Nullable ClientLevel p_174565_,
+                            @Nullable LivingEntity p_174566_, int p_174567_) {
+                        BladeModel.user = p_174566_;
+                        return 0;
+                    }
+                });
+
+        ItemProperties.register(SBItems.slashblade_bamboo, new ResourceLocation("slashblade:user"),
+                new ClampedItemPropertyFunction() {
+                    @Override
+                    public float unclampedCall(ItemStack p_174564_, @Nullable ClientLevel p_174565_,
+                            @Nullable LivingEntity p_174566_, int p_174567_) {
+                        BladeModel.user = p_174566_;
+                        return 0;
+                    }
+                });
+
+        ItemProperties.register(SBItems.slashblade_silverbamboo, new ResourceLocation("slashblade:user"),
+                new ClampedItemPropertyFunction() {
+                    @Override
+                    public float unclampedCall(ItemStack p_174564_, @Nullable ClientLevel p_174565_,
+                            @Nullable LivingEntity p_174566_, int p_174567_) {
+                        BladeModel.user = p_174566_;
+                        return 0;
+                    }
+                });
+
+        ItemProperties.register(SBItems.slashblade_white, new ResourceLocation("slashblade:user"),
+                new ClampedItemPropertyFunction() {
+                    @Override
+                    public float unclampedCall(ItemStack p_174564_, @Nullable ClientLevel p_174565_,
+                            @Nullable LivingEntity p_174566_, int p_174567_) {
+                        BladeModel.user = p_174566_;
+                        return 0;
+                    }
+                });
+
+        ItemProperties.register(SBItems.slashblade_wood, new ResourceLocation("slashblade:user"),
+                new ClampedItemPropertyFunction() {
+                    @Override
+                    public float unclampedCall(ItemStack p_174564_, @Nullable ClientLevel p_174565_,
+                            @Nullable LivingEntity p_174566_, int p_174567_) {
+                        BladeModel.user = p_174566_;
+                        return 0;
+                    }
+                });
 
     }
-    
+
     @SubscribeEvent
     public static void registerKeyMapping(RegisterKeyMappingsEvent event) {
         event.register(SlashBladeKeyMappings.KEY_SPECIAL_MOVE);
         event.register(SlashBladeKeyMappings.KEY_SUMMON_BLADE);
     }
-    
+
     @SubscribeEvent
-    public static void Baked(final ModelEvent.ModifyBakingResult event){
+    public static void Baked(final ModelEvent.ModifyBakingResult event) {
         bakeBlade(SBItems.slashblade, event);
         bakeBlade(SBItems.slashblade_white, event);
         bakeBlade(SBItems.slashblade_wood, event);
@@ -122,30 +130,29 @@ public class ClientHandler {
     }
 
     public static void bakeBlade(Item blade, final ModelEvent.ModifyBakingResult event) {
-        ModelResourceLocation loc = new ModelResourceLocation(
-                ForgeRegistries.ITEMS.getKey(blade), "inventory");
+        ModelResourceLocation loc = new ModelResourceLocation(ForgeRegistries.ITEMS.getKey(blade), "inventory");
         BladeModel model = new BladeModel(event.getModels().get(loc), event.getModelBakery());
         event.getModels().put(loc, model);
     }
-    
+
     @SubscribeEvent
     public static void addLayers(EntityRenderersEvent.AddLayers event) {
         addPlayerLayer(event, "default");
         addPlayerLayer(event, "slim");
-       
+
         addEntityLayer(event, EntityType.ZOMBIE);
         addEntityLayer(event, EntityType.HUSK);
         addEntityLayer(event, EntityType.ZOMBIE_VILLAGER);
-        
+
         addEntityLayer(event, EntityType.WITHER_SKELETON);
         addEntityLayer(event, EntityType.SKELETON);
         addEntityLayer(event, EntityType.STRAY);
-        
+
         addEntityLayer(event, EntityType.PIGLIN);
         addEntityLayer(event, EntityType.PIGLIN_BRUTE);
         addEntityLayer(event, EntityType.ZOMBIFIED_PIGLIN);
     }
-    
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private static void addPlayerLayer(EntityRenderersEvent.AddLayers evt, String skin) {
         EntityRenderer<? extends Player> renderer = evt.getSkin(skin);
@@ -154,7 +161,7 @@ public class ClientHandler {
             livingRenderer.addLayer(new LayerMainBlade<>(livingRenderer));
         }
     }
-    
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private static void addEntityLayer(EntityRenderersEvent.AddLayers evt, EntityType type) {
         EntityRenderer<?> renderer = evt.getRenderer(type);

@@ -37,36 +37,36 @@ public class LockonCircleRender {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-
-    static final ResourceLocation modelLoc = new ResourceLocation("slashblade","model/util/lockon.obj");
-    static final ResourceLocation textureLoc = new ResourceLocation("slashblade","model/util/lockon.png");
+    static final ResourceLocation modelLoc = new ResourceLocation("slashblade", "model/util/lockon.obj");
+    static final ResourceLocation textureLoc = new ResourceLocation("slashblade", "model/util/lockon.png");
 
     @SubscribeEvent
-    public void onRenderLiving(RenderLivingEvent<?, ?> event){
+    public void onRenderLiving(RenderLivingEvent<?, ?> event) {
         final Minecraft minecraftInstance = Minecraft.getInstance();
         Player player = minecraftInstance.player;
-        if(player == null) return;
-        if(!player.getCapability(CapabilityInputState.INPUT_STATE).filter(input->input.getCommands().contains(InputCommand.SNEAK)).isPresent()) return;
+        if (player == null)
+            return;
+        if (!player.getCapability(CapabilityInputState.INPUT_STATE)
+                .filter(input -> input.getCommands().contains(InputCommand.SNEAK)).isPresent())
+            return;
 
         ItemStack stack = player.getMainHandItem();
 
         Optional<Color> effectColor = stack.getCapability(ItemSlashBlade.BLADESTATE)
-                .filter(s->event.getEntity().equals(s.getTargetEntity(player.level())))
-                .map(s->s.getEffectColor());
+                .filter(s -> event.getEntity().equals(s.getTargetEntity(player.level()))).map(s -> s.getEffectColor());
 
-        if(effectColor.isEmpty()) return;
+        if (effectColor.isEmpty())
+            return;
 
         LivingEntityRenderer<?, ?> renderer = event.getRenderer();
         LivingEntity livingEntity = event.getEntity();
 
-
-
-        if(!livingEntity.isAlive()) return;
+        if (!livingEntity.isAlive())
+            return;
 
         float health = livingEntity.getHealth() / livingEntity.getMaxHealth();
 
         Color col = new Color(effectColor.get().getRGB() & 0xFFFFFF | 0xAA000000, true);
-
 
         PoseStack poseStack = event.getPoseStack();
 
@@ -74,15 +74,15 @@ public class LockonCircleRender {
         float partialTicks = event.getPartialTick();
 
         poseStack.pushPose();
-        poseStack.translate(0.0D, (double)f, 0.0D);
+        poseStack.translate(0.0D, (double) f, 0.0D);
 
         Vec3 offset = renderer.entityRenderDispatcher.camera.getPosition()
-                .subtract(livingEntity.getPosition(partialTicks).add(0,f,0));
+                .subtract(livingEntity.getPosition(partialTicks).add(0, f, 0));
         offset = offset.scale(0.5f);
         poseStack.translate(offset.x(), offset.y(), offset.z());
 
         poseStack.mulPose(renderer.entityRenderDispatcher.cameraOrientation());
-        //poseStack.scale(-0.025F, -0.025F, 0.025F);
+        // poseStack.scale(-0.025F, -0.025F, 0.025F);
 
         float scale = 0.0025f;
         poseStack.scale(scale, -scale, scale);
@@ -97,16 +97,19 @@ public class LockonCircleRender {
         final String value = "lockonHealth";
 
         BladeRenderState.setCol(col);
-        BladeRenderState.renderOverridedLuminous(ItemStack.EMPTY, model, base, resourceTexture, poseStack, buffer, BladeRenderState.MAX_LIGHT );
+        BladeRenderState.renderOverridedLuminous(ItemStack.EMPTY, model, base, resourceTexture, poseStack, buffer,
+                BladeRenderState.MAX_LIGHT);
         {
             poseStack.pushPose();
-            poseStack.translate(0,0, health * 10.0f);
+            poseStack.translate(0, 0, health * 10.0f);
             BladeRenderState.setCol(new Color(0x20000000, true));
-            BladeRenderState.renderOverridedLuminousDepthWrite(ItemStack.EMPTY, model, mask, resourceTexture, poseStack, buffer, BladeRenderState.MAX_LIGHT );
+            BladeRenderState.renderOverridedLuminousDepthWrite(ItemStack.EMPTY, model, mask, resourceTexture, poseStack,
+                    buffer, BladeRenderState.MAX_LIGHT);
             poseStack.popPose();
         }
         BladeRenderState.setCol(col);
-        BladeRenderState.renderOverridedLuminousDepthWrite(ItemStack.EMPTY, model, value, resourceTexture, poseStack, buffer, BladeRenderState.MAX_LIGHT );
+        BladeRenderState.renderOverridedLuminousDepthWrite(ItemStack.EMPTY, model, value, resourceTexture, poseStack,
+                buffer, BladeRenderState.MAX_LIGHT);
 
         poseStack.popPose();
     }

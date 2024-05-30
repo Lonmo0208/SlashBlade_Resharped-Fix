@@ -16,24 +16,25 @@ public class JEICompat implements IModPlugin {
     public ResourceLocation getPluginUid() {
         return SlashBlade.prefix(SlashBlade.MODID);
     }
-    
+
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
-        registration.registerSubtypeInterpreter(SBItems.slashblade, (stack, context)->{
-            if(!stack.getCapability(ItemSlashBlade.BLADESTATE).isPresent())
+        registration.registerSubtypeInterpreter(SBItems.slashblade, (stack, context) -> {
+            if (!stack.getCapability(ItemSlashBlade.BLADESTATE).isPresent())
                 return "";
-            
+
             var state = stack.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
             String transKey = state.getTranslationKey();
-            if(transKey.isBlank())
+            if (transKey.isBlank())
                 return transKey;
-            
+
             var bladeID = getBladeId(transKey);
-            if(BladeModelManager.getClientSlashBladeRegistry().containsKey(bladeID)) {
+            if (BladeModelManager.getClientSlashBladeRegistry().containsKey(bladeID)) {
                 var blade = BladeModelManager.getClientSlashBladeRegistry().get(bladeID);
                 state.setModel(blade.getRenderDefinition().getModelName());
                 state.setTexture(blade.getRenderDefinition().getTextureName());
-            };
+            }
+            ;
             return transKey;
         });
     }

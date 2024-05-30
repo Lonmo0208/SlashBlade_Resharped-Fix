@@ -17,9 +17,11 @@ import net.minecraft.world.item.context.UseOnContext;
 
 public class BladeStandItem extends HangingEntityItem {
     private boolean isWallType;
+
     public BladeStandItem(Properties builder) {
         this(builder, false);
     }
+
     public BladeStandItem(Properties builder, boolean isWallType) {
         super(SlashBlade.RegistryEvents.BladeStand, builder);
 
@@ -59,9 +61,11 @@ public class BladeStandItem extends HangingEntityItem {
     }
 
     protected boolean mayPlace(Player player, Direction dir, ItemStack stack, BlockPos pos) {
-        if(isWallType)
-            return !dir.getAxis().isVertical() && !player.level().isOutsideBuildHeight(pos) && player.mayUseItemAt(pos, dir, stack);
+        if (isWallType)
+            return !dir.getAxis().isVertical() && !player.level().isOutsideBuildHeight(pos)
+                    && player.mayUseItemAt(pos, dir, stack);
         else
-            return (dir == Direction.UP) && !player.level().isOutsideBuildHeight(pos) && player.mayUseItemAt(pos, dir, stack);
+            return (dir == Direction.UP) && !player.level().isOutsideBuildHeight(pos)
+                    && player.mayUseItemAt(pos, dir, stack);
     }
 }

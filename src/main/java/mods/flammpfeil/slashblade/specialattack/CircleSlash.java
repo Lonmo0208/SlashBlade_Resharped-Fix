@@ -24,7 +24,7 @@ public class CircleSlash {
                 .add(living.getLookAngle().scale(Vec3.ZERO.z));
 
         EntitySlashEffect jc = new EntitySlashEffect(SlashBlade.RegistryEvents.SlashEffect, living.level()) {
-            
+
             @Override
             public SoundEvent getSlashSound() {
                 return SoundEvents.EMPTY;

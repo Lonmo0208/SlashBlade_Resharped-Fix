@@ -6,35 +6,28 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 
-public class GroupObject
-{
+public class GroupObject {
     public String name;
     public ArrayList<Face> faces = new ArrayList<Face>();
     public int glDrawingMode;
 
-    public GroupObject()
-    {
+    public GroupObject() {
         this("");
     }
 
-    public GroupObject(String name)
-    {
+    public GroupObject(String name) {
         this(name, -1);
     }
 
-    public GroupObject(String name, int glDrawingMode)
-    {
+    public GroupObject(String name, int glDrawingMode) {
         this.name = name;
         this.glDrawingMode = glDrawingMode;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void render(VertexConsumer tessellator)
-    {
-        if (faces.size() > 0)
-        {
-            for (Face face : faces)
-            {
+    public void render(VertexConsumer tessellator) {
+        if (faces.size() > 0) {
+            for (Face face : faces) {
                 face.addFaceForRender(tessellator);
             }
         }

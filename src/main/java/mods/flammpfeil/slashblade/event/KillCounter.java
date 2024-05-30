@@ -18,11 +18,15 @@ public class KillCounter {
     private static final class SingletonHolder {
         private static final KillCounter instance = new KillCounter();
     }
+
     public static KillCounter getInstance() {
         return SingletonHolder.instance;
     }
-    private KillCounter(){}
-    public void register(){
+
+    private KillCounter() {
+    }
+
+    public void register() {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -30,34 +34,41 @@ public class KillCounter {
     public void onLivingDeathEvent(LivingDeathEvent event) {
         Entity trueSource = event.getSource().getEntity();
 
-        if (!(trueSource instanceof LivingEntity)) return;
+        if (!(trueSource instanceof LivingEntity))
+            return;
 
         ItemStack stack = ((LivingEntity) trueSource).getMainHandItem();
-        if(stack.isEmpty()) return;
-        if(!(stack.getItem() instanceof ItemSlashBlade)) return;
+        if (stack.isEmpty())
+            return;
+        if (!(stack.getItem() instanceof ItemSlashBlade))
+            return;
 
-        stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state->{
-            
+        stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
+
             state.setKillCount(state.getKillCount() + 1);
         });
     }
-    
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onXPDropping(LivingExperienceDropEvent event) {
         Player player = event.getAttackingPlayer();
-        if (player == null) return;
+        if (player == null)
+            return;
         ItemStack stack = player.getMainHandItem();
-        if (stack.isEmpty()) return;
-        if (!(stack.getItem() instanceof ItemSlashBlade)) return;
+        if (stack.isEmpty())
+            return;
+        if (!(stack.getItem() instanceof ItemSlashBlade))
+            return;
 
-        IConcentrationRank.ConcentrationRanks rankBonus = 
-                player.getCapability(ConcentrationRankCapabilityProvider.RANK_POINT)
-                .map(rp->rp.getRank(player.getCommandSenderWorld().getGameTime()))
+        IConcentrationRank.ConcentrationRanks rankBonus = player
+                .getCapability(ConcentrationRankCapabilityProvider.RANK_POINT)
+                .map(rp -> rp.getRank(player.getCommandSenderWorld().getGameTime()))
                 .orElse(IConcentrationRank.ConcentrationRanks.NONE);
         int souls = (int) Math.floor(event.getDroppedExperience() * (1.0F + (rankBonus.level * 0.1F)));
-        
-        stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state->{
-            state.setProudSoulCount(state.getProudSoulCount() + Math.min(SlashBladeConfig.MAX_PROUD_SOUL_GOT.get(), souls));
+
+        stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
+            state.setProudSoulCount(
+                    state.getProudSoulCount() + Math.min(SlashBladeConfig.MAX_PROUD_SOUL_GOT.get(), souls));
         });
     }
 }

@@ -18,11 +18,13 @@ public class CapabilityAttachHandler {
     static public final ResourceLocation MOBEFFECT_KEY = new ResourceLocation(SlashBlade.MODID, "mobeffect");
     static public final ResourceLocation INPUTSTATE_KEY = new ResourceLocation(SlashBlade.MODID, "inputstate");
     static public final ResourceLocation RANK_KEY = new ResourceLocation(SlashBlade.MODID, "concentration");
+
     @SubscribeEvent
     public void AttachCapabilities_Entity(AttachCapabilitiesEvent<Entity> event) {
-        if(!(event.getObject() instanceof LivingEntity)) return;
+        if (!(event.getObject() instanceof LivingEntity))
+            return;
 
-        event.addCapability(INPUTSTATE_KEY,new InputStateCapabilityProvider());
+        event.addCapability(INPUTSTATE_KEY, new InputStateCapabilityProvider());
         event.addCapability(MOBEFFECT_KEY, new MobEffectCapabilityProvider());
         event.addCapability(RANK_KEY, new ConcentrationRankCapabilityProvider());
     }

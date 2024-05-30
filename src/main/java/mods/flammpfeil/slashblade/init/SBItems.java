@@ -18,7 +18,7 @@ public class SBItems {
     public static final Item proudsoul_crystal = null;
     @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":proudsoul_trapezohedron")
     public static final Item proudsoul_trapezohedron = null;
-    
+
     @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":slashblade_wood")
     public static final Item slashblade_wood = null;
     @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":slashblade_bamboo")
@@ -27,7 +27,7 @@ public class SBItems {
     public static final Item slashblade_silverbamboo = null;
     @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":slashblade_white")
     public static final Item slashblade_white = null;
-    
+
     @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":slashblade")
     public static final Item slashblade = null;
 

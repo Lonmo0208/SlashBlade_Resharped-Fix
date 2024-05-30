@@ -8,24 +8,24 @@ import com.google.errorprone.annotations.DoNotCall;
 import net.minecraft.resources.ResourceLocation;
 
 public class SimpleSlashBladeState extends SlashBladeState {
-    
+
     private final ResourceLocation model;
     private final ResourceLocation texture;
     private final float attack;
     private final int damage;
-    
+
     public SimpleSlashBladeState(ResourceLocation model, ResourceLocation texture, float attack, int damage) {
         this.model = model;
         this.attack = attack;
         this.damage = damage;
         this.texture = texture;
     }
-    
+
     @Override
     public Optional<ResourceLocation> getModel() {
         return Optional.ofNullable(model);
     }
-    
+
     @CanIgnoreReturnValue
     @Deprecated
     @DoNotCall("Always throws UnsupportedOperationException")

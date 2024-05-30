@@ -41,30 +41,26 @@ import jp.nyatla.nymmd.MmdException;
 import jp.nyatla.nymmd.struct.DataReader;
 import jp.nyatla.nymmd.struct.StructType;
 
-public class PMD_Header implements StructType
-{
-	public final static int SIZE_OF_STRUCT=3+4+20+256;
-	public String szMagic;
-	public float fVersion;
-	public String szName;
-	public String szComment;
-	
-	public void read(DataReader i_reader) throws MmdException
-	{
-		this.szMagic=i_reader.readAscii(3);
-		//
-		this.fVersion=i_reader.readFloat();
-		//szName
-		this.szName=i_reader.readAscii(20);
+public class PMD_Header implements StructType {
+    public final static int SIZE_OF_STRUCT = 3 + 4 + 20 + 256;
+    public String szMagic;
+    public float fVersion;
+    public String szName;
+    public String szComment;
 
-		//szComment
-		this.szComment=i_reader.readAscii(256);
-		return;
-	}
-/*
-	char	szMagic[3];		// "Pmd"
-	float	fVersion;		// PMDバージョン番号
-	char	szName[20];		// モデル名
-	char	szComment[256];	// コメント(著作権表示など)
-*/
+    public void read(DataReader i_reader) throws MmdException {
+        this.szMagic = i_reader.readAscii(3);
+        //
+        this.fVersion = i_reader.readFloat();
+        // szName
+        this.szName = i_reader.readAscii(20);
+
+        // szComment
+        this.szComment = i_reader.readAscii(256);
+        return;
+    }
+    /*
+     * char szMagic[3]; // "Pmd" float fVersion; // PMDバージョン番号 char szName[20]; //
+     * モデル名 char szComment[256]; // コメント(著作権表示など)
+     */
 }

@@ -16,19 +16,16 @@ import net.minecraftforge.registries.RegistryObject;
 public class SlashBladeCreativeGroup {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister
             .create(Registries.CREATIVE_MODE_TAB, SlashBlade.MODID);
-    
+
     private static final CreativeModeTab SLASHBLADE = CreativeModeTab.builder()
-            .title(Component.translatable("itemGroup.slashblade"))
-            .icon(()->{
+            .title(Component.translatable("itemGroup.slashblade")).icon(() -> {
                 ItemStack stack = new ItemStack(SBItems.slashblade);
-                stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s->{
-                    s.setModel(new ResourceLocation(SlashBlade.MODID,"model/named/yamato.obj"));
-                    s.setTexture(new ResourceLocation(SlashBlade.MODID,"model/named/yamato.png"));
+                stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s -> {
+                    s.setModel(new ResourceLocation(SlashBlade.MODID, "model/named/yamato.obj"));
+                    s.setTexture(new ResourceLocation(SlashBlade.MODID, "model/named/yamato.png"));
                 });
                 return stack;
-            })
-            .displayItems((features, output) -> {
-                
+            }).displayItems((features, output) -> {
 
                 output.accept(SBItems.proudsoul);
                 output.accept(SBItems.proudsoul_tiny);
@@ -43,7 +40,7 @@ public class SlashBladeCreativeGroup {
                 output.accept(SBItems.bladestand_2w);
                 output.accept(SBItems.bladestand_s);
                 output.accept(SBItems.bladestand_v);
-                
+
                 output.accept(SBItems.slashblade_wood);
                 output.accept(SBItems.slashblade_bamboo);
                 output.accept(SBItems.slashblade_silverbamboo);
@@ -51,20 +48,17 @@ public class SlashBladeCreativeGroup {
                 output.accept(SBItems.slashblade);
 
                 fillBlades(output);
-                })
-            .build();
-    
-    public static final RegistryObject<CreativeModeTab> SLASHBLADE_GROUP = CREATIVE_MODE_TABS.register("slashblade", ()->SLASHBLADE);
-    
-    
-    
+            }).build();
+
+    public static final RegistryObject<CreativeModeTab> SLASHBLADE_GROUP = CREATIVE_MODE_TABS.register("slashblade",
+            () -> SLASHBLADE);
+
     private static void fillBlades(CreativeModeTab.Output output) {
         if (Minecraft.getInstance().getConnection() != null) {
-            BladeModelManager.getClientSlashBladeRegistry()
-            .entrySet().stream().sorted(SlashBladeDefinition.COMPARATOR)
-            .forEach(entry ->{
-                output.accept(entry.getValue().getBlade());
-            });
+            BladeModelManager.getClientSlashBladeRegistry().entrySet().stream().sorted(SlashBladeDefinition.COMPARATOR)
+                    .forEach(entry -> {
+                        output.accept(entry.getValue().getBlade());
+                    });
         }
     }
 }

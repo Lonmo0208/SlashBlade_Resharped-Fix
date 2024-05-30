@@ -78,7 +78,6 @@ public class AttackManager {
         EntitySlashEffect jc = new EntitySlashEffect(SlashBlade.RegistryEvents.SlashEffect, playerIn.level());
         jc.setPos(pos.x, pos.y, pos.z);
         jc.setOwner(playerIn);
-//        jc.setDeltaMovement(pos);
         jc.setRotationRoll(roll);
         jc.setYRot(playerIn.getYRot());
         jc.setXRot(0);
@@ -113,12 +112,12 @@ public class AttackManager {
                 .add(living.getLookAngle().scale(Vec3.ZERO.z));
 
         EntitySlashEffect jc = new EntitySlashEffect(SlashBlade.RegistryEvents.SlashEffect, living.level()) {
-            
+
             @Override
             public double getDamage() {
                 return 0;
             }
-            
+
             @Override
             public SoundEvent getSlashSound() {
                 return SoundEvents.BLAZE_HURT;
@@ -126,26 +125,26 @@ public class AttackManager {
 
             @Override
             protected void tryDespawn() {
-                if(!this.level().isClientSide()){
-                if (getLifetime() < this.tickCount) {
-                    this.level().playSound((Player) null, this.getX(), this.getY(), this.getZ(),
-                            SoundEvents.GLASS_BREAK, SoundSource.PLAYERS, 1.0F,
-                            0.625F + 0.1f * this.random.nextFloat());
-                    ((ServerLevel) this.level()).sendParticles(ParticleTypes.ENCHANTED_HIT, this.getX(), this.getY(), this.getZ(), 16, 0.7,
-                            0.7, 0.7, 0.02);
-                    this.getAlreadyHits().forEach(entity -> {
+                if (!this.level().isClientSide()) {
+                    if (getLifetime() < this.tickCount) {
+                        this.level().playSound((Player) null, this.getX(), this.getY(), this.getZ(),
+                                SoundEvents.GLASS_BREAK, SoundSource.PLAYERS, 1.0F,
+                                0.625F + 0.1f * this.random.nextFloat());
+                        ((ServerLevel) this.level()).sendParticles(ParticleTypes.ENCHANTED_HIT, this.getX(),
+                                this.getY(), this.getZ(), 16, 0.7, 0.7, 0.7, 0.02);
+                        this.getAlreadyHits().forEach(entity -> {
 
-                        if(entity.isAlive()) {
-                            entity.addDeltaMovement(new Vec3(
-                                    (double) (-Math.sin(getOwner().getYRot() * (float) Math.PI / 180.0F) * 0.5), 
-                                    0.05D, 
-                                    (double) (Math.cos(getOwner().getYRot() * (float) Math.PI / 180.0F) * 0.5)
-                                    ));
-                            doAttackWith(this.damageSources().indirectMagic(this, this.getShooter()),
-                                (float) (living.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2F), entity, true, true);
+                            if (entity.isAlive()) {
+                                entity.addDeltaMovement(new Vec3(
+                                        (double) (-Math.sin(getOwner().getYRot() * (float) Math.PI / 180.0F) * 0.5),
+                                        0.05D,
+                                        (double) (Math.cos(getOwner().getYRot() * (float) Math.PI / 180.0F) * 0.5)));
+                                doAttackWith(this.damageSources().indirectMagic(this, this.getShooter()),
+                                        (float) (living.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2F), entity, true,
+                                        true);
                             }
                         });
-                    this.remove(RemovalReason.DISCARDED);
+                        this.remove(RemovalReason.DISCARDED);
                     }
                 }
             }

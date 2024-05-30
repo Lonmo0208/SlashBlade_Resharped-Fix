@@ -23,7 +23,7 @@ public class SakuraEnd {
 
         return doSlash(playerIn, roll, colorCode, centerOffset, mute, critical, damage, knockback);
     }
-    
+
     public static EntitySlashEffect doSlash(LivingEntity playerIn, float roll, int colorCode, Vec3 centerOffset,
             boolean mute, boolean critical, double damage, KnockBacks knockback) {
 
@@ -38,7 +38,7 @@ public class SakuraEnd {
                 .add(playerIn.getLookAngle().scale(centerOffset.z));
 
         EntitySlashEffect jc = new EntitySlashEffect(SlashBlade.RegistryEvents.SlashEffect, playerIn.level());
-        
+
         jc.setPos(pos.x, pos.y, pos.z);
         jc.setOwner(playerIn);
         jc.setRotationRoll(roll);
