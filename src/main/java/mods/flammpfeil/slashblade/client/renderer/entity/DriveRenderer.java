@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -41,16 +40,16 @@ public class DriveRenderer<T extends EntityDrive> extends EntityRenderer<T> {
             int packedLightIn) {
 
         try (MSAutoCloser msac = MSAutoCloser.pushMatrix(matrixStack)) {
-            int lifetime = entity.getLifetime();
+            float lifetime = entity.getLifetime();
             double deathTime = lifetime;
-            double baseAlpha = (Math.min(deathTime, Math.max(0, (lifetime - (entity.tickCount) - partialTicks)))
+            double baseAlpha = (Math.min(deathTime, Math.max(0, (lifetime - (entity.tickCount))))
                     / deathTime);
-            baseAlpha = -Math.pow(baseAlpha - 1, 4.0) + 0.75;
+            baseAlpha = Math.max(0, -Math.pow(baseAlpha - 1, 4.0) + 0.75);
 
             matrixStack.mulPose(
                     Axis.YP.rotationDegrees(Mth.rotLerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
             matrixStack.mulPose(Axis.ZP.rotationDegrees(Mth.rotLerp(partialTicks, entity.xRotO, entity.getXRot())));
-            matrixStack.mulPose(Axis.XP.rotationDegrees(entity.getRoll()));
+            matrixStack.mulPose(Axis.XP.rotationDegrees(entity.getRotationRoll()));
 
             float scale = 0.015f;
             matrixStack.scale(scale, scale, scale);

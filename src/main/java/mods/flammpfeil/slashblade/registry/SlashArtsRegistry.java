@@ -37,4 +37,10 @@ public class SlashArtsRegistry {
 
     public static final RegistryObject<SlashArts> DRIVE_HORIZONTAL = SLASH_ARTS.register("drive_horizontal",
             () -> new SlashArts((e) -> ComboStateRegistry.DRIVE_HORIZONTAL.getId()));
+
+//    public static final RegistryObject<SlashArts> WAVE_EDGE_VERTICAL = SLASH_ARTS.register("wave_edge_vertical",
+//            () -> new SlashArts((e) -> ComboStateRegistry.WAVE_EDGE_HORIZONTAL.getId()));
+
+    public static final RegistryObject<SlashArts> WAVE_EDGE = SLASH_ARTS.register("wave_edge",
+            () -> new SlashArts((e) -> ComboStateRegistry.WAVE_EDGE_VERTICAL.getId()));
 }
