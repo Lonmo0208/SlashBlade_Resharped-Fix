@@ -1,8 +1,15 @@
 package mods.flammpfeil.slashblade.entity;
 
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -15,6 +22,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
@@ -29,6 +38,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.ItemLike;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpawnData {
 
@@ -106,6 +118,65 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
     }
 
     @Override
+    public boolean hurt(DamageSource damageSource, float cat)
+    {
+        Entity entity = damageSource.getEntity();
+        ItemStack blade = this.getItem();
+        if (entity instanceof Player player)
+        {
+            if (blade.isEmpty()) return super.hurt(damageSource, cat);
+            ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
+            float probability = 0f;
+            boolean flag = false;
+            RandomSource random = player.getRandom();
+            Enchantment enchantment;
+            if (stack.isEnchanted())
+            {
+                if (stack.is(SBItems.proudsoul_tiny))
+                {
+                    flag = true;
+                    probability = 0.25f;
+                }
+                else if (stack.is(SBItems.proudsoul))
+                {
+                    flag = true;
+                    probability = 0.5f;
+                }
+                else if (stack.is(SBItems.proudsoul_ingot))
+                {
+                    flag = true;
+                    probability = 0.75f;
+                }
+                else if (stack.is(SBItems.proudsoul_sphere) || stack.is(SBItems.proudsoul_crystal) || stack.is(SBItems.proudsoul_trapezohedron))
+                {
+                    flag = true;
+                    probability = 1f;
+                }
+
+                if (!flag) return super.hurt(damageSource, cat);
+                ArrayList<Enchantment> enchantments = new ArrayList<>(EnchantmentHelper.getEnchantments(stack).keySet());
+                enchantment = enchantments.get(random.nextInt(0, enchantments.size()));
+                if (random.nextFloat() <= probability)
+                {
+                    int enchantLevel =  EnchantmentHelper.getTagEnchantmentLevel(enchantment, blade) + 1;
+                    Map<Enchantment, Integer> map = blade.getAllEnchantments();
+                    map.put(enchantment, enchantLevel);
+                    EnchantmentHelper.setEnchantments(map, blade);
+                    Level level = player.level();
+                    BlockPos pos = this.pos;
+                    level.playSound(this, pos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.1F + 0.9F);
+                    Minecraft.getInstance().particleEngine.createTrackingEmitter(this, ParticleTypes.ENCHANTED_HIT);
+                }
+                if (!player.isCreative()) stack.shrink(1);
+
+                return true;
+            }
+        }
+
+        return super.hurt(damageSource, cat);
+    }
+
+    @Override//晚上好timi！
     public InteractionResult interact(Player player, InteractionHand hand) {
         InteractionResult result = InteractionResult.PASS;
         if (!this.level().isClientSide() && hand == InteractionHand.MAIN_HAND) {
