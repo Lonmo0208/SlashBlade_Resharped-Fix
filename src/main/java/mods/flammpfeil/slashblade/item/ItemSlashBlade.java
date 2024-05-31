@@ -17,6 +17,7 @@ import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import mods.flammpfeil.slashblade.util.InputCommand;
 import mods.flammpfeil.slashblade.util.NBTHelper;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -419,36 +420,9 @@ public class ItemSlashBlade extends SwordItem {
     @Nullable
     @Override
     public CompoundTag getShareTag(ItemStack stack) {
-        return stack.getCapability(ItemSlashBlade.BLADESTATE).filter(s -> s.getShareTag() != null).map(s -> {
-            CompoundTag tag = s.getShareTag();
-            tag.putString("translationKey", s.getTranslationKey());
-            if (tag.getBoolean("isBroken") != s.isBroken())
-                tag.putString("isBroken", Boolean.toString(s.isBroken()));
-
-            stack.addTagElement("ShareTag", tag);
-
-            return stack.getTag();
-        }).orElseGet(() -> {
-
-            CompoundTag tag = stack.getCapability(ItemSlashBlade.BLADESTATE)
-                    .map(s -> NBTHelper.getNBTCoupler(stack.getOrCreateTag()).getChild("ShareTag")
-                            .put("translationKey", s.getTranslationKey())
-                            .put("isBroken", Boolean.toString(s.isBroken())).getRawCompound())
-                    .orElseGet(() -> new CompoundTag());
-
-            /*
-             * CompoundNBT tag = stack.write(new CompoundNBT()).copy();
-             * 
-             * NBTHelper.getNBTCoupler(tag) .getChild("ForgeCaps")
-             * .getChild("slashblade:bladestate") .doRawCompound("State",
-             * ISlashBladeState::removeActiveState);
-             */
-
-            stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s -> s.setShareTag(tag));
-
-            return stack.getTag();
-        });
-
+        CompoundTag tag = stack.getOrCreateTag();
+        stack.getCapability(BLADESTATE).ifPresent(state -> tag.put("bladeState", state.serializeNBT()));
+        return tag;
     }
 
     public static final String ICON_TAG_KEY = "SlashBladeIcon";
@@ -456,25 +430,15 @@ public class ItemSlashBlade extends SwordItem {
 
     @Override
     public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
+        if (nbt == null) return;
 
         super.readShareTag(stack, nbt);
 
-        if (nbt == null)
-            return;
+        stack.getCapability(BLADESTATE).ifPresent(state -> state.deserializeNBT(nbt.get("bladeState")));
 
         if (nbt.contains(ICON_TAG_KEY)) {
             stack.deserializeNBT(nbt.getCompound(ICON_TAG_KEY));
-            return;
         }
-
-        /*
-         * if(nbt.contains(CLIENT_CAPS_KEY,10)){
-         * stack.deserializeNBT(nbt.getCompound(CLIENT_CAPS_KEY)); }else{
-         * stack.deserializeNBT(nbt); }
-         * 
-         * DistExecutor.runWhenOn(Dist.CLIENT, ()->()->{ CompoundNBT tag = nbt.copy();
-         * tag.remove(CLIENT_CAPS_KEY); stack.setTagInfo(CLIENT_CAPS_KEY, tag); });
-         */
     }
 
     // damage ----------------------------------------------------------

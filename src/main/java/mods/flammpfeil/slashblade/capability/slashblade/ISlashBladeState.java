@@ -14,8 +14,10 @@ import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import mods.flammpfeil.slashblade.specialattack.SlashArts;
 import mods.flammpfeil.slashblade.util.AdvancementHelper;
+import mods.flammpfeil.slashblade.util.EnumSetConverter;
 import mods.flammpfeil.slashblade.util.NBTHelper;
 import mods.flammpfeil.slashblade.util.TimeValueHelper;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -24,6 +26,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
@@ -34,7 +37,112 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface ISlashBladeState {
+public interface ISlashBladeState extends INBTSerializable<Tag>
+{
+    @Override
+    default Tag serializeNBT()
+    {
+        CompoundTag tag = new CompoundTag();
+        // action state
+        tag.putLong("lastActionTime", this.getLastActionTime());
+        tag.putInt("TargetEntity", this.getTargetEntityId());
+        tag.putBoolean("_onClick", this.onClick());
+        tag.putFloat("fallDecreaseRate", this.getFallDecreaseRate());
+        tag.putFloat("AttackAmplifier", this.getAttackAmplifier());
+        tag.putString("currentCombo", this.getComboSeq().toString());
+        tag.putInt("Damage", this.getDamage());
+        tag.putInt("maxDamage", this.getMaxDamage());
+        tag.putInt("proudSoul", this.getProudSoulCount());
+        tag.putBoolean("isBroken", this.isBroken());
+
+        // passive state
+        tag.putBoolean("isSealed", this.isSealed());
+
+        tag.putFloat("baseAttackModifier", this.getBaseAttackModifier());
+
+        tag.putInt("killCount", this.getKillCount());
+        tag.putInt("RepairCounter", this.getRefine());
+
+        UUID bladeId = this.getUniqueId();
+        tag.putUUID("BladeUniqueId", bladeId);
+
+        // performance setting
+
+        tag.putString("SpecialAttackType", Optional.ofNullable(this.getSlashArtsKey())
+        .orElse(SlashArtsRegistry.JUDGEMENT_CUT.getId()).toString());
+        tag.putBoolean("isDefaultBewitched", this.isDefaultBewitched());
+        tag.putString("translationKey", this.getTranslationKey());
+
+        // render info
+        tag.putByte("StandbyRenderType", (byte) this.getCarryType().ordinal());
+        tag.putInt("SummonedSwordColor", this.getColorCode());
+        tag.putBoolean("SummonedSwordColorInverse", this.isEffectColorInverse());
+        tag.put("adjustXYZ", NBTHelper.newDoubleNBTList(this.getAdjust()));
+
+        this.getTexture().ifPresent(loc -> tag.putString("TextureName", loc.toString()));
+        this.getModel().ifPresent(loc -> tag.putString("ModelName", loc.toString()));
+
+        tag.putString("ComboRoot",
+                      Optional.ofNullable(this.getComboRoot()).orElse(ComboStateRegistry.STANDBY.getId()).toString());
+        return tag;
+    }
+
+    @Override
+    default void deserializeNBT(Tag nbt)
+    {
+        if (nbt == null) return;
+        CompoundTag tag = (CompoundTag) nbt;
+
+        // action state
+        this.setLastActionTime(tag.getLong("lastActionTime"));
+        this.setTargetEntityId(tag.getInt("TargetEntity"));
+        this.setOnClick(tag.getBoolean("_onClick"));
+        this.setFallDecreaseRate(tag.getFloat("fallDecreaseRate"));
+        this.setAttackAmplifier(tag.getFloat("AttackAmplifier"));
+        this.setComboSeq(ResourceLocation.tryParse(tag.getString("currentCombo")));
+        this.setDamage(tag.getInt("Damage"));
+        this.setMaxDamage(tag.getInt("maxDamage"));
+        this.setProudSoulCount(tag.getInt("proudSoul"));
+        this.setBroken(tag.getBoolean("isBroken"));
+
+        this.setHasChangedActiveState(true);
+
+        // passive state
+        this.setSealed(tag.getBoolean("isSealed"));
+
+        this.setBaseAttackModifier(tag.getFloat("baseAttackModifier"));
+
+        this.setKillCount(tag.getInt("killCount"));
+        this.setRefine(tag.getInt("RepairCounter"));
+
+        this.setUniqueId(tag.hasUUID("BladeUniqueId") ? tag.getUUID("BladeUniqueId") : UUID.randomUUID());
+
+        // performance setting
+
+        this.setSlashArtsKey(ResourceLocation.tryParse(tag.getString("SpecialAttackType")));
+        this.setDefaultBewitched(tag.getBoolean("isDefaultBewitched"));
+
+        this.setTranslationKey(tag.getString("translationKey"));
+
+        // render info
+        this.setCarryType(EnumSetConverter.fromOrdinal(CarryType.values(), tag.getByte("StandbyRenderType"),
+                                                           CarryType.DEFAULT));
+        this.setColorCode(tag.getInt("SummonedSwordColor"));
+        this.setEffectColorInverse(tag.getBoolean("SummonedSwordColorInverse"));
+        this.setAdjust(NBTHelper.getVector3d(tag, "adjustXYZ"));
+
+        if (tag.contains("TextureName"))
+            this.setTexture(new ResourceLocation(tag.getString("TextureName")));
+        else
+            this.setTexture(null);
+
+        if (tag.contains("ModelName"))
+            this.setModel(new ResourceLocation(tag.getString("ModelName")));
+        else
+            this.setModel(null);
+
+        this.setComboRoot(ResourceLocation.tryParse(tag.getString("ComboRoot")));
+    }
 
     long getLastActionTime();
 
@@ -327,10 +435,11 @@ public interface ISlashBladeState {
     default CompoundTag getActiveState() {
         CompoundTag tag = new CompoundTag();
 
-        NBTHelper.getNBTCoupler(tag).put("BladeUniqueId", this.getUniqueId())
-
+        NBTHelper.getNBTCoupler(tag)
+                .put("BladeUniqueId", this.getUniqueId())
                 .put("lastActionTime", this.getLastActionTime()).put("TargetEntity", this.getTargetEntityId())
-                .put("_onClick", this.onClick()).put("fallDecreaseRate", this.getFallDecreaseRate())
+                .put("_onClick", this.onClick())
+                .put("fallDecreaseRate", this.getFallDecreaseRate())
                 .put("AttackAmplifier", this.getAttackAmplifier()).put("currentCombo", this.getComboSeq().toString())
                 .put("proudSoul", this.getProudSoulCount()).put("killCount", this.getKillCount())
                 .put("Damage", this.getDamage()).put("isBroken", this.isBroken());
@@ -340,8 +449,7 @@ public interface ISlashBladeState {
 
     default void setActiveState(CompoundTag tag) {
         NBTHelper.getNBTCoupler(tag)
-                // .get("BladeUniqueId", this::setUniqueId)
-
+                .get("BladeUniqueId", this::setUniqueId)
                 .get("lastActionTime", this::setLastActionTime)
                 .get("TargetEntity", ((Integer id) -> this.setTargetEntityId(id))).get("_onClick", this::setOnClick)
                 .get("fallDecreaseRate", this::setFallDecreaseRate).get("AttackAmplifier", this::setAttackAmplifier)
