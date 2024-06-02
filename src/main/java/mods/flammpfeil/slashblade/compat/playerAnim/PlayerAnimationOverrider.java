@@ -130,7 +130,6 @@ public class PlayerAnimationOverrider {
         map.put(ComboStateRegistry.DRIVE_HORIZONTAL.getId(), new VmdAnimation(MotionLocation, 400, 488, false));
         map.put(ComboStateRegistry.DRIVE_VERTICAL.getId(), new VmdAnimation(MotionLocation, 1600, 1693, false));
 
-        map.put(ComboStateRegistry.WAVE_EDGE_HORIZONTAL.getId(), new VmdAnimation(MotionLocation, 400, 488, false));
         map.put(ComboStateRegistry.WAVE_EDGE_VERTICAL.getId(), new VmdAnimation(MotionLocation, 1600, 1693, false));
         return map;
     }

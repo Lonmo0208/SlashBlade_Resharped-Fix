@@ -1179,17 +1179,6 @@ public class ComboStateRegistry {
             ::build
     );
 
-    public static final RegistryObject<ComboState> WAVE_EDGE_HORIZONTAL = COMBO_STATE.register("wave_edge_horizontal",
-        ComboState.Builder.newInstance().startAndEnd(400, 459).priority(50)
-            .motionLoc(DefaultResources.ExMotionLocation)
-            .next(ComboState.TimeoutNext.buildFromFrame(15, entity -> SlashBlade.prefix("none")))
-            .nextOfTimeout(entity -> SlashBlade.prefix("drive_horizontal_end"))
-            .addTickAction(ComboState.TimeLineTickAction.getBuilder()
-                  .put(2, (entityIn) -> AttackManager.doSlash(entityIn, -30F, Vec3.ZERO, false, false, 0.1F))
-                  .put(3, (entityIn) -> WaveEdge.doSlash(entityIn, 0F, 20, Vec3.ZERO, false, 7, 0.2f, 1f, 4)).build())
-            .addHitEffect(StunManager::setStun)
-            ::build
-    );
     public static final RegistryObject<ComboState> WAVE_EDGE_VERTICAL = COMBO_STATE.register("wave_edge_vertical",
         ComboState.Builder.newInstance()
             .startAndEnd(1600, 1659)

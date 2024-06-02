@@ -3,9 +3,11 @@ package mods.flammpfeil.slashblade;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
 import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -47,6 +49,7 @@ public class SlashBladeCreativeGroup {
                 output.accept(SBItems.slashblade_white);
                 output.accept(SBItems.slashblade);
 
+                fillSASpheres(output);
                 fillBlades(output);
             }).build();
 
@@ -59,6 +62,23 @@ public class SlashBladeCreativeGroup {
                     .forEach(entry -> {
                         output.accept(entry.getValue().getBlade());
                     });
+        }
+    }
+
+    private static void fillSASpheres(CreativeModeTab.Output output)
+    {
+        if (Minecraft.getInstance().getConnection() != null)
+        {
+            SlashArtsRegistry.REGISTRY.get().forEach(slashArts ->
+                {
+                    ResourceLocation key = SlashArtsRegistry.REGISTRY.get().getKey(slashArts);
+                    if (slashArts.equals(SlashArtsRegistry.NONE.get()) || key == null) return;
+                    ItemStack sphere = new ItemStack(SBItems.proudsoul_sphere);
+                    CompoundTag tag = new CompoundTag();
+                    tag.putString("SpecialAttackType", key.toString());
+                    sphere.setTag(tag);
+                    output.accept(sphere);
+                });
         }
     }
 }

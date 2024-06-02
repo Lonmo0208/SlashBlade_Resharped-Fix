@@ -21,7 +21,9 @@ import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import mods.flammpfeil.slashblade.registry.combo.ComboCommands;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import mods.flammpfeil.slashblade.util.TargetSelector;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.Entity;
@@ -47,6 +49,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 // The value here should match an entry in the META-INF/mods.toml file
 
@@ -246,6 +251,24 @@ public class SlashBlade {
                             @Override
                             public int getEnchantmentValue(ItemStack stack) {
                                 return 150;
+                            }
+
+                            @Override
+                            public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag flag)
+                            {
+                                if (stack.getTag() != null)
+                                {
+                                    CompoundTag tag = stack.getTag();
+                                    if (tag.contains("SpecialAttackType"))
+                                    {
+                                        ResourceLocation SA = new ResourceLocation(tag.getString("SpecialAttackType"));
+                                        if (SlashArtsRegistry.REGISTRY.get().containsKey(SA) && !SlashArtsRegistry.REGISTRY.get().getValue(SA).equals(SlashArtsRegistry.NONE.get()))
+                                        {
+                                            components.add(Component.translatable("slashblade.tooltip.slash_art", SlashArtsRegistry.REGISTRY.get().getValue(SA).getDescription()).withStyle(ChatFormatting.GRAY));
+                                        }
+                                    }
+                                }
+                                super.appendHoverText(stack, level, components, flag);
                             }
                         });
 

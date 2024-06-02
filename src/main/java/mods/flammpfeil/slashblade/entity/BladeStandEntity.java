@@ -3,6 +3,7 @@ package mods.flammpfeil.slashblade.entity;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -125,45 +126,100 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
         if (entity instanceof Player player)
         {
             if (blade.isEmpty()) return super.hurt(damageSource, cat);
+            Level level = player.level();
+            BlockPos pos = this.pos;
             ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
             float probability = 0f;
-            boolean flag = false;
+            boolean canEnchant = false;
             RandomSource random = player.getRandom();
             Enchantment enchantment;
+            var specialActionStat = new Object()
+            {
+                boolean SA_duplicated = false;
+                boolean SA_changed = false;
+                boolean enchanted = false;
+            };
+            //SA realization
+            if (stack.is(SBItems.proudsoul_sphere) && stack.getTag() != null)
+            {
+                CompoundTag tag = stack.getTag();
+                if (tag.contains("SpecialAttackType"))
+                {
+                    ResourceLocation SAKey = new ResourceLocation(tag.getString("SpecialAttackType"));
+                    if (SlashArtsRegistry.REGISTRY.get().containsKey(SAKey))
+                    {
+                        blade.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state ->
+                        {
+                            ResourceLocation currentSA = state.getSlashArtsKey();
+                            if (!SAKey.equals(currentSA))
+                            {
+                                state.setSlashArtsKey(SAKey);
+                                level.playSound(this, pos, SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
+                                Minecraft.getInstance().particleEngine.createTrackingEmitter(this, ParticleTypes.PORTAL);
+                                if (!player.isCreative()) stack.shrink(1);
+                                specialActionStat.SA_changed = true;
+                            }
+                        });
+                    }
+                }
+            }
+            //Enchanting via left click holding proudsoul-typed items and SA duplicating
             if (stack.isEnchanted())
             {
+                ArrayList<Enchantment> enchantments = new ArrayList<>(EnchantmentHelper.getEnchantments(stack).keySet());
+                Map<Enchantment, Integer> currentBladeEnchantments = blade.getAllEnchantments();
                 if (stack.is(SBItems.proudsoul_tiny))
                 {
-                    flag = true;
+                    canEnchant = true;
                     probability = 0.25f;
                 }
                 else if (stack.is(SBItems.proudsoul))
                 {
-                    flag = true;
+                    canEnchant = true;
                     probability = 0.5f;
                 }
                 else if (stack.is(SBItems.proudsoul_ingot))
                 {
-                    flag = true;
+                    blade.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state ->
+                     {
+                         ResourceLocation SA = state.getSlashArtsKey();
+                         if (random.nextFloat() <= 0.8f && SA != null && !SA.equals(SlashArtsRegistry.NONE.getId()))
+                         {
+                             for (Enchantment e : enchantments)
+                             {
+                                 if (currentBladeEnchantments.containsKey(e) && EnchantmentHelper.getTagEnchantmentLevel(e, blade) >= e.getMaxLevel())
+                                 {
+                                     ItemStack orb = new ItemStack(SBItems.proudsoul_sphere);
+                                     CompoundTag tag = new CompoundTag();
+                                     tag.putString("SpecialAttackType", state.getSlashArtsKey().toString());
+                                     orb.setTag(tag);
+                                     if (!player.isCreative()) stack.shrink(1);
+                                     level.playSound(this, pos, SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
+                                     Minecraft.getInstance().particleEngine.createTrackingEmitter(this, ParticleTypes.PORTAL);
+                                     player.drop(orb, true);
+                                     specialActionStat.SA_duplicated = true;
+                                     break;
+                                 }
+                             }
+                         }
+                     });
+                    if (specialActionStat.SA_duplicated) return true;
+                    canEnchant = true;
                     probability = 0.75f;
                 }
                 else if (stack.is(SBItems.proudsoul_sphere) || stack.is(SBItems.proudsoul_crystal) || stack.is(SBItems.proudsoul_trapezohedron))
                 {
-                    flag = true;
+                    canEnchant = true;
                     probability = 1f;
                 }
 
-                if (!flag) return super.hurt(damageSource, cat);
-                ArrayList<Enchantment> enchantments = new ArrayList<>(EnchantmentHelper.getEnchantments(stack).keySet());
+                if (!canEnchant) return super.hurt(damageSource, cat);
                 enchantment = enchantments.get(random.nextInt(0, enchantments.size()));
                 if (random.nextFloat() <= probability)
                 {
                     int enchantLevel =  EnchantmentHelper.getTagEnchantmentLevel(enchantment, blade) + 1;
-                    Map<Enchantment, Integer> map = blade.getAllEnchantments();
-                    map.put(enchantment, enchantLevel);
-                    EnchantmentHelper.setEnchantments(map, blade);
-                    Level level = player.level();
-                    BlockPos pos = this.pos;
+                    currentBladeEnchantments.put(enchantment, enchantLevel);
+                    EnchantmentHelper.setEnchantments(currentBladeEnchantments, blade);
                     level.playSound(this, pos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, random.nextFloat() * 0.1F + 0.9F);
                     Minecraft.getInstance().particleEngine.createTrackingEmitter(this, ParticleTypes.ENCHANTED_HIT);
                 }
@@ -171,6 +227,7 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
 
                 return true;
             }
+            if (specialActionStat.SA_duplicated || specialActionStat.SA_changed || specialActionStat.enchanted) return true;
         }
 
         return super.hurt(damageSource, cat);
