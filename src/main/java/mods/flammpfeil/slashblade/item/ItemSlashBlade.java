@@ -55,6 +55,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nullable;
 
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -238,6 +239,19 @@ public class ItemSlashBlade extends SwordItem {
             user.broadcastBreakEvent(user.getUsedItemHand());
 
             var state = stack.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
+            if (stack.isEnchanted())
+            {
+                int count = Math.max(1, state.getProudSoulCount() / 1000);
+                List<Enchantment> enchantments = ForgeRegistries.ENCHANTMENTS.getValues().stream().toList();
+                for (int i = 0; i < count; i += 1)
+                {
+                    ItemStack enchanted_soul = new ItemStack(SBItems.proudsoul_tiny);
+                    enchanted_soul.enchant(enchantments.get(user.getRandom().nextInt(0, enchantments.size())), 1);
+                    ItemEntity itemEntity = new ItemEntity(user.level(), user.getX(), user.getY(), user.getZ(), enchanted_soul);
+                    itemEntity.setDefaultPickUpDelay();
+                    user.level().addFreshEntity(itemEntity);
+                }
+            }
             ItemStack soul = new ItemStack(SBItems.proudsoul_tiny);
 
             int count = state.getProudSoulCount() >= 1000 ? 10 : Math.max(1, state.getProudSoulCount() / 100);
