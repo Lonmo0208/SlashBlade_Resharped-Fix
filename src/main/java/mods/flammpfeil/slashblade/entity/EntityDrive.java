@@ -56,6 +56,7 @@ public class EntityDrive extends EntityAbstractSummonedSword {
             EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> SPEED = SynchedEntityData.<Float>defineId(EntityDrive.class,
             EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> LIFETIME = SynchedEntityData.<Float>defineId(EntityDrive.class, EntityDataSerializers.FLOAT);
 
     private int lifetime = 10;
     private KnockBacks action = KnockBacks.cancel;
@@ -95,6 +96,7 @@ public class EntityDrive extends EntityAbstractSummonedSword {
         this.entityData.define(COLOR, 0x3333FF);
         this.entityData.define(FLAGS, 0);
         this.entityData.define(RANK, 0.0f);
+        this.entityData.define(LIFETIME, 10.0f);
 
         this.entityData.define(ROTATION_OFFSET, 0.0f);
         this.entityData.define(ROTATION_ROLL, 0.0f);
@@ -219,14 +221,6 @@ public class EntityDrive extends EntityAbstractSummonedSword {
         return IConcentrationRank.ConcentrationRanks.getRankFromLevel(getRank());
     }
 
-    public int getLifetime() {
-        return Math.min(this.lifetime, 1000);
-    }
-
-    public void setLifetime(int value) {
-        this.lifetime = value;
-    }
-
     public float getRotationOffset() {
         return this.getEntityData().get(ROTATION_OFFSET);
     }
@@ -257,6 +251,14 @@ public class EntityDrive extends EntityAbstractSummonedSword {
 
     public void setSpeed(float value) {
         this.getEntityData().set(SPEED, value);
+    }
+
+    public float getLifetime() {
+        return this.getEntityData().get(LIFETIME);
+    }
+
+    public void setLifetime(float value) {
+        this.getEntityData().set(LIFETIME, value);
     }
 
     @Nullable

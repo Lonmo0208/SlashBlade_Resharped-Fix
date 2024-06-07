@@ -28,10 +28,8 @@ public class SimpleSlashBladeState extends SlashBladeState {
 
     @CanIgnoreReturnValue
     @Deprecated
-    @DoNotCall("Always throws UnsupportedOperationException")
     @Override
     public void setModel(ResourceLocation model) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -41,10 +39,8 @@ public class SimpleSlashBladeState extends SlashBladeState {
 
     @CanIgnoreReturnValue
     @Deprecated
-    @DoNotCall("Always throws UnsupportedOperationException")
     @Override
     public void setBaseAttackModifier(float baseAttackModifier) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -54,10 +50,8 @@ public class SimpleSlashBladeState extends SlashBladeState {
 
     @CanIgnoreReturnValue
     @Deprecated
-    @DoNotCall("Always throws UnsupportedOperationException")
     @Override
     public void setSlashArtsKey(ResourceLocation key) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -72,10 +66,8 @@ public class SimpleSlashBladeState extends SlashBladeState {
 
     @CanIgnoreReturnValue
     @Deprecated
-    @DoNotCall("Always throws UnsupportedOperationException")
     @Override
     public void setTranslationKey(String translationKey) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -85,10 +77,8 @@ public class SimpleSlashBladeState extends SlashBladeState {
 
     @CanIgnoreReturnValue
     @Deprecated
-    @DoNotCall("Always throws UnsupportedOperationException")
     @Override
     public void setTexture(ResourceLocation texture) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -98,9 +88,7 @@ public class SimpleSlashBladeState extends SlashBladeState {
 
     @CanIgnoreReturnValue
     @Deprecated
-    @DoNotCall("Always throws UnsupportedOperationException")
     @Override
     public void setMaxDamage(int damage) {
-        throw new UnsupportedOperationException();
     }
 }

@@ -38,112 +38,11 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
 
     @Override
     public Tag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        state.ifPresent(instance -> {
-            // action state
-            tag.putLong("lastActionTime", instance.getLastActionTime());
-            tag.putInt("TargetEntity", instance.getTargetEntityId());
-            tag.putBoolean("_onClick", instance.onClick());
-            tag.putFloat("fallDecreaseRate", instance.getFallDecreaseRate());
-            tag.putFloat("AttackAmplifier", instance.getAttackAmplifier());
-            tag.putString("currentCombo", instance.getComboSeq().toString());
-            tag.putInt("Damage", instance.getDamage());
-            tag.putInt("maxDamage", instance.getMaxDamage());
-            tag.putInt("proudSoul", instance.getProudSoulCount());
-            tag.putBoolean("isBroken", instance.isBroken());
-
-            // passive state
-            tag.putBoolean("isSealed", instance.isSealed());
-
-            tag.putFloat("baseAttackModifier", instance.getBaseAttackModifier());
-
-            tag.putInt("killCount", instance.getKillCount());
-            tag.putInt("RepairCounter", instance.getRefine());
-
-            UUID bladeId = instance.getUniqueId();
-            tag.putUUID("BladeUniqueId", bladeId);
-
-            // performance setting
-
-            tag.putString("SpecialAttackType", Optional.ofNullable(instance.getSlashArtsKey())
-                    .orElse(SlashArtsRegistry.JUDGEMENT_CUT.getId()).toString());
-            tag.putBoolean("isDefaultBewitched", instance.isDefaultBewitched());
-            tag.putString("translationKey", instance.getTranslationKey());
-
-            // render info
-            tag.putByte("StandbyRenderType", (byte) instance.getCarryType().ordinal());
-            tag.putInt("SummonedSwordColor", instance.getColorCode());
-            tag.putBoolean("SummonedSwordColorInverse", instance.isEffectColorInverse());
-            tag.put("adjustXYZ", NBTHelper.newDoubleNBTList(instance.getAdjust()));
-
-            instance.getTexture().ifPresent(loc -> tag.putString("TextureName", loc.toString()));
-            instance.getModel().ifPresent(loc -> tag.putString("ModelName", loc.toString()));
-
-            tag.putString("ComboRoot",
-                    Optional.ofNullable(instance.getComboRoot()).orElse(ComboStateRegistry.STANDBY.getId()).toString());
-
-        });
-
-        return tag;
+        return this.state.orElseGet(SlashBladeState::new).serializeNBT();
     }
 
     @Override
     public void deserializeNBT(Tag inTag) {
-
-        Tag baseTag = inTag;
-
-        state.ifPresent(instance -> {
-            CompoundTag tag = (CompoundTag) baseTag;
-
-            // action state
-            instance.setLastActionTime(tag.getLong("lastActionTime"));
-            instance.setTargetEntityId(tag.getInt("TargetEntity"));
-            instance.setOnClick(tag.getBoolean("_onClick"));
-            instance.setFallDecreaseRate(tag.getFloat("fallDecreaseRate"));
-            instance.setAttackAmplifier(tag.getFloat("AttackAmplifier"));
-            instance.setComboSeq(ResourceLocation.tryParse(tag.getString("currentCombo")));
-            instance.setDamage(tag.getInt("Damage"));
-            instance.setMaxDamage(tag.getInt("maxDamage"));
-            instance.setProudSoulCount(tag.getInt("proudSoul"));
-            instance.setBroken(tag.getBoolean("isBroken"));
-
-            instance.setHasChangedActiveState(true);
-
-            // passive state
-            instance.setSealed(tag.getBoolean("isSealed"));
-
-            instance.setBaseAttackModifier(tag.getFloat("baseAttackModifier"));
-
-            instance.setKillCount(tag.getInt("killCount"));
-            instance.setRefine(tag.getInt("RepairCounter"));
-
-            instance.setUniqueId(tag.hasUUID("BladeUniqueId") ? tag.getUUID("BladeUniqueId") : UUID.randomUUID());
-
-            // performance setting
-
-            instance.setSlashArtsKey(ResourceLocation.tryParse(tag.getString("SpecialAttackType")));
-            instance.setDefaultBewitched(tag.getBoolean("isDefaultBewitched"));
-
-            instance.setTranslationKey(tag.getString("translationKey"));
-
-            // render info
-            instance.setCarryType(EnumSetConverter.fromOrdinal(CarryType.values(), tag.getByte("StandbyRenderType"),
-                    CarryType.DEFAULT));
-            instance.setColorCode(tag.getInt("SummonedSwordColor"));
-            instance.setEffectColorInverse(tag.getBoolean("SummonedSwordColorInverse"));
-            instance.setAdjust(NBTHelper.getVector3d(tag, "adjustXYZ"));
-
-            if (tag.contains("TextureName"))
-                instance.setTexture(new ResourceLocation(tag.getString("TextureName")));
-            else
-                instance.setTexture(null);
-
-            if (tag.contains("ModelName"))
-                instance.setModel(new ResourceLocation(tag.getString("ModelName")));
-            else
-                instance.setModel(null);
-
-            instance.setComboRoot(ResourceLocation.tryParse(tag.getString("ComboRoot")));
-        });
+        state.ifPresent(state -> state.deserializeNBT(inTag));
     }
 }
