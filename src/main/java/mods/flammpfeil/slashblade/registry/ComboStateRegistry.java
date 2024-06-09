@@ -78,6 +78,8 @@ public class ComboStateRegistry {
             ComboState.Builder.newInstance().startAndEnd(115, 132).priority(100)
                     .motionLoc(DefaultResources.ExMotionLocation).next(entity -> SlashBlade.prefix("combo_c"))
                     .nextOfTimeout(entity -> SlashBlade.prefix("combo_a2_end2"))
+                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                            .put(0, AttackManager::playQuickSheathSoundAction).build())
                     .releaseAction(ComboState::releaseActionQuickCharge)::build);
 
     public static final RegistryObject<ComboState> COMBO_A2_END2 = COMBO_STATE.register("combo_a2_end2",
@@ -1143,7 +1145,7 @@ public class ComboStateRegistry {
                     .nextOfTimeout(entity -> SlashBlade.prefix("drive_horizontal_end"))
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                             .put(2, (entityIn) -> AttackManager.doSlash(entityIn, -30F, Vec3.ZERO, false, false, 0.1F))
-                            .put(3, (entityIn) -> Drive.doSlash(entityIn, 85F, 10, Vec3.ZERO, false, 7, 2f)).build())
+                            .put(3, (entityIn) -> Drive.doSlash(entityIn, 0F, 10, Vec3.ZERO, false, 7, 2f)).build())
                     .addHitEffect(StunManager::setStun)
                     ::build);
     public static final RegistryObject<ComboState> DRIVE_HORIZONTAL_END = COMBO_STATE.register("drive_horizontal_end",

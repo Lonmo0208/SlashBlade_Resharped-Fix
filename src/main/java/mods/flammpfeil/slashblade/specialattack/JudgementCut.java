@@ -76,7 +76,7 @@ public class JudgementCut {
 
         if (user != null)
             user.getCapability(ConcentrationRankCapabilityProvider.RANK_POINT)
-                    .ifPresent(rank -> jc.setRank(rank.getRankLevel(user.level().getGameTime())));
+                    .ifPresent(rank -> jc.setRank(rank.getRankLevel(worldIn.getGameTime())));
 
         worldIn.addFreshEntity(jc);
 

@@ -15,9 +15,7 @@ import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import mods.flammpfeil.slashblade.util.InputCommand;
-import mods.flammpfeil.slashblade.util.NBTHelper;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -439,20 +437,12 @@ public class ItemSlashBlade extends SwordItem {
         return tag;
     }
 
-    public static final String ICON_TAG_KEY = "SlashBladeIcon";
-    // public static final String CLIENT_CAPS_KEY = "AllCapsData";
 
     @Override
     public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
         if (nbt == null) return;
-
-        super.readShareTag(stack, nbt);
-
         stack.getCapability(BLADESTATE).ifPresent(state -> state.deserializeNBT(nbt.get("bladeState")));
-
-        if (nbt.contains(ICON_TAG_KEY)) {
-            stack.deserializeNBT(nbt.getCompound(ICON_TAG_KEY));
-        }
+        super.readShareTag(stack, nbt);
     }
 
     // damage ----------------------------------------------------------

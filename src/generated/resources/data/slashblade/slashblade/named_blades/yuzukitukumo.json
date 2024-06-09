@@ -15,7 +15,7 @@
   "name": "slashblade:yuzukitukumo",
   "properties": {
     "attack_base": 6.0,
-    "slash_art": "slashblade:sakura_end",
+    "slash_art": "slashblade:drive_horizontal",
     "sword_type": [
       "bewitched"
     ]

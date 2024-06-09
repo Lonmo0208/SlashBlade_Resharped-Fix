@@ -83,7 +83,7 @@ public class SlashBladeBuiltInRegistry {
                         RenderDefinition.Builder.newInstance()
                                 .textureName(SlashBlade.prefix("model/named/tagayasan.png")).build(),
                         PropertiesDefinition.Builder.newInstance().baseAttackModifier(5.0F).maxDamage(70)
-                                .slashArtsType(SlashArtsRegistry.DRIVE_HORIZONTAL.getId())
+                                .slashArtsType(SlashArtsRegistry.DRIVE_VERTICAL.getId())
                                 .defaultSwordType(List.of(SwordType.BEWITCHED)).build(),
                         List.of(new EnchantmentDefinition(getEnchantmentID(Enchantments.SMITE), 3),
                                 new EnchantmentDefinition(getEnchantmentID(Enchantments.UNBREAKING), 3))));
@@ -114,7 +114,7 @@ public class SlashBladeBuiltInRegistry {
                 RenderDefinition.Builder.newInstance().textureName(SlashBlade.prefix("model/named/agito_false.png"))
                         .modelName(SlashBlade.prefix("model/named/agito.obj")).build(),
                 PropertiesDefinition.Builder.newInstance().baseAttackModifier(5.0F)
-                        .slashArtsType(SlashArtsRegistry.SAKURA_END.getId()).maxDamage(60).build(),
+                        .slashArtsType(SlashArtsRegistry.WAVE_EDGE.getId()).maxDamage(60).build(),
                 Lists.newArrayList()));
 
         bootstrap.register(OROTIAGITO_RUST, new SlashBladeDefinition(SlashBlade.prefix("orotiagito_rust"),
@@ -128,14 +128,14 @@ public class SlashBladeBuiltInRegistry {
                 RenderDefinition.Builder.newInstance().textureName(SlashBlade.prefix("model/named/agito_true.png"))
                         .modelName(SlashBlade.prefix("model/named/agito.obj")).build(),
                 PropertiesDefinition.Builder.newInstance().baseAttackModifier(5.0F)
-                        .slashArtsType(SlashArtsRegistry.SAKURA_END.getId()).maxDamage(60).build(),
+                        .slashArtsType(SlashArtsRegistry.WAVE_EDGE.getId()).maxDamage(60).build(),
                 Lists.newArrayList()));
 
         bootstrap.register(OROTIAGITO, new SlashBladeDefinition(SlashBlade.prefix("orotiagito"),
                 RenderDefinition.Builder.newInstance().textureName(SlashBlade.prefix("model/named/orotiagito.png"))
                         .modelName(SlashBlade.prefix("model/named/agito.obj")).build(),
                 PropertiesDefinition.Builder.newInstance().baseAttackModifier(7.0F)
-                        .slashArtsType(SlashArtsRegistry.CIRCLE_SLASH.getId())
+                        .slashArtsType(SlashArtsRegistry.WAVE_EDGE.getId())
                         .defaultSwordType(List.of(SwordType.BEWITCHED)).maxDamage(60).build(),
                 Lists.newArrayList()));
 
@@ -230,7 +230,7 @@ public class SlashBladeBuiltInRegistry {
                 RenderDefinition.Builder.newInstance().textureName(SlashBlade.prefix("model/named/a_tukumo.png"))
                         .modelName(SlashBlade.prefix("model/named/agito.obj")).build(),
                 PropertiesDefinition.Builder.newInstance().baseAttackModifier(6.0F)
-                        .slashArtsType(SlashArtsRegistry.SAKURA_END.getId())
+                        .slashArtsType(SlashArtsRegistry.DRIVE_HORIZONTAL.getId())
                         .defaultSwordType(List.of(SwordType.BEWITCHED)).build(),
                 List.of(new EnchantmentDefinition(getEnchantmentID(Enchantments.FIRE_ASPECT), 1),
                         new EnchantmentDefinition(getEnchantmentID(Enchantments.SHARPNESS), 4),
@@ -241,7 +241,8 @@ public class SlashBladeBuiltInRegistry {
                         RenderDefinition.Builder
                                 .newInstance().textureName(SlashBlade.prefix("model/named/muramasa/muramasa.png"))
                                 .modelName(SlashBlade.prefix("model/named/muramasa/muramasa.obj")).build(),
-                        PropertiesDefinition.Builder.newInstance().baseAttackModifier(7.0F).maxDamage(50).build(),
+                        PropertiesDefinition.Builder.newInstance().baseAttackModifier(7.0F).maxDamage(50)
+                        .slashArtsType(SlashArtsRegistry.DRIVE_VERTICAL.getId()).build(),
                         Lists.newArrayList()));
 
         bootstrap.register(SANGE, new SlashBladeDefinition(SlashBlade.prefix("sange"),

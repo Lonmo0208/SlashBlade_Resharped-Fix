@@ -1,21 +1,12 @@
 package mods.flammpfeil.slashblade.capability.slashblade;
 
-import mods.flammpfeil.slashblade.client.renderer.CarryType;
-import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
-import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
-import mods.flammpfeil.slashblade.util.EnumSetConverter;
-import mods.flammpfeil.slashblade.util.NBTHelper;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Created by Furia on 2017/01/10.

@@ -42,12 +42,7 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
         // IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         if (!(itemStackIn.getItem() instanceof ItemSlashBlade))
             return;
-
-        if (itemStackIn.hasTag() && itemStackIn.getTag().contains(ItemSlashBlade.ICON_TAG_KEY)) {
-            itemStackIn.readShareTag(itemStackIn.getTag());
-            itemStackIn.removeTagKey(ItemSlashBlade.ICON_TAG_KEY);
-        }
-
+        
         renderBlade(itemStackIn, type, matrixStack, bufferIn, combinedLightIn, combinedOverlayIn);
     }
 
