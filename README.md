@@ -33,6 +33,23 @@ SlashBlade: Resharped —— A SlashBlade mod fork for Modern Minecraft.
 
 锋刃既成，请君一试！  
 
+---
+将该项目导入开发环境
+
+```groovy
+repositories {
+    maven {
+        // Add jitpack to repositories
+        url 'https://jitpack.io'
+    }
+}
+
+dependencies {
+    // slash_blade_version: copy from https://jitpack.io/#0999312/SlashBlade_Resharped
+    implementation "com.github.0999312:SlashBlade_Resharped:${slash_blade_version}"
+}
+```
+
 ***
 
 I am the storm that is approaching!!  
