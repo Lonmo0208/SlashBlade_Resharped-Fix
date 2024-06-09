@@ -237,16 +237,26 @@ tasks.named('jar', Jar).configure {
 //     dependsOn 'reobfJar'
 // }
 
-// Example configuration to allow publishing using the maven-publish plugin
+java {
+    // 编译源码文件，方便发布 maven
+    withSourcesJar()
+}
+
 publishing {
-    publications {
-        register('mavenJava', MavenPublication) {
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file://${project.projectDir}/mcmodsrepo"
+    // 发布到 jitpack maven，方便其他模组开发者
+    publications.create('mavenJava', MavenPublication) {
+        from components.java
+        groupId = project.group
+        version = project.version
+        artifactId = project.archivesBaseName
+        pom {
+            name = project.archivesBaseName
+            // 删除所有依赖，不需要
+            pom.withXml {
+                asNode().dependencies.dependency.each { dep ->
+                    assert dep.parent().remove(dep)
+                }
+            }
         }
     }
 }
