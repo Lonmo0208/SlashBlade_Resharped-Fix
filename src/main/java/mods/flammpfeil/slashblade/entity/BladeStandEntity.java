@@ -233,7 +233,7 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
         return super.hurt(damageSource, cat);
     }
 
-    @Override//晚上好timi！
+    @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
         InteractionResult result = InteractionResult.PASS;
         if (!this.level().isClientSide() && hand == InteractionHand.MAIN_HAND) {

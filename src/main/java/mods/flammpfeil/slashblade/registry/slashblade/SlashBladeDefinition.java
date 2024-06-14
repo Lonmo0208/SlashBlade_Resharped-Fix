@@ -99,7 +99,10 @@ public class SlashBladeDefinition {
             state.setCarryType(this.renderDefinition.getStandbyRenderType());
             if (!this.getName().equals(SlashBlade.prefix("none")))
                 state.setTranslationKey(getTranslationKey());
+            
+            result.getOrCreateTag().put("bladeState", state.serializeNBT());
         });
+        
         for (var instance : this.enchantments) {
             var enchantment = ForgeRegistries.ENCHANTMENTS.getValue(instance.getEnchantmentID());
             result.enchant(enchantment, instance.getEnchantmentLevel());

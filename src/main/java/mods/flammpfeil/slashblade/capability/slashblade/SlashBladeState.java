@@ -21,8 +21,8 @@ package mods.flammpfeil.slashblade.capability.slashblade;
 
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -75,8 +75,7 @@ public class SlashBladeState implements ISlashBladeState {
 
     // performance setting
     protected ResourceLocation slashArtsKey; // SpecialAttackType
-    protected boolean isDestructable; // isDestructable
-    protected boolean isDefaultBewitched; // isDefaultBewitched
+    protected boolean isDefaultBewitched = false; // isDefaultBewitched
 
     protected ResourceLocation comboRootName;
 
@@ -89,9 +88,18 @@ public class SlashBladeState implements ISlashBladeState {
     protected Optional<ResourceLocation> texture = Optional.empty(); // TextureName
     protected Optional<ResourceLocation> model = Optional.empty();// ModelName
 
-    private CompoundTag shareTag = null;
+    protected LazyOptional<ResourceLocation> rootCombo = instantiateRootComboHolder();
 
-    public SlashBladeState() {
+    protected int maxDamage = 40;
+    protected int damage = 0;
+
+    protected int proudSoul = 0;
+
+    public SlashBladeState(ItemStack blade) {
+    	if(!blade.isEmpty()) {
+    		if(blade.getOrCreateTag().contains("bladeState"))
+    			this.deserializeNBT(blade.getTagElement("bladeState"));
+    	}
     }
 
     @Override
@@ -310,8 +318,6 @@ public class SlashBladeState implements ISlashBladeState {
         setHasChangedActiveState(true);
     }
 
-    LazyOptional<ResourceLocation> rootCombo = instantiateRootComboHolder();
-
     @Override
     public ResourceLocation getComboRoot() {
         return this.comboRootName;
@@ -332,16 +338,6 @@ public class SlashBladeState implements ISlashBladeState {
                 return this.getComboRoot();
             }
         });
-    }
-
-    @Override
-    public CompoundTag getShareTag() {
-        return this.shareTag;
-    }
-
-    @Override
-    public void setShareTag(CompoundTag shareTag) {
-        this.shareTag = shareTag;
     }
 
     boolean isChangedActiveState = false;
@@ -366,9 +362,6 @@ public class SlashBladeState implements ISlashBladeState {
         this.uniqueId = uniqueId;
     }
 
-    private int maxDamage = 40;
-    private int damage = 0;
-
     @Override
     public int getMaxDamage() {
         return this.maxDamage;
@@ -389,8 +382,6 @@ public class SlashBladeState implements ISlashBladeState {
         this.damage = Math.max(0, damage);
         setHasChangedActiveState(true);
     }
-
-    private int proudSoul = 0;
 
     @Override
     public int getProudSoulCount() {

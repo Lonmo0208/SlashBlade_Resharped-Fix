@@ -309,7 +309,10 @@ public class AttackManager {
     }
 
     public static void playQuickSheathSoundAction(LivingEntity entity) {
-        entity.playSound(SoundEvents.CHAIN_HIT, 1.0F, 1.0F);
+    	if(entity.level().isClientSide())
+    		return ;
+    	entity.level().playSound((Player)null, entity.getX(), entity.getY(), entity.getZ(), 
+    			SoundEvents.CHAIN_HIT, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
     public static Vec3 genRushOffset(LivingEntity entityIn) {

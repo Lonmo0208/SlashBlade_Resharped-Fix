@@ -9,7 +9,6 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.List;
-import java.util.Map;
 
 public class BladeMaterialTooltips {
     private static final class SingletonHolder {
@@ -41,7 +40,7 @@ public class BladeMaterialTooltips {
             String translationKey = NBTHelper.getNBTCoupler(bladeData).getChild("tag").getChild("ShareTag")
                     .getRawCompound().getString("translationKey");
 
-            event.getToolTip().add(Component.translatable(translationKey));
+            tooltip.add(Component.translatable(translationKey));
         }
     }
 

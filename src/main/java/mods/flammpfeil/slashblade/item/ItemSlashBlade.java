@@ -6,7 +6,6 @@ import mods.flammpfeil.slashblade.SlashBladeConfig;
 import mods.flammpfeil.slashblade.capability.inputstate.IInputState;
 import mods.flammpfeil.slashblade.capability.slashblade.NamedBladeStateCapabilityProvider;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
-import mods.flammpfeil.slashblade.capability.slashblade.SlashBladeState;
 import mods.flammpfeil.slashblade.client.renderer.SlashBladeTEISR;
 import mods.flammpfeil.slashblade.data.tag.SlashBladeItemTags;
 import mods.flammpfeil.slashblade.entity.BladeItemEntity;
@@ -191,7 +190,7 @@ public class ItemSlashBlade extends SwordItem {
     @Override
     public void setDamage(ItemStack stack, int damage) {
         int maxDamage = stack.getMaxDamage();
-        var state = stack.getCapability(BLADESTATE).orElse(new SlashBladeState());
+        var state = stack.getCapability(BLADESTATE).orElseThrow(NullPointerException::new);
         if (state.isBroken()) {
             if (damage <= 0 && !state.isSealed()) {
                 state.setBroken(false);
@@ -207,7 +206,7 @@ public class ItemSlashBlade extends SwordItem {
         if (amount <= 0)
             return 0;
 
-        var cap = stack.getCapability(BLADESTATE).orElse(new SlashBladeState());
+        var cap = stack.getCapability(BLADESTATE).orElseThrow(NullPointerException::new);
         boolean current = cap.isBroken();
 
         if (stack.getDamageValue() >= stack.getMaxDamage() - 1) {
@@ -432,7 +431,7 @@ public class ItemSlashBlade extends SwordItem {
     @Nullable
     @Override
     public CompoundTag getShareTag(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
+    	var tag = super.getShareTag(stack) == null ? stack.getOrCreateTag() : super.getShareTag(stack);
         stack.getCapability(BLADESTATE).ifPresent(state -> tag.put("bladeState", state.serializeNBT()));
         return tag;
     }
@@ -440,21 +439,22 @@ public class ItemSlashBlade extends SwordItem {
 
     @Override
     public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
+    	super.readShareTag(stack, nbt);
         if (nbt == null) return;
-        stack.getCapability(BLADESTATE).ifPresent(state -> state.deserializeNBT(nbt.get("bladeState")));
-        super.readShareTag(stack, nbt);
+        if (!nbt.contains("bladeState")) return;
+        stack.getCapability(BLADESTATE).ifPresent(state -> state.deserializeNBT(nbt.getCompound("bladeState")));
     }
 
     // damage ----------------------------------------------------------
 
     @Override
     public int getDamage(ItemStack stack) {
-        return stack.getCapability(BLADESTATE).orElse(new SlashBladeState()).getDamage();
+        return stack.getCapability(BLADESTATE).orElseThrow(NullPointerException::new).getDamage();
     }
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return stack.getCapability(BLADESTATE).orElse(new SlashBladeState()).getMaxDamage();
+        return stack.getCapability(BLADESTATE).orElseThrow(NullPointerException::new).getMaxDamage();
     }
 
     @Override
@@ -562,7 +562,7 @@ public class ItemSlashBlade extends SwordItem {
     @Override
     public @org.jetbrains.annotations.Nullable ICapabilityProvider initCapabilities(ItemStack stack,
             @org.jetbrains.annotations.Nullable CompoundTag nbt) {
-        return new NamedBladeStateCapabilityProvider();
+        return new NamedBladeStateCapabilityProvider(stack);
     }
 
     /**

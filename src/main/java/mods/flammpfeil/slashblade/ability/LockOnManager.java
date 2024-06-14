@@ -75,13 +75,10 @@ public class LockOnManager {
                     target = ((PartEntity<?>) target).getParent();
                 }
 
-                boolean isMatch = true;
+                boolean isMatch = false;
 
                 if (target instanceof LivingEntity)
                     isMatch = TargetSelector.lockon_focus.test(player, (LivingEntity) target);
-
-                if (target instanceof IShootable)
-                    isMatch = false;
 
                 return isMatch;
             }).map(r -> ((EntityHitResult) r).getEntity());

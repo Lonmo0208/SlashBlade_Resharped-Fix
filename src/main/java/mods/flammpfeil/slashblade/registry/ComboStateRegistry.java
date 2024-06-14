@@ -78,8 +78,6 @@ public class ComboStateRegistry {
             ComboState.Builder.newInstance().startAndEnd(115, 132).priority(100)
                     .motionLoc(DefaultResources.ExMotionLocation).next(entity -> SlashBlade.prefix("combo_c"))
                     .nextOfTimeout(entity -> SlashBlade.prefix("combo_a2_end2"))
-                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
-                            .put(0, AttackManager::playQuickSheathSoundAction).build())
                     .releaseAction(ComboState::releaseActionQuickCharge)::build);
 
     public static final RegistryObject<ComboState> COMBO_A2_END2 = COMBO_STATE.register("combo_a2_end2",
@@ -1042,7 +1040,8 @@ public class ComboStateRegistry {
                     .put(57 + 8, (entityIn) -> UserPoseOverrider.setRot(entityIn, 18, true))
                     .put(57 + 9, (entityIn) -> UserPoseOverrider.setRot(entityIn, 18, true))
                     .put(57 + 10, (entityIn) -> UserPoseOverrider.setRot(entityIn, 0, true)).build())
-            .addTickAction(FallHandler::fallResist).addHitEffect((t, a) -> StunManager.setStun(t, 40))::build);
+            .addTickAction(FallHandler::fallDecrease)
+            .addHitEffect((t, a) -> StunManager.setStun(t, 40))::build);
 
     public static final RegistryObject<ComboState> VOID_SLASH_SHEATH = COMBO_STATE.register("void_slash_sheath",
             ComboState.Builder.newInstance().startAndEnd(2278, 2299).priority(50)

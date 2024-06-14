@@ -3,9 +3,8 @@ package mods.flammpfeil.slashblade.capability.slashblade;
 import java.util.Optional;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import com.google.errorprone.annotations.DoNotCall;
-
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public class SimpleSlashBladeState extends SlashBladeState {
 
@@ -13,9 +12,11 @@ public class SimpleSlashBladeState extends SlashBladeState {
     private final ResourceLocation texture;
     private final float attack;
     private final int damage;
+    
 
-    public SimpleSlashBladeState(ResourceLocation model, ResourceLocation texture, float attack, int damage) {
-        this.model = model;
+    public SimpleSlashBladeState(ItemStack blade, ResourceLocation model, ResourceLocation texture, float attack, int damage) {
+        super(blade);
+    	this.model = model;
         this.attack = attack;
         this.damage = damage;
         this.texture = texture;

@@ -33,9 +33,10 @@ public class SlashBladeCreativeGroup {
                 output.accept(SBItems.proudsoul_tiny);
                 output.accept(SBItems.proudsoul_ingot);
                 output.accept(SBItems.proudsoul_sphere);
+                
                 output.accept(SBItems.proudsoul_crystal);
                 output.accept(SBItems.proudsoul_trapezohedron);
-
+                fillSASpheres(output);
                 output.accept(SBItems.bladestand_1);
                 output.accept(SBItems.bladestand_1w);
                 output.accept(SBItems.bladestand_2);
@@ -49,7 +50,7 @@ public class SlashBladeCreativeGroup {
                 output.accept(SBItems.slashblade_white);
                 output.accept(SBItems.slashblade);
 
-                fillSASpheres(output);
+
                 fillBlades(output);
             }).build();
 

@@ -17,7 +17,6 @@ import mods.flammpfeil.slashblade.util.AdvancementHelper;
 import mods.flammpfeil.slashblade.util.EnumSetConverter;
 import mods.flammpfeil.slashblade.util.NBTHelper;
 import mods.flammpfeil.slashblade.util.TimeValueHelper;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -37,10 +36,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface ISlashBladeState extends INBTSerializable<Tag>
+public interface ISlashBladeState extends INBTSerializable<CompoundTag>
 {
     @Override
-    default Tag serializeNBT()
+    default CompoundTag serializeNBT()
     {
         CompoundTag tag = new CompoundTag();
         // action state
@@ -88,10 +87,9 @@ public interface ISlashBladeState extends INBTSerializable<Tag>
     }
 
     @Override
-    default void deserializeNBT(Tag nbt)
+    default void deserializeNBT(CompoundTag tag)
     {
-        if (nbt == null) return;
-        CompoundTag tag = (CompoundTag) nbt;
+        if (tag == null) return;
 
         // action state
         this.setLastActionTime(tag.getLong("lastActionTime"));
@@ -404,10 +402,6 @@ public interface ISlashBladeState extends INBTSerializable<Tag>
     ResourceLocation getComboRoot();
 
     void setComboRoot(ResourceLocation resourceLocation);
-
-    CompoundTag getShareTag();
-
-    void setShareTag(CompoundTag shareTag);
 
     int getDamage();
 
