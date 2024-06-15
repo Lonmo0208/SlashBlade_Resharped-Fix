@@ -449,12 +449,12 @@ public class ItemSlashBlade extends SwordItem {
 
     @Override
     public int getDamage(ItemStack stack) {
-        return stack.getCapability(BLADESTATE).orElseThrow(NullPointerException::new).getDamage();
+        return stack.getCapability(BLADESTATE).map(s->s.getDamage()).orElse(0);
     }
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return stack.getCapability(BLADESTATE).orElseThrow(NullPointerException::new).getMaxDamage();
+        return stack.getCapability(BLADESTATE).map(s->s.getMaxDamage()).orElse(super.getMaxDamage(stack));
     }
 
     @Override
@@ -562,7 +562,9 @@ public class ItemSlashBlade extends SwordItem {
     @Override
     public @org.jetbrains.annotations.Nullable ICapabilityProvider initCapabilities(ItemStack stack,
             @org.jetbrains.annotations.Nullable CompoundTag nbt) {
-        return new NamedBladeStateCapabilityProvider(stack);
+    	if(!stack.isEmpty() && stack.getItem() instanceof ItemSlashBlade)
+    		return new NamedBladeStateCapabilityProvider(stack);
+    	return null;
     }
 
     /**

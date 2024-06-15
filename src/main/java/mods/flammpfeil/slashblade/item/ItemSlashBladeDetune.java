@@ -63,7 +63,9 @@ public class ItemSlashBladeDetune extends ItemSlashBlade {
 
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return new SimpleBladeStateCapabilityProvider(stack, model, texture, baseAttack, this.getTier().getUses());
+    	if(!stack.isEmpty() && stack.getItem() instanceof ItemSlashBladeDetune)
+    		return new SimpleBladeStateCapabilityProvider(stack, model, texture, baseAttack, this.getTier().getUses());
+    	return null;
     }
 
     @Override
