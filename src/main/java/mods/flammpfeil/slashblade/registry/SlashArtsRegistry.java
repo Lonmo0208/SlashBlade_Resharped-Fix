@@ -19,8 +19,7 @@ public class SlashArtsRegistry {
 
     public static final RegistryObject<SlashArts> JUDGEMENT_CUT = SLASH_ARTS.register("judgement_cut",
             () -> new SlashArts((e) -> e.onGround() ? ComboStateRegistry.JUDGEMENT_CUT.getId()
-                    : ComboStateRegistry.JUDGEMENT_CUT_SLASH_AIR.getId())
-                            .setComboStateJust((e) -> ComboStateRegistry.JUDGEMENT_CUT_SLASH_JUST.getId()));
+                    : ComboStateRegistry.JUDGEMENT_CUT_SLASH_AIR.getId()).setComboStateJust((e) -> ComboStateRegistry.JUDGEMENT_CUT_SLASH_JUST.getId()).setComboStateSuper(e -> ComboStateRegistry.JUDGEMENT_CUT_SUPER.getId()));
 
     public static final RegistryObject<SlashArts> SAKURA_END = SLASH_ARTS.register("sakura_end",
             () -> new SlashArts((e) -> e.onGround() ? ComboStateRegistry.SAKURA_END_LEFT.getId()

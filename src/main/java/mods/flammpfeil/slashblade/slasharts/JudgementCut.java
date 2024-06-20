@@ -3,8 +3,12 @@ package mods.flammpfeil.slashblade.slasharts;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRankCapabilityProvider;
 import mods.flammpfeil.slashblade.entity.EntityJudgementCut;
+import mods.flammpfeil.slashblade.entity.IShootable;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.RayTraceHelper;
+import mods.flammpfeil.slashblade.util.TargetSelector;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -15,6 +19,8 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
+
+import java.util.List;
 import java.util.Optional;
 
 public class JudgementCut {
@@ -84,5 +90,32 @@ public class JudgementCut {
                 SoundSource.PLAYERS, 0.5F, 0.8F / (user.getRandom().nextFloat() * 0.4F + 0.8F));
 
         return jc;
+    }
+
+    public static void doJudgementCutSuper(LivingEntity owner) {doJudgementCutSuper(owner, null);}
+
+    public static void doJudgementCutSuper(LivingEntity owner, List<Entity> exclude)
+    {
+        Level level = owner.level();
+        ItemStack stack = owner.getMainHandItem();
+
+        List<Entity> founds = TargetSelector.getTargettableEntitiesWithinAABB(level, owner, owner.getBoundingBox().inflate(32));
+        if (exclude != null) founds.removeAll(exclude);
+        for (Entity entity : founds)
+        {
+            if (! (entity instanceof LivingEntity)) founds.remove(entity);
+            else
+            {
+                ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 10));
+                EntityJudgementCut judgementCut = new EntityJudgementCut(SlashBlade.RegistryEvents.JudgementCut, level);
+                judgementCut.setPos(entity.getX(), entity.getY(), entity.getZ());
+                judgementCut.setOwner(owner);
+                stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> judgementCut.setColor(state.getColorCode()));
+                owner.getCapability(ConcentrationRankCapabilityProvider.RANK_POINT).ifPresent(rank -> judgementCut.setRank(rank.getRankLevel(owner.level().getGameTime())));
+                level.addFreshEntity(judgementCut);
+            }
+        }
+        level.playSound(owner, owner.blockPosition(), SoundEvents.BLAZE_HURT, SoundSource.PLAYERS, 1.0F, 1.0F);
+        level.playSound(owner, owner.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 }
