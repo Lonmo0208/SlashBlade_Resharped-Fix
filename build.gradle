@@ -260,6 +260,11 @@ publishing {
             }
         }
     }
+    repositories {
+        maven {
+            url "file://${maven_loc}"
+        }
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
