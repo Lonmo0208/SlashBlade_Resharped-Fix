@@ -1,4 +1,4 @@
-package mods.flammpfeil.slashblade.specialattack;
+package mods.flammpfeil.slashblade.slasharts;
 
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRankCapabilityProvider;
@@ -40,28 +40,27 @@ public class WaveEdge
         for (int i = 0; i <= count; i += 1)
         {
             EntityDrive drive = new EntityDrive(SlashBlade.RegistryEvents.Drive, playerIn.level());
+            
+            playerIn.level().addFreshEntity(drive);
             float speed = Mth.randomBetween(drive.level().getRandom(), minSpeed, maxSpeed);
 
             drive.setPos(pos.x, pos.y, pos.z);
-            drive.setOwner(playerIn);
-            drive.setRotationRoll(roll);
-            drive.setYRot(playerIn.getYRot());
-            drive.setXRot(0);
-
-            drive.setColor(colorCode);
-            drive.setIsCritical(critical);
             drive.setDamage(damage);
             drive.setSpeed(speed);
+            drive.shoot(playerIn.getLookAngle().x, playerIn.getLookAngle().y, playerIn.getLookAngle().z, drive.getSpeed(), 0);
+            
+            drive.setOwner(playerIn);
+            drive.setRotationRoll(roll);
+            drive.setColor(colorCode);
+            drive.setIsCritical(critical);
             drive.setKnockBack(knockback);
-
             drive.setLifetime(lifetime);
 
             if (playerIn != null)
                 playerIn.getCapability(ConcentrationRankCapabilityProvider.RANK_POINT)
                     .ifPresent(rank -> drive.setRank(rank.getRankLevel(playerIn.level().getGameTime())));
 
-            playerIn.level().addFreshEntity(drive);
-            drive.shoot(playerIn.getLookAngle().x, playerIn.getLookAngle().y, playerIn.getLookAngle().z, drive.getSpeed(), 0);
+            
         }
     }
 }

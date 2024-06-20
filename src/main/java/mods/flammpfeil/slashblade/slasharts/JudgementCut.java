@@ -1,4 +1,4 @@
-package mods.flammpfeil.slashblade.specialattack;
+package mods.flammpfeil.slashblade.slasharts;
 
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRankCapabilityProvider;

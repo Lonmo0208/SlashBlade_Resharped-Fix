@@ -1,4 +1,4 @@
-package mods.flammpfeil.slashblade.specialattack;
+package mods.flammpfeil.slashblade.slasharts;
 
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
@@ -37,6 +37,7 @@ public class SlashArts {
 
     private Function<LivingEntity, ResourceLocation> comboState;
     private Function<LivingEntity, ResourceLocation> comboStateJust;
+    private Function<LivingEntity, ResourceLocation> comboStateSuper;
 
     public ResourceLocation doArts(ArtsType type, LivingEntity user) {
         switch (type) {
@@ -53,6 +54,7 @@ public class SlashArts {
     public SlashArts(Function<LivingEntity, ResourceLocation> state) {
         this.comboState = state;
         this.comboStateJust = state;
+        this.setComboStateSuper((entity)->ComboStateRegistry.NONE.getId());
     }
 
     public ResourceLocation getComboState(LivingEntity user) {
@@ -67,6 +69,14 @@ public class SlashArts {
         this.comboStateJust = state;
         return this;
     }
+    
+	public Function<LivingEntity, ResourceLocation> getComboStateSuper() {
+		return comboStateSuper;
+	}
+
+	public void setComboStateSuper(Function<LivingEntity, ResourceLocation> comboStateSuper) {
+		this.comboStateSuper = comboStateSuper;
+	}
 
     public Component getDescription() {
         return Component.translatable(this.getDescriptionId());
@@ -88,4 +98,6 @@ public class SlashArts {
     public String getDescriptionId() {
         return this.getOrCreateDescriptionId();
     }
+
+
 }

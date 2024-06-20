@@ -99,6 +99,7 @@ public class SlashBlade {
         RankPointHandler.getInstance().register();
         AllowFlightOverrwrite.getInstance().register();
         BlockPickCanceller.getInstance().register();
+        BladeMotionEventBroadcaster.getInstance().register();
 
         MinecraftForge.EVENT_BUS.addListener(TargetSelector::onInputChange);
         SummonedSwordArts.getInstance().register();
@@ -106,8 +107,6 @@ public class SlashBlade {
         Untouchable.getInstance().register();
         EnemyStep.getInstance().register();
         KickJump.getInstance().register();
-
-        PlacePreviewEntryPoint.getInstance().register();
 
         ComboCommands.initDefaultStandByCommands();
     }

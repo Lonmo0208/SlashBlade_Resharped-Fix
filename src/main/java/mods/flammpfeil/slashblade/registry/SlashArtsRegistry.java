@@ -3,7 +3,7 @@ package mods.flammpfeil.slashblade.registry;
 import java.util.function.Supplier;
 
 import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.specialattack.SlashArts;
+import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;

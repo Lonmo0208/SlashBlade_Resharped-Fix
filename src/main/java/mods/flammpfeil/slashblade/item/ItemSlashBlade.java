@@ -103,23 +103,24 @@ public class ItemSlashBlade extends SwordItem {
             state.ifPresent(s -> {
                 var swordType = SwordType.from(stack);
                 float baseAttackModifier = s.getBaseAttackModifier();
-                AttributeModifier base = new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier",
-                        (double) baseAttackModifier, AttributeModifier.Operation.ADDITION);
-                result.remove(Attributes.ATTACK_DAMAGE, base);
-                result.put(Attributes.ATTACK_DAMAGE, base);
 
+
+                int refine = s.getRefine();
                 float attackAmplifier = s.getAttackAmplifier() - 1F;
-                if (s.isBroken() || s.isSealed())
-                    attackAmplifier = 2 - baseAttackModifier;
+                if (s.isBroken())
+                    attackAmplifier = -0.5F - baseAttackModifier;
                 else
-                    attackAmplifier += swordType.contains(SwordType.FIERCEREDGE) ? s.getRefine()
-                            : s.getRefine() * SlashBladeConfig.REFINE_BOUNS.get();
+                    attackAmplifier = (
+                    		swordType.contains(SwordType.FIERCEREDGE) ? 
+                    		  1.0F - (1.0F / 1.0F - (0.1F * refine))
+                            : 1.0F - (1.0F / 1.0F - (0.05F * refine))
+                            ) * baseAttackModifier;
 
-                AttributeModifier amplifier = new AttributeModifier(ATTACK_DAMAGE_AMPLIFIER, "Weapon amplifier",
-                        (double) attackAmplifier, AttributeModifier.Operation.ADDITION);
+                AttributeModifier attack = new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier",
+                        (double) baseAttackModifier + attackAmplifier, AttributeModifier.Operation.ADDITION);
 
-                result.remove(Attributes.ATTACK_DAMAGE, amplifier);
-                result.put(Attributes.ATTACK_DAMAGE, amplifier);
+                result.remove(Attributes.ATTACK_DAMAGE, attack);
+                result.put(Attributes.ATTACK_DAMAGE, attack);
 
                 result.put(ForgeMod.ENTITY_REACH.get(),
                         new AttributeModifier(PLAYER_REACH_AMPLIFIER, "Reach amplifer",
@@ -131,6 +132,8 @@ public class ItemSlashBlade extends SwordItem {
 
         return result;
     }
+
+    
 
     @Override
     public Rarity getRarity(ItemStack stack) {
@@ -239,7 +242,9 @@ public class ItemSlashBlade extends SwordItem {
             if (stack.isEnchanted())
             {
                 int count = Math.max(1, state.getProudSoulCount() / 1000);
-                List<Enchantment> enchantments = ForgeRegistries.ENCHANTMENTS.getValues().stream().toList();
+                List<Enchantment> enchantments = ForgeRegistries.ENCHANTMENTS.getValues().stream().filter(
+                		enchantment -> stack.canApplyAtEnchantingTable(enchantment)
+                		).toList();
                 for (int i = 0; i < count; i += 1)
                 {
                     ItemStack enchanted_soul = new ItemStack(SBItems.proudsoul_tiny);
@@ -432,7 +437,7 @@ public class ItemSlashBlade extends SwordItem {
     @Override
     public CompoundTag getShareTag(ItemStack stack) {
     	var tag = super.getShareTag(stack) == null ? stack.getOrCreateTag() : super.getShareTag(stack);
-        stack.getCapability(BLADESTATE).ifPresent(state -> tag.put("bladeState", state.serializeNBT()));
+        	stack.getCapability(BLADESTATE).ifPresent(state -> tag.put("bladeState", state.serializeNBT()));
         return tag;
     }
 
@@ -442,7 +447,7 @@ public class ItemSlashBlade extends SwordItem {
     	super.readShareTag(stack, nbt);
         if (nbt == null) return;
         if (!nbt.contains("bladeState")) return;
-        stack.getCapability(BLADESTATE).ifPresent(state -> state.deserializeNBT(nbt.getCompound("bladeState")));
+        	stack.getCapability(BLADESTATE).ifPresent(state -> state.deserializeNBT(nbt.getCompound("bladeState")));
     }
 
     // damage ----------------------------------------------------------
@@ -493,9 +498,12 @@ public class ItemSlashBlade extends SwordItem {
     }
 
     RangeMap<Comparable<?>, Object> refineColor = ImmutableRangeMap.builder()
-            .put(Range.lessThan(10), ChatFormatting.GRAY).put(Range.closedOpen(10, 50), ChatFormatting.YELLOW)
-            .put(Range.closedOpen(50, 100), ChatFormatting.GREEN).put(Range.closedOpen(100, 150), ChatFormatting.AQUA)
-            .put(Range.closedOpen(150, 200), ChatFormatting.BLUE).put(Range.atLeast(200), ChatFormatting.LIGHT_PURPLE)
+            .put(Range.lessThan(10), ChatFormatting.GRAY)
+            .put(Range.closedOpen(10, 50), ChatFormatting.YELLOW)
+            .put(Range.closedOpen(50, 100), ChatFormatting.GREEN)
+            .put(Range.closedOpen(100, 150), ChatFormatting.AQUA)
+            .put(Range.closedOpen(150, 200), ChatFormatting.BLUE)
+            .put(Range.atLeast(200), ChatFormatting.LIGHT_PURPLE)
             .build();
 
     @Override
@@ -560,8 +568,7 @@ public class ItemSlashBlade extends SwordItem {
     }
 
     @Override
-    public @org.jetbrains.annotations.Nullable ICapabilityProvider initCapabilities(ItemStack stack,
-            @org.jetbrains.annotations.Nullable CompoundTag nbt) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
     	if(!stack.isEmpty() && stack.getItem() instanceof ItemSlashBlade)
     		return new NamedBladeStateCapabilityProvider(stack);
     	return null;

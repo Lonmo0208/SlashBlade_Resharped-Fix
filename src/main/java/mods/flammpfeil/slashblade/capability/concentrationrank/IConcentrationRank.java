@@ -110,7 +110,7 @@ public interface IConcentrationRank {
         if (oldRank.level < getRank(time).level)
             this.setLastRankRise(time);
 
-        if (user instanceof ServerPlayer && !user.level().isClientSide) {
+        if (user instanceof ServerPlayer && !user.level().isClientSide()) {
             if (((ServerPlayer) user).connection == null)
                 return;
 

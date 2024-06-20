@@ -58,7 +58,6 @@ public class EntityDrive extends EntityAbstractSummonedSword {
             EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> LIFETIME = SynchedEntityData.<Float>defineId(EntityDrive.class, EntityDataSerializers.FLOAT);
 
-    private int lifetime = 10;
     private KnockBacks action = KnockBacks.cancel;
 
     private double damage = 7.0D;

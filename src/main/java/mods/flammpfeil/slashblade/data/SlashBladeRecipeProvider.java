@@ -99,6 +99,7 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
                 .define('C',
                         SlashBladeIngredient.of(
                                 RequestDefinition.Builder.newInstance().name(SlashBladeBuiltInRegistry.RUBY.location())
+                                
                                         .addEnchantment(new EnchantmentDefinition(
                                                 getEnchantmentID(Enchantments.MOB_LOOTING), 1))
                                         .build()))

@@ -5,8 +5,8 @@ import dev.kosmx.playerAnim.api.layered.AnimationStack;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.event.BladeMotionEvent;
+import mods.flammpfeil.slashblade.event.client.RegisterPlayerAnimationEvent;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
-import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -43,12 +43,12 @@ public class PlayerAnimationOverrider {
 
         AnimationStack animationStack = PlayerAnimationAccess.getPlayerAnimLayer(player);
 
-        VmdAnimation animation = this.animation.get(ComboState.getRegistryKey(event.getCombo()));
+        VmdAnimation animation = this.animation.get(event.getCombo());
+
         if (animation != null) {
             animationStack.removeLayer(0);
             animation.play();
             animationStack.addAnimLayer(0, animation.getClone());
-
         }
 
     }
@@ -131,6 +131,9 @@ public class PlayerAnimationOverrider {
         map.put(ComboStateRegistry.DRIVE_VERTICAL.getId(), new VmdAnimation(MotionLocation, 1600, 1693, false));
 
         map.put(ComboStateRegistry.WAVE_EDGE_VERTICAL.getId(), new VmdAnimation(MotionLocation, 1600, 1693, false));
+        
+        MinecraftForge.EVENT_BUS.post(new RegisterPlayerAnimationEvent(map));
+        
         return map;
     }
 

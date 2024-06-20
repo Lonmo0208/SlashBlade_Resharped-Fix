@@ -12,7 +12,7 @@ import mods.flammpfeil.slashblade.network.NetworkManager;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import mods.flammpfeil.slashblade.registry.combo.ComboState;
-import mods.flammpfeil.slashblade.specialattack.SlashArts;
+import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import mods.flammpfeil.slashblade.util.AdvancementHelper;
 import mods.flammpfeil.slashblade.util.EnumSetConverter;
 import mods.flammpfeil.slashblade.util.NBTHelper;
@@ -356,24 +356,23 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
 
         ResourceLocation csloc = this.getSlashArts().doArts(type, user);
         ComboState cs = ComboStateRegistry.REGISTRY.get().getValue(csloc);
-        if (current != cs && csloc != ComboStateRegistry.NONE.getId()) {
+        if (csloc != ComboStateRegistry.NONE.getId() && !currentloc.getValue().equals(csloc)) {
+        	
             if (current.getPriority() > cs.getPriority()) {
                 if (type == SlashArts.ArtsType.Jackpot)
                     AdvancementHelper.grantedIf(Enchantments.SOUL_SPEED, user);
-
-                updateComboSeq(user, csloc);
+                this.updateComboSeq(user, csloc);
             }
         }
         return csloc;
     }
 
     default void updateComboSeq(LivingEntity entity, ResourceLocation loc) {
+        MinecraftForge.EVENT_BUS.post(new BladeMotionEvent(entity, loc));
         this.setComboSeq(loc);
         this.setLastActionTime(entity.level().getGameTime());
         ComboState cs = ComboStateRegistry.REGISTRY.get().getValue(loc);
         cs.clickAction(entity);
-
-        MinecraftForge.EVENT_BUS.post(new BladeMotionEvent(entity, cs));
     }
 
     default ResourceLocation resolvCurrentComboState(LivingEntity user) {

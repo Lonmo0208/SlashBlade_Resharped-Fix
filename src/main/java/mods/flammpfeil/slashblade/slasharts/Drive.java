@@ -1,4 +1,4 @@
-package mods.flammpfeil.slashblade.specialattack;
+package mods.flammpfeil.slashblade.slasharts;
 
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRankCapabilityProvider;
@@ -6,7 +6,6 @@ import mods.flammpfeil.slashblade.entity.EntityDrive;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.KnockBacks;
 import mods.flammpfeil.slashblade.util.VectorHelper;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
@@ -41,15 +40,16 @@ public class Drive {
         EntityDrive drive = new EntityDrive(SlashBlade.RegistryEvents.Drive, playerIn.level());
 
         drive.setPos(pos.x, pos.y, pos.z);
+        drive.setDamage(damage);
+        drive.setSpeed(speed);
+        drive.shoot(lookAngle.x, lookAngle.y, lookAngle.z, drive.getSpeed(),
+                0);
+        
         drive.setOwner(playerIn);
         drive.setRotationRoll(roll);
-        drive.setYRot((float) (Mth.atan2(lookAngle.x, lookAngle.z) * (double) (180F / (float) Math.PI)));
-        drive.setXRot(0);
 
         drive.setColor(colorCode);
         drive.setIsCritical(critical);
-        drive.setDamage(damage);
-        drive.setSpeed(speed);
         drive.setKnockBack(knockback);
 
         drive.setLifetime(lifetime);
@@ -59,8 +59,7 @@ public class Drive {
                     .ifPresent(rank -> drive.setRank(rank.getRankLevel(playerIn.level().getGameTime())));
 
         playerIn.level().addFreshEntity(drive);
-        drive.shoot(lookAngle.x, lookAngle.y, lookAngle.z, drive.getSpeed(),
-                0);
+
 
         return drive;
     }

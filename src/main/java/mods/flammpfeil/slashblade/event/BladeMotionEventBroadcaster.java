@@ -2,7 +2,6 @@ package mods.flammpfeil.slashblade.event;
 
 import mods.flammpfeil.slashblade.network.MotionBroadcastMessage;
 import mods.flammpfeil.slashblade.network.NetworkManager;
-import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,7 +33,7 @@ public class BladeMotionEventBroadcaster {
 
         MotionBroadcastMessage msg = new MotionBroadcastMessage();
         msg.playerId = sp.getUUID();
-        msg.combo = ComboStateRegistry.REGISTRY.get().getKey(event.getCombo()).toString();
+        msg.combo = event.getCombo().toString();
 
         // if(msg.combo == Extra.EX_JUDGEMENT_CUT.getName())
         {

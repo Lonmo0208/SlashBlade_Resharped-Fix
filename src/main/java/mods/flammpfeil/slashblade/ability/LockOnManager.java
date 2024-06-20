@@ -1,7 +1,6 @@
 package mods.flammpfeil.slashblade.ability;
 
 import mods.flammpfeil.slashblade.capability.inputstate.CapabilityInputState;
-import mods.flammpfeil.slashblade.entity.IShootable;
 import mods.flammpfeil.slashblade.event.InputCommandEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.InputCommand;
@@ -108,10 +107,11 @@ public class LockOnManager {
         if (event.phase != TickEvent.Phase.START)
             return;
 
-        if (Minecraft.getInstance().player == null)
+        final Minecraft mcinstance = Minecraft.getInstance();
+		if (mcinstance.player == null)
             return;
 
-        LocalPlayer player = Minecraft.getInstance().player;
+        LocalPlayer player = mcinstance.player;
 
         ItemStack stack = player.getMainHandItem();
         if (stack.isEmpty())
@@ -136,7 +136,7 @@ public class LockOnManager {
                     .filter(input -> input.getCommands().contains(InputCommand.SNEAK)).isPresent())
                 return;
 
-            float partialTicks = Minecraft.getInstance().getFrameTime();
+            float partialTicks = mcinstance.getFrameTime();
 
             float oldYawHead = entity.yHeadRot;
             float oldYawOffset = entity.yBodyRot;

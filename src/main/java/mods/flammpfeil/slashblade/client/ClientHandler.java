@@ -58,7 +58,7 @@ public class ClientHandler {
         LockonCircleRender.getInstance().register();
         BladeMaterialTooltips.getInstance().register();
         AdvancementsRecipeRenderer.getInstance().register();
-        BladeMotionEventBroadcaster.getInstance().register();
+        
 
         RankRenderer.getInstance().register();
 
@@ -153,7 +153,7 @@ public class ClientHandler {
         addEntityLayer(event, EntityType.ZOMBIFIED_PIGLIN);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     private static void addPlayerLayer(EntityRenderersEvent.AddLayers evt, String skin) {
         EntityRenderer<? extends Player> renderer = evt.getSkin(skin);
 

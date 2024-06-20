@@ -11,7 +11,7 @@ public class SimpleSlashBladeState extends SlashBladeState {
     private final ResourceLocation model;
     private final ResourceLocation texture;
     private final float attack;
-    private final int damage;
+    private int damage;
     
 
     public SimpleSlashBladeState(ItemStack blade, ResourceLocation model, ResourceLocation texture, float attack, int damage) {
@@ -87,9 +87,8 @@ public class SimpleSlashBladeState extends SlashBladeState {
         return this.damage;
     }
 
-    @CanIgnoreReturnValue
-    @Deprecated
     @Override
     public void setMaxDamage(int damage) {
+    	this.damage = damage;
     }
 }
