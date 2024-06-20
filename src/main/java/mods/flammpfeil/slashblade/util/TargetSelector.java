@@ -129,12 +129,15 @@ public class TargetSelector {
                 .filter(e -> (e.distanceToSqr(attacker) < (reach * reach))).collect(Collectors.toList());
     }
 
-    static public List<Entity> getTargettableEntitiesWithinAABB(Level world, LivingEntity attacker) {
+    static public List<Entity> getTargettableEntitiesWithinAABB(Level world, LivingEntity attacker)
+    {
+        return getTargettableEntitiesWithinAABB(world, attacker, getResolvedAxisAligned(attacker.getBoundingBox(), attacker.getLookAngle(), getResolvedReach(attacker)));
+    }
+
+    static public List<Entity> getTargettableEntitiesWithinAABB(Level world, LivingEntity attacker, AABB aabb) {
         double reach = TargetSelector.getResolvedReach(attacker);
 
         List<Entity> list1 = Lists.newArrayList();
-
-        AABB aabb = getResolvedAxisAligned(attacker.getBoundingBox(), attacker.getLookAngle(), reach);
 
         list1.addAll(getReflectableEntitiesWithinAABB(attacker));
         list1.addAll(getExtinguishableEntitiesWithinAABB(attacker));

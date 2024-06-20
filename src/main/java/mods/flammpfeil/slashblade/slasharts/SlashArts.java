@@ -32,7 +32,7 @@ public class SlashArts {
     }
 
     public enum ArtsType {
-        Fail, Success, Jackpot
+        Fail, Success, Jackpot, Super
     }
 
     private Function<LivingEntity, ResourceLocation> comboState;
@@ -45,6 +45,8 @@ public class SlashArts {
             return getComboStateJust(user);
         case Success:
             return getComboState(user);
+        case Super:
+            return getComboStateSuper().apply(user);
         default:
             break;
         }
@@ -74,8 +76,9 @@ public class SlashArts {
 		return comboStateSuper;
 	}
 
-	public void setComboStateSuper(Function<LivingEntity, ResourceLocation> comboStateSuper) {
+	public SlashArts setComboStateSuper(Function<LivingEntity, ResourceLocation> comboStateSuper) {
 		this.comboStateSuper = comboStateSuper;
+        return this;
 	}
 
     public Component getDescription() {

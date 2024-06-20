@@ -1193,4 +1193,17 @@ public class ComboStateRegistry {
             .addHitEffect(StunManager::setStun)
             ::build
     );
+
+    public static final RegistryObject<ComboState> JUDGEMENT_CUT_SUPER = COMBO_STATE.register
+    (
+        "judgement_cut_super",
+        ComboState.Builder.newInstance()
+        .startAndEnd(1923, 1928)
+        .priority(50)
+        .next(livingEntity -> SlashBlade.prefix("judgement_cut_sheath"))
+        .addTickAction(ComboState.TimeLineTickAction.getBuilder().put(0, JudgementCut::doJudgementCutSuper).build())
+        .addTickAction(FallHandler::fallDecrease)
+        .addHitEffect(StunManager::setStun)
+        ::build
+    );
 }
