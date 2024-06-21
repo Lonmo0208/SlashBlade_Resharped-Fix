@@ -131,7 +131,7 @@ public class PlayerAnimationOverrider {
         map.put(ComboStateRegistry.DRIVE_VERTICAL.getId(), new VmdAnimation(MotionLocation, 1600, 1693, false));
 
         map.put(ComboStateRegistry.WAVE_EDGE_VERTICAL.getId(), new VmdAnimation(MotionLocation, 1600, 1693, false));
-        map.put(ComboStateRegistry.JUDGEMENT_CUT_SUPER.getId(), new VmdAnimation(MotionLocation, 1923, 1963, false));
+        map.put(ComboStateRegistry.JUDGEMENT_CUT_END.getId(), new VmdAnimation(MotionLocation, 1923, 1963, false));
         
         MinecraftForge.EVENT_BUS.post(new RegisterPlayerAnimationEvent(map));
         

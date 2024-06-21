@@ -3,7 +3,6 @@ package mods.flammpfeil.slashblade.slasharts;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRankCapabilityProvider;
 import mods.flammpfeil.slashblade.entity.EntityJudgementCut;
-import mods.flammpfeil.slashblade.entity.IShootable;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.RayTraceHelper;
 import mods.flammpfeil.slashblade.util.TargetSelector;
@@ -99,7 +98,7 @@ public class JudgementCut {
         Level level = owner.level();
         ItemStack stack = owner.getMainHandItem();
 
-        List<Entity> founds = TargetSelector.getTargettableEntitiesWithinAABB(level, owner, owner.getBoundingBox().inflate(32));
+        List<Entity> founds = TargetSelector.getTargettableEntitiesWithinAABB(level, owner, owner.getBoundingBox().inflate(32.0D));
         if (exclude != null) founds.removeAll(exclude);
         for (Entity entity : founds)
         {
@@ -111,11 +110,11 @@ public class JudgementCut {
                 judgementCut.setPos(entity.getX(), entity.getY(), entity.getZ());
                 judgementCut.setOwner(owner);
                 stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> judgementCut.setColor(state.getColorCode()));
-                owner.getCapability(ConcentrationRankCapabilityProvider.RANK_POINT).ifPresent(rank -> judgementCut.setRank(rank.getRankLevel(owner.level().getGameTime())));
+                owner.getCapability(ConcentrationRankCapabilityProvider.RANK_POINT).ifPresent(rank -> judgementCut.setRank(rank.getRankLevel(level.getGameTime())));
                 level.addFreshEntity(judgementCut);
             }
         }
-        level.playSound(owner, owner.blockPosition(), SoundEvents.BLAZE_HURT, SoundSource.PLAYERS, 1.0F, 1.0F);
+        
         level.playSound(owner, owner.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 }

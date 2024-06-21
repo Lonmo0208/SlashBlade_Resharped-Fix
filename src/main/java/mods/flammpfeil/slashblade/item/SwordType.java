@@ -32,7 +32,7 @@ public enum SwordType {
                         && (itemStackIn.hasCustomHoverName() || s.isDefaultBewitched()))
                     types.add(BEWITCHED);
 
-                if (s.getKillCount() > 1000)
+                if (s.getKillCount() > 1)
                     types.add(FIERCEREDGE);
 
             });

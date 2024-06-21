@@ -56,7 +56,7 @@ public class SlashArts {
     public SlashArts(Function<LivingEntity, ResourceLocation> state) {
         this.comboState = state;
         this.comboStateJust = state;
-        this.setComboStateSuper((entity)->ComboStateRegistry.NONE.getId());
+        this.setComboStateSuper((entity)->ComboStateRegistry.JUDGEMENT_CUT_END.getId());
     }
 
     public ResourceLocation getComboState(LivingEntity user) {

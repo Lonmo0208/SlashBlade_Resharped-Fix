@@ -107,6 +107,7 @@ public class SlashBlade {
         Untouchable.getInstance().register();
         EnemyStep.getInstance().register();
         KickJump.getInstance().register();
+        SuperSlashArts.getInstance().register();
 
         ComboCommands.initDefaultStandByCommands();
     }

@@ -195,7 +195,7 @@ public class EntityJudgementCut extends Projectile implements IShootable {
 
     // disallowedHitBlock
     public boolean isNoClip() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             return this.noPhysics;
         } else {
             refreshFlags();
@@ -363,7 +363,7 @@ public class EntityJudgementCut extends Projectile implements IShootable {
     }
 
     public void burst(List<MobEffectInstance> effects, @Nullable Entity focusEntity) {
-        AABB axisalignedbb = this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
+        // AABB axisalignedbb = this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
         List<Entity> list = TargetSelector.getTargettableEntitiesWithinAABB(this.level(), 2, this);
         // this.world.getEntitiesWithinAABB(LivingEntity.class, axisalignedbb);
 

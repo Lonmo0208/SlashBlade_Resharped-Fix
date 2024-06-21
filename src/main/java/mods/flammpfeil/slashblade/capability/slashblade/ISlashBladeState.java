@@ -30,8 +30,10 @@ import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
+
+import java.awt.Color;
 import java.util.AbstractMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -321,15 +323,15 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
     }
 
     default ResourceLocation doChargeAction(LivingEntity user, int elapsed) {
-        Map.Entry<Integer, ResourceLocation> currentloc = resolvCurrentComboStateTicks(user);
-
         if (elapsed <= 2)
             return ComboStateRegistry.NONE.getId();
-
-        ComboState current = ComboStateRegistry.REGISTRY.get().getValue(currentloc.getValue());
-
+        
         if (this.isBroken() || this.isSealed())
             return ComboStateRegistry.NONE.getId();
+        
+        Map.Entry<Integer, ResourceLocation> currentloc = resolvCurrentComboStateTicks(user);
+
+        ComboState current = ComboStateRegistry.REGISTRY.get().getValue(currentloc.getValue());
 
         // Uninterrupted
         if (currentloc.getValue() != ComboStateRegistry.NONE.getId() && current.getNext(user) == currentloc.getValue())
@@ -409,6 +411,8 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
     int getMaxDamage();
 
     void setMaxDamage(int damage);
+    
+//    List<ResourceLocation> getSpecialEffects();
 
     boolean hasChangedActiveState();
 

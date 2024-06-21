@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.ability.StunManager;
+import mods.flammpfeil.slashblade.ability.Untouchable;
 import mods.flammpfeil.slashblade.capability.inputstate.CapabilityInputState;
 import mods.flammpfeil.slashblade.event.FallHandler;
 import mods.flammpfeil.slashblade.event.client.UserPoseOverrider;
@@ -1193,14 +1194,15 @@ public class ComboStateRegistry {
             .addHitEffect(StunManager::setStun)
             ::build
     );
-
-    public static final RegistryObject<ComboState> JUDGEMENT_CUT_SUPER = COMBO_STATE.register
+    
+    public static final RegistryObject<ComboState> JUDGEMENT_CUT_END = COMBO_STATE.register
     (
-        "judgement_cut_super",
+        "judgement_cut_end",
         ComboState.Builder.newInstance()
         .startAndEnd(1923, 1928)
         .priority(50)
-        .next(livingEntity -> SlashBlade.prefix("judgement_cut_sheath"))
+        .next(livingEntity -> SlashBlade.prefix("judgement_cut_end"))
+        .nextOfTimeout(livingEntity -> SlashBlade.prefix("judgement_cut_sheath"))
         .addTickAction(ComboState.TimeLineTickAction.getBuilder().put(0, JudgementCut::doJudgementCutSuper).build())
         .addTickAction(FallHandler::fallDecrease)
         .addHitEffect(StunManager::setStun)

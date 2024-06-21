@@ -31,6 +31,8 @@ import javax.annotation.Nonnull;
 import org.joml.Math;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -340,7 +342,7 @@ public class SlashBladeState implements ISlashBladeState {
         });
     }
 
-    boolean isChangedActiveState = false;
+    protected boolean isChangedActiveState = false;
 
     @Override
     public boolean hasChangedActiveState() {
@@ -393,4 +395,11 @@ public class SlashBladeState implements ISlashBladeState {
         this.proudSoul = Math.max(0, psCount);
         setHasChangedActiveState(true);
     }
+    
+//  protected List<ResourceLocation> specialEffects = new ArrayList<>();
+//
+//	@Override
+//	public List<ResourceLocation> getSpecialEffects() {
+//		return this.specialEffects;
+//	}
 }
