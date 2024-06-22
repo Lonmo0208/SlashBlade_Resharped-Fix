@@ -39,14 +39,15 @@ SlashBlade: Resharped —— A SlashBlade mod fork for Modern Minecraft.
 ```groovy
 repositories {
     maven {
-        // Add jitpack to repositories
-        url 'https://jitpack.io'
+        name 'MMMaven'
+        url 'https://raw.github.com/0999312/MMMaven/main/repository'
     }
 }
 
 dependencies {
     // slash_blade_version: copy from https://jitpack.io/#0999312/SlashBlade_Resharped
-    implementation "com.github.0999312:SlashBlade_Resharped:${slash_blade_version}"
+    // Now only 0.6.0 available
+    implementation fg.deobf("mods.flammpfeil.slashblade:SlashBlade_Resharped:${slash_blade_version}"
 }
 ```
 
