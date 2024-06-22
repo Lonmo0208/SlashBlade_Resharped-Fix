@@ -45,7 +45,6 @@ repositories {
 }
 
 dependencies {
-    // slash_blade_version: copy from https://jitpack.io/#0999312/SlashBlade_Resharped
     // Now only 0.6.0 available
     implementation fg.deobf("mods.flammpfeil.slashblade:SlashBlade_Resharped:${slash_blade_version}"
 }
