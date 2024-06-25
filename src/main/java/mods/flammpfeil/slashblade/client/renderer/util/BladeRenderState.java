@@ -260,16 +260,4 @@ public class BladeRenderState extends RenderStateShard {
                 VertexFormat.Mode.TRIANGLES, 256, true, false, state);
     }
 
-    public static RenderType getPlacePreviewBlendLuminous(ResourceLocation p_228638_0_) {
-        RenderType.CompositeState state = RenderType.CompositeState.builder()
-                .setShaderState(POSITION_COLOR_TEX_LIGHTMAP_SHADER).setOutputState(PARTICLES_TARGET)
-                .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, true, false))
-                .setTransparencyState(LIGHTNING_ADDITIVE_TRANSPARENCY)
-                // .setDiffuseLightingState(RenderStateShard.NO_DIFFUSE_LIGHTING)
-                .setLightmapState(RenderStateShard.LIGHTMAP)
-                // .overlay(OVERLAY_ENABLED)
-                .setWriteMaskState(COLOR_WRITE).createCompositeState(false);
-        return RenderType.create("placepreview_blend_luminous", DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 256,
-                true, false, state);
-    }
 }

@@ -7,6 +7,7 @@ import org.apache.commons.compress.utils.Lists;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.item.SwordType;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
+import mods.flammpfeil.slashblade.registry.SpecialEffectsRegistry;
 import mods.flammpfeil.slashblade.registry.slashblade.EnchantmentDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.PropertiesDefinition;
 import mods.flammpfeil.slashblade.registry.slashblade.RenderDefinition;
@@ -49,9 +50,21 @@ public class SlashBladeBuiltInRegistry {
     public static final ResourceKey<SlashBladeDefinition> SABIGATANA = register("sabigatana");
     public static final ResourceKey<SlashBladeDefinition> SABIGATANA_BROKEN = register("sabigatana_broken");
     public static final ResourceKey<SlashBladeDefinition> DOUTANUKI = register("doutanuki");
+    public static final ResourceKey<SlashBladeDefinition> KOSEKI = register("koseki");
 
     public static void registerAll(BootstapContext<SlashBladeDefinition> bootstrap) {
-
+    	bootstrap.register(KOSEKI,
+                new SlashBladeDefinition(SlashBlade.prefix("koseki"),
+                        RenderDefinition.Builder
+                                .newInstance().textureName(SlashBlade.prefix("model/named/dios/koseki.png"))
+                                .modelName(SlashBlade.prefix("model/named/dios/dios.obj")).build(),
+                        PropertiesDefinition.Builder.newInstance()
+                        .baseAttackModifier(5.0F).maxDamage(70)
+                        .slashArtsType(SlashArtsRegistry.DRIVE_VERTICAL.getId())
+                        .addSpecialEffect(SpecialEffectsRegistry.WITHER_EDGE.getId())
+                        .build(),
+                        Lists.newArrayList()));
+    	
         bootstrap.register(SABIGATANA,
                 new SlashBladeDefinition(SlashBlade.prefix("sabigatana"),
                         RenderDefinition.Builder

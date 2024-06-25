@@ -22,7 +22,10 @@ public class PropertiesDefinition {
                                     .forGetter(PropertiesDefinition::getBaseAttackModifier),
                             Codec.INT.optionalFieldOf("max_damage", 40).forGetter(PropertiesDefinition::getMaxDamage),
                             SwordType.CODEC.listOf().optionalFieldOf("sword_type", Lists.newArrayList())
-                                    .forGetter(PropertiesDefinition::getDefaultType))
+                                    .forGetter(PropertiesDefinition::getDefaultType),
+                            ResourceLocation.CODEC.listOf().optionalFieldOf("special_effects", Lists.newArrayList())
+                                    .forGetter(PropertiesDefinition::getSpecialEffects)
+                    		)
                     .apply(instance, PropertiesDefinition::new));
 
     private final ResourceLocation comboRoot;
@@ -30,16 +33,24 @@ public class PropertiesDefinition {
     private final float baseAttackModifier;
     private final int maxDamage;
     private final List<SwordType> defaultType;
+    private final List<ResourceLocation> specialEffects;
 
-    private PropertiesDefinition(ResourceLocation comboRoot, ResourceLocation specialAttackType,
-            float baseAttackModifier, int damage, List<SwordType> defaultType) {
+
+	private PropertiesDefinition(ResourceLocation comboRoot, ResourceLocation specialAttackType,
+            float baseAttackModifier, int damage, List<SwordType> defaultType, List<ResourceLocation> specialEffects) {
         this.comboRoot = comboRoot;
         this.specialAttackType = specialAttackType;
         this.baseAttackModifier = baseAttackModifier;
         this.maxDamage = damage;
         this.defaultType = defaultType;
+        this.specialEffects = specialEffects;
     }
 
+
+    public List<ResourceLocation> getSpecialEffects() {
+		return specialEffects;
+	}
+	
     public ResourceLocation getComboRoot() {
         return comboRoot;
     }
@@ -67,6 +78,7 @@ public class PropertiesDefinition {
         private float baseAttackModifier;
         private int maxDamage;
         private List<SwordType> defaultType;
+        private List<ResourceLocation> specialEffects;
 
         private Builder() {
             this.comboRoot = ComboStateRegistry.STANDBY.getId();
@@ -74,6 +86,7 @@ public class PropertiesDefinition {
             this.baseAttackModifier = 4.0F;
             this.maxDamage = 40;
             this.defaultType = Lists.newArrayList();
+            this.specialEffects = Lists.newArrayList();
         }
 
         public static Builder newInstance() {
@@ -104,9 +117,14 @@ public class PropertiesDefinition {
             this.defaultType = defaultType;
             return this;
         }
+        
+        public Builder addSpecialEffect(ResourceLocation se) {
+        	this.specialEffects.add(se);
+        	return this;
+        }
 
         public PropertiesDefinition build() {
-            return new PropertiesDefinition(comboRoot, specialAttackType, baseAttackModifier, maxDamage, defaultType);
+            return new PropertiesDefinition(comboRoot, specialAttackType, baseAttackModifier, maxDamage, defaultType, specialEffects);
         }
     }
 

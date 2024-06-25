@@ -21,6 +21,8 @@ package mods.flammpfeil.slashblade.capability.slashblade;
 
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
+import mods.flammpfeil.slashblade.registry.SpecialEffectsRegistry;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -396,10 +398,45 @@ public class SlashBladeState implements ISlashBladeState {
         setHasChangedActiveState(true);
     }
     
-//  protected List<ResourceLocation> specialEffects = new ArrayList<>();
-//
-//	@Override
-//	public List<ResourceLocation> getSpecialEffects() {
-//		return this.specialEffects;
-//	}
+    protected List<ResourceLocation> specialEffects = new ArrayList<>();
+
+	@Override
+	public List<ResourceLocation> getSpecialEffects() {
+		return this.specialEffects;
+	}
+
+	@Override
+	public void setSpecialEffects(ListTag list) {
+		List<ResourceLocation> result = new ArrayList<>();
+		list.forEach(tag->{
+			ResourceLocation se = ResourceLocation.tryParse(tag.getAsString());
+			if(SpecialEffectsRegistry.REGISTRY.get().containsKey(se))
+				result.add(se);
+			
+		});
+		this.specialEffects = result;
+	}
+
+	@Override
+	public boolean addSpecialEffect(ResourceLocation se) {
+		if(SpecialEffectsRegistry.REGISTRY.get().containsKey(se)) {
+			return this.specialEffects.add(se);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean removeSpecialEffect(ResourceLocation se) {
+		return this.specialEffects.remove(se);
+	}
+
+	@Override
+	public boolean hasSpecialEffect(ResourceLocation se) {
+		if(SpecialEffectsRegistry.REGISTRY.get().containsKey(se)) {
+			return this.specialEffects.contains(se);
+		}
+		this.specialEffects.remove(se);
+		return true;
+	}
+	
 }

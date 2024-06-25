@@ -37,7 +37,7 @@ public class UserPoseOverrider {
     private static final String TAG_ROT_PREV = "sb_yrot_prev";
 
     @SubscribeEvent
-    public void onRenderPlayerEventPre(RenderLivingEvent.Pre event) {
+    public void onRenderPlayerEventPre(RenderLivingEvent.Pre<?,?> event) {
         ItemStack stack = event.getEntity().getMainHandItem();
 
         if (stack.isEmpty())

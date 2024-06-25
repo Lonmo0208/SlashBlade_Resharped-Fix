@@ -10,7 +10,6 @@ import mods.flammpfeil.slashblade.client.renderer.model.BladeModel;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeMotionManager;
 import mods.flammpfeil.slashblade.compat.playerAnim.PlayerAnimationOverrider;
-import mods.flammpfeil.slashblade.event.BladeMaterialTooltips;
 import mods.flammpfeil.slashblade.event.client.AdvancementsRecipeRenderer;
 import mods.flammpfeil.slashblade.event.client.SneakingMotionCanceller;
 import mods.flammpfeil.slashblade.event.client.UserPoseOverrider;
@@ -55,7 +54,6 @@ public class ClientHandler {
             UserPoseOverrider.getInstance().register();
         }
         LockonCircleRender.getInstance().register();
-        BladeMaterialTooltips.getInstance().register();
         AdvancementsRecipeRenderer.getInstance().register();
         
 

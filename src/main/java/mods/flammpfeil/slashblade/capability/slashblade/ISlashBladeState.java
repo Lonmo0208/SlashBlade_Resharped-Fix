@@ -20,6 +20,8 @@ import mods.flammpfeil.slashblade.util.TimeValueHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
@@ -85,6 +87,13 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
 
         tag.putString("ComboRoot",
                       Optional.ofNullable(this.getComboRoot()).orElse(ComboStateRegistry.STANDBY.getId()).toString());
+        
+        if(this.getSpecialEffects()!=null && !this.getSpecialEffects().isEmpty()) {
+        	ListTag seList = new ListTag();
+        	this.getSpecialEffects().forEach(se->seList.add(StringTag.valueOf(se.toString())));
+        	tag.put("SpecialEffects", seList);
+        }
+        
         return tag;
     }
 
@@ -142,6 +151,10 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
             this.setModel(null);
 
         this.setComboRoot(ResourceLocation.tryParse(tag.getString("ComboRoot")));
+        if(tag.contains("SpecialEffects")) {
+        	ListTag list = tag.getList("SpecialEffects", 8);
+        	this.setSpecialEffects(list);
+        }
     }
 
     long getLastActionTime();
@@ -302,6 +315,10 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
     default ResourceLocation progressCombo(LivingEntity user, boolean isVirtual) {
         ResourceLocation currentloc = resolvCurrentComboState(user);
         ComboState current = ComboStateRegistry.REGISTRY.get().getValue(currentloc);
+        
+        if(current == null)
+        	return ComboStateRegistry.NONE.getId();
+        
         ResourceLocation next = current.getNext(user);
         if (!next.equals(ComboStateRegistry.NONE.getId()) && next.equals(currentloc))
             return ComboStateRegistry.NONE.getId();
@@ -332,7 +349,9 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
         Map.Entry<Integer, ResourceLocation> currentloc = resolvCurrentComboStateTicks(user);
 
         ComboState current = ComboStateRegistry.REGISTRY.get().getValue(currentloc.getValue());
-
+        if(current == null)
+        	return ComboStateRegistry.NONE.getId();
+        
         // Uninterrupted
         if (currentloc.getValue() != ComboStateRegistry.NONE.getId() && current.getNext(user) == currentloc.getValue())
             return ComboStateRegistry.NONE.getId();
@@ -412,8 +431,16 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
 
     void setMaxDamage(int damage);
     
-//    List<ResourceLocation> getSpecialEffects();
-
+    List<ResourceLocation> getSpecialEffects();
+    
+    void setSpecialEffects(ListTag list);
+    
+    boolean addSpecialEffect(ResourceLocation se);
+    
+    boolean removeSpecialEffect(ResourceLocation se);
+    
+    boolean hasSpecialEffect(ResourceLocation se);
+    
     boolean hasChangedActiveState();
 
     void setHasChangedActiveState(boolean isChanged);

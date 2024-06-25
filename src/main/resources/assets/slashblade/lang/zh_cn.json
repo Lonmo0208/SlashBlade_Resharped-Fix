@@ -155,13 +155,13 @@
 
 
     "adv.slashblade.air_trick": "能力      -隔空瞬步-",
-    "adv.slashblade.air_trick.desc": "向注视中的敌人的头上瞬间移动\n键位：\n疾跑(♠)：%s\n前进(ᐃ)：%s\n潜行(⚪)：%s\n指令：\n⚪+ᐃ+♠",
+    "adv.slashblade.air_trick.desc": "向注视中的敌人的头上瞬间移动\n键位：\n特殊行动(♠)：%s\n前进(ᐃ)：%s\n潜行(⚪)：%s\n指令：\n⚪+ᐃ+♠",
     "adv.slashblade.trick_down": "能力      -瞬步退行-",
-    "adv.slashblade.trick_down.desc": "滞空时迅速落地\n键位：\n疾跑(♠)：%s\n后退(ᐁ)：%s\n潜行(⚪)：%s\n指令：\n⚪+ᐁ+♠",
+    "adv.slashblade.trick_down.desc": "滞空时迅速落地\n键位：\n特殊行动(♠)：%s\n后退(ᐁ)：%s\n潜行(⚪)：%s\n指令：\n⚪+ᐁ+♠",
     "adv.slashblade.trick_dodge": "能力      -瞬步回避-",
-    "adv.slashblade.trick_dodge.desc": "往任意方向瞬间移动躲避伤害\n键位：\n疾跑(♠)：%s\n指令：\n在移动中 ♠",
+    "adv.slashblade.trick_dodge.desc": "往任意方向瞬间移动躲避伤害\n键位：\n特殊行动(♠)：%s\n指令：\n在移动中 ♠",
     "adv.slashblade.trick_up": "能力      -瞬步上行-",
-    "adv.slashblade.trick_up.desc": "向上瞬间移动\n键位：\n疾跑(♠)：%s\n前进(ᐃ)：%s\n潜行(⚪)：%s\n指令：\n⚪+ᐃ+♠",
+    "adv.slashblade.trick_up.desc": "向上瞬间移动\n键位：\n特殊行动(♠)：%s\n前进(ᐃ)：%s\n潜行(⚪)：%s\n指令：\n⚪+ᐃ+♠",
     "adv.slashblade.enemy_step": "能力      -借力跳-",
     "adv.slashblade.enemy_step.desc": "滞空时把敌人作为垫脚石以二段跳\n键位：\n跳跃(□)：%s\n指令：\n滞空靠近敌人时 □",
     "adv.slashblade.kick_jump": "能力      -踢跃-",
@@ -174,15 +174,15 @@
 
 
     "adv.slashblade.summonedswords": "射技      -幻影剑-",
-    "adv.slashblade.summonedswords.desc": "消耗1点经验值，射出幻影剑\n键位：\n%s(♠)：%s\n指令：\n♠",
+    "adv.slashblade.summonedswords.desc": "消耗2点耀魂值，射出幻影剑\n键位：\n%s(♠)：%s\n指令：\n♠",
     "adv.slashblade.spiral_swords": "射技      -环形幻剑阵-",
-    "adv.slashblade.spiral_swords.desc": "消耗5点经验值，在自身周围形成幻影剑圆阵\n键位：\n%s(♠)：%s\n指令：\n♠ 按住",
+    "adv.slashblade.spiral_swords.desc": "消耗20点耀魂值，在自身周围形成幻影剑圆阵\n键位：\n%s(♠)：%s\n指令：\n♠ 按住",
     "adv.slashblade.storm_swords": "射技      -怒风幻剑阵-",
-    "adv.slashblade.storm_swords.desc": "消耗5点经验值，将幻影剑如同怒风般包围攻击并击飞敌人\n键位：\n%s(♠)：%s\n后退(ᐁ)：%s\n潜行(⚪)：%s\n指令：\n⚪+ᐁ+♠ 按住",
+    "adv.slashblade.storm_swords.desc": "消耗20点耀魂值，将幻影剑如同怒风般包围攻击并击飞敌人\n键位：\n%s(♠)：%s\n后退(ᐁ)：%s\n潜行(⚪)：%s\n指令：\n⚪+ᐁ+♠ 按住",
     "adv.slashblade.blistering_swords": "射技      -急袭幻剑阵-",
-    "adv.slashblade.blistering_swords.desc": "消耗5点经验值，将幻影剑展开快速攻击敌人\n键位：\n%s(♠)：%s\n前进(ᐃ)：%s\n潜行(⚪)：%s\n指令：\n⚪+ᐃ+♠ 按住 放开",
+    "adv.slashblade.blistering_swords.desc": "消耗20点耀魂值，将幻影剑展开快速攻击敌人\n键位：\n%s(♠)：%s\n前进(ᐃ)：%s\n潜行(⚪)：%s\n指令：\n⚪+ᐃ+♠ 按住 放开",
     "adv.slashblade.heavy_rain_swords": "射技      -暴雨幻剑阵-",
-    "adv.slashblade.heavy_rain_swords.desc": "消耗5点经验值，将幻影剑连绵不绝地在敌人头上降下\n键位：\n%s(♠)：%s\n后退(ᐁ)：%s\n前进(ᐃ)：%s\n潜行(⚪)：%s\n指令：\n⚪+ᐁ to ᐃ+♠ 按住",
+    "adv.slashblade.heavy_rain_swords.desc": "消耗20点耀魂值，将幻影剑连绵不绝地在敌人头上降下\n键位：\n%s(♠)：%s\n后退(ᐁ)：%s\n前进(ᐃ)：%s\n潜行(⚪)：%s\n指令：\n⚪+ᐁ to ᐃ+♠ 按住",
 
     "adv.slashblade.exeffect": "附魔增效",
     "adv.slashblade.exeffect.desc": "附魔提供额外的效果提升",

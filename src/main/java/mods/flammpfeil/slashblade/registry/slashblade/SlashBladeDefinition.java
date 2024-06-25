@@ -78,7 +78,9 @@ public class SlashBladeDefinition {
             state.setMaxDamage(this.stateDefinition.getMaxDamage());
             state.setComboRoot(this.stateDefinition.getComboRoot());
             state.setSlashArtsKey(this.stateDefinition.getSpecialAttackType());
-
+            
+            this.stateDefinition.getSpecialEffects().forEach(state::addSpecialEffect);
+            
             this.stateDefinition.getDefaultType().forEach(type -> {
                 switch (type) {
                 case BEWITCHED -> state.setDefaultBewitched(true);

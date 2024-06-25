@@ -18,6 +18,7 @@ import mods.flammpfeil.slashblade.network.NetworkManager;
 import mods.flammpfeil.slashblade.recipe.RecipeSerializerRegistry;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
+import mods.flammpfeil.slashblade.registry.SpecialEffectsRegistry;
 import mods.flammpfeil.slashblade.registry.combo.ComboCommands;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import mods.flammpfeil.slashblade.util.TargetSelector;
@@ -39,6 +40,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -53,8 +55,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-// The value here should match an entry in the META-INF/mods.toml file
-
 @Mod(SlashBlade.MODID)
 public class SlashBlade {
     public static final String MODID = "slashblade";
@@ -68,17 +68,19 @@ public class SlashBlade {
 
     public SlashBlade() {
         // Register the setup method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		modEventBus.addListener(this::setup);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
         NetworkManager.register();
 
-        ComboStateRegistry.COMBO_STATE.register(FMLJavaModLoadingContext.get().getModEventBus());
-        SlashArtsRegistry.SLASH_ARTS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        SlashBladeCreativeGroup.CREATIVE_MODE_TABS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        RecipeSerializerRegistry.RECIPE_SERIALIZER.register(FMLJavaModLoadingContext.get().getModEventBus());
-
+        ComboStateRegistry.COMBO_STATE.register(modEventBus);
+        SlashArtsRegistry.SLASH_ARTS.register(modEventBus);
+        SlashBladeCreativeGroup.CREATIVE_MODE_TABS.register(modEventBus);
+        RecipeSerializerRegistry.RECIPE_SERIALIZER.register(modEventBus);
+        SpecialEffectsRegistry.SPECIAL_EFFECT.register(modEventBus);
+        
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SlashBladeConfig.COMMON_CONFIG);
 
     }
@@ -107,7 +109,7 @@ public class SlashBlade {
         Untouchable.getInstance().register();
         EnemyStep.getInstance().register();
         KickJump.getInstance().register();
-        SuperSlashArts.getInstance().register();
+//        SuperSlashArts.getInstance().register();
 
         ComboCommands.initDefaultStandByCommands();
     }
@@ -155,9 +157,6 @@ public class SlashBlade {
                 classToString(EntityDrive.class));
         public static EntityType<EntityDrive> Drive;
 
-        public static final ResourceLocation PlacePreviewEntityLoc = new ResourceLocation(SlashBlade.MODID,
-                classToString(PlacePreviewEntity.class));
-        public static EntityType<PlacePreviewEntity> PlacePreview;
 
         @SubscribeEvent
         public static void register(RegisterEvent event) {
@@ -394,21 +393,12 @@ public class SlashBlade {
                     helper.register(DriveLoc, entity);
                 }
 
-                {
-                    EntityType<PlacePreviewEntity> entity = PlacePreview = EntityType.Builder
-                            .of(PlacePreviewEntity::new, MobCategory.MISC).sized(0.5F, 0.5F).setTrackingRange(10)
-                            .setUpdateInterval(20).setShouldReceiveVelocityUpdates(false)
-                            .setCustomClientFactory(PlacePreviewEntity::createInstance)
-                            .build(PlacePreviewEntityLoc.toString());
-                    helper.register(PlacePreviewEntityLoc, entity);
-                }
             });
 
             event.register(ForgeRegistries.Keys.STAT_TYPES, helper -> {
                 SWORD_SUMMONED = registerCustomStat("sword_summoned");
             });
 
-//            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(SlashBlade.MODID, "slashblade"), SLASHBLADE);
         }
 
         private static String classToString(Class<? extends Entity> entityClass) {
@@ -429,7 +419,6 @@ public class SlashBlade {
             event.registerEntityRenderer(RegistryEvents.SlashEffect, SlashEffectRenderer::new);
             event.registerEntityRenderer(RegistryEvents.Drive, DriveRenderer::new);
 
-            event.registerEntityRenderer(RegistryEvents.PlacePreview, PlacePreviewEntityRenderer::new);
         }
 
         @SubscribeEvent

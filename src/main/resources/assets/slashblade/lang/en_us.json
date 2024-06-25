@@ -14,7 +14,11 @@
   "slashblade.tooltip.killcount"  :"KillCount:%1$s",
   "slashblade.tooltip.refine"     :"Refine   :%1$s",
   "slashblade.tooltip.slash_art"  :"SA       :%1$s",
-
+  "slashblade.tooltip.special_effect":"%1$s %2$s",
+  
+  "se.slashblade.wither_edge": "Wither Edge",
+  
+  
   "item.slashblade.slashblade": "Anonymity -Nameless-",
   "item.slashblade.slashblade.desc": "The Beginning\nA pure vessel.",
   "item.slashblade.slashblade_wood": "Anonymity -Wood-",
@@ -24,7 +28,7 @@
   "item.slashblade.slashblade_bamboo": "Anonymity -Bamboo Light-",
   "item.slashblade.slashblade_bamboo.desc": "Unfinished Imitation Blade",
   "item.slashblade.slashblade_silverbamboo": "Noted -Silver Bamboo Light-",
-  "item.slashblade.slashblade_white.desc": "Imitation Blade",
+  "item.slashblade.slashblade_silverbamboo.desc": "Imitation Blade",
 
   "item.slashblade.yamato": "Yamato",
   "item.slashblade.sange": "Sange",
@@ -52,6 +56,8 @@
   "slashblade.sword_type.bewitched":"Bewitched",
   "slashblade.sword_type.enchanted":"Enchanted",
   "slashblade.sword_type.noname":"Sealed",
+  
+
 
   "item.slashblade.ruby": "Sharpness -nameless- Ruby",
   "item.slashblade.ruby.desc": "Superior One",
