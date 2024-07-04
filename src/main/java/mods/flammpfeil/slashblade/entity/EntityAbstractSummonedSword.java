@@ -260,7 +260,7 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
 
     // disallowedHitBlock
     public boolean isNoClip() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             return this.noPhysics;
         } else {
             refreshFlags();

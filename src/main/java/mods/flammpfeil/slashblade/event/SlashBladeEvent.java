@@ -1,6 +1,8 @@
 package mods.flammpfeil.slashblade.event;
 
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
+import mods.flammpfeil.slashblade.entity.BladeStandEntity;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +24,26 @@ public abstract class SlashBladeEvent extends Event {
 
 	public ISlashBladeState getSlashBladeState() {
 		return state;
+	}
+	
+	@Cancelable
+	public static class BladeStandAttackEvent extends SlashBladeEvent {
+		private final BladeStandEntity bladeStand;
+		private final DamageSource damageSource;
+		public BladeStandAttackEvent(ItemStack blade, ISlashBladeState state, BladeStandEntity bladeStand, DamageSource damageSource) {
+			super(blade, state);
+			this.bladeStand = bladeStand;
+			this.damageSource = damageSource;
+		}
+		
+		public BladeStandEntity getBladeStand() {
+			return bladeStand;
+		}
+		
+		public DamageSource getDamageSource() {
+			return damageSource;
+		}
+		
 	}
 	
 	@Cancelable

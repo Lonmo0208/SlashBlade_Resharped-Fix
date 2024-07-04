@@ -60,10 +60,11 @@ public class SlashBladeBuiltInRegistry {
                                 .modelName(SlashBlade.prefix("model/named/dios/dios.obj")).build(),
                         PropertiesDefinition.Builder.newInstance()
                         .baseAttackModifier(5.0F).maxDamage(70)
+                        .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .slashArtsType(SlashArtsRegistry.DRIVE_VERTICAL.getId())
                         .addSpecialEffect(SpecialEffectsRegistry.WITHER_EDGE.getId())
                         .build(),
-                        Lists.newArrayList()));
+                        List.of(new EnchantmentDefinition(getEnchantmentID(Enchantments.POWER_ARROWS), 2))));
     	
         bootstrap.register(SABIGATANA,
                 new SlashBladeDefinition(SlashBlade.prefix("sabigatana"),

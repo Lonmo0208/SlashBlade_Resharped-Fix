@@ -14,6 +14,8 @@
     "slashblade.tooltip.killcount": "杀敌数：%1$s",
     "slashblade.tooltip.refine": "精炼数：%1$s",
     "slashblade.tooltip.slash_art": "SA:%1$s",
+	
+	"se.slashblade.wither_edge": "凋零性",
 
     "item.slashblade.slashblade": "无铭「无名」",
     "item.slashblade.slashblade.desc": "起始之刃\n无垢之器",
@@ -27,7 +29,7 @@
 
     "item.slashblade.yamato": "魔剑「阎魔刀」",
     "item.slashblade.sange": "散华",
-
+	"item.slashblade.koseki": "枯石大刀",
     "item.slashblade.yasha": "夜叉",
     "item.slashblade.yasha_true": "夜叉「鬼哭」",
 

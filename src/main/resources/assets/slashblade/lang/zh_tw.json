@@ -14,6 +14,8 @@
   "slashblade.tooltip.refine": "鍛造數：%1$s",
   "slashblade.tooltip.proud_soul": "耀魂數：%1$s",
   "slashblade.tooltip.slash_art": "SA:%1$s",
+  
+  "se.slashblade.wither_edge": "凋零性",
 
   "item.slashblade.slashblade": "無銘刀「無名」",
   "item.slashblade.slashblade.desc": "起始之刃\n無垢之器",
@@ -61,6 +63,8 @@
   "item.slashblade.rodai_golden": "寶刀「山吹」露臺",
   "item.slashblade.rodai_diamond": "名刀「金剛」露臺",
   "item.slashblade.rodai_netherite": "名刀「玄鈺」露臺",
+  
+  "item.slashblade.koseki": "枯石大刀",
 
   "item.slashblade.proudsoul": "耀魂",
   "item.slashblade.proudsoul_tiny": "耀魂碎片",

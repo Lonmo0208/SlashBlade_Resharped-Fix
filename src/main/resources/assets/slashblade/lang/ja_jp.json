@@ -15,6 +15,8 @@
   "slashblade.tooltip.refine": "Refine   :%1$s",
   "slashblade.tooltip.slash_art": "SA       :%1$s",
 
+  "se.slashblade.wither_edge": "Wither Edge",
+  
   "item.slashblade.slashblade": "無銘「無名」",
   "item.slashblade.slashblade.desc": "始まり\n無垢の器",
   "item.slashblade.slashblade_wood": "無銘刀「木偶」",
@@ -27,7 +29,7 @@
 
   "item.slashblade.yamato": "魔剣「閻魔刀」",
   "item.slashblade.sange": "サンゲ",
-
+  "item.slashblade.koseki": "枯石の大刀",
   "item.slashblade.yasha": "ヤシャ",
   "item.slashblade.yasha_true": "ヤシャ「キコク」",
 

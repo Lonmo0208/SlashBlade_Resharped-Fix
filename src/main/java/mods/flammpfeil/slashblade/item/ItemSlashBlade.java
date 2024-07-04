@@ -59,7 +59,6 @@ import javax.annotation.Nullable;
 
 import net.minecraftforge.registries.ForgeRegistries;
 
-import org.apache.commons.compress.archivers.dump.DumpArchiveConstants.COMPRESSION_TYPE;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
