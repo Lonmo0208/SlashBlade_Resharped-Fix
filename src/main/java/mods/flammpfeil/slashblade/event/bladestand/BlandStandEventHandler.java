@@ -215,7 +215,7 @@ public class BlandStandEventHandler {
 			if (stack.is(SBItems.proudsoul_ingot))
 				probability = 0.75F;
 			if (random.nextFloat() <= probability) {
-				int enchantLevel = EnchantmentHelper.getTagEnchantmentLevel(enchantment, blade) + 1;
+				int enchantLevel = Math.max(enchantment.getMaxLevel(), EnchantmentHelper.getTagEnchantmentLevel(enchantment, blade) + 1);
 				currentBladeEnchantments.put(enchantment, enchantLevel);
 				EnchantmentHelper.setEnchantments(currentBladeEnchantments, blade);
 				world.playSound(bladeStand, bladeStand.getPos(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS,
