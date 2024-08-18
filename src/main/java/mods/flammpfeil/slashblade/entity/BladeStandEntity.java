@@ -123,9 +123,8 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
 		
 		if(MinecraftForge.EVENT_BUS.post(new SlashBladeEvent.BladeStandAttackEvent(blade, state, this, damageSource)))
 			return true;
-		
-		return super.hurt(damageSource, cat);
 
+		return super.hurt(damageSource, cat);
 	}
 
 	@Override

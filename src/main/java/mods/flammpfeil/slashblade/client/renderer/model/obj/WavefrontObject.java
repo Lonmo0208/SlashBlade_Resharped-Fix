@@ -122,8 +122,9 @@ public class WavefrontObject {
                     currentGroupObject = group;
                 }
             }
-
-            groupObjects.add(currentGroupObject);
+            if (currentGroupObject != null) {
+                groupObjects.add(currentGroupObject);
+            }
         } catch (IOException e) {
             throw new ModelFormatException("IO Exception reading model format", e);
         } finally {
