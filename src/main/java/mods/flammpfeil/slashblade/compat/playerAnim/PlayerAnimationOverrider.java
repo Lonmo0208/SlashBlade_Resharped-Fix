@@ -5,7 +5,6 @@ import dev.kosmx.playerAnim.api.layered.AnimationStack;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.event.BladeMotionEvent;
-import mods.flammpfeil.slashblade.event.client.RegisterPlayerAnimationEvent;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +14,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import java.util.Map;
 
 public class PlayerAnimationOverrider {
-    private static final class SingletonHolder {
+    private Map<ResourceLocation, VmdAnimation> animation = initAnimations();
+
+	private static final class SingletonHolder {
         private static final PlayerAnimationOverrider instance = new PlayerAnimationOverrider();
     }
 
@@ -33,8 +34,10 @@ public class PlayerAnimationOverrider {
     private static final ResourceLocation MotionLocation = new ResourceLocation(SlashBlade.MODID,
             "model/pa/player_motion.vmd");
 
-    private Map<ResourceLocation, VmdAnimation> animation = initAnimations();
-
+    public Map<ResourceLocation, VmdAnimation> getAnimation() {
+		return animation;
+	}
+    
     @SubscribeEvent
     public void onBladeAnimationStart(BladeMotionEvent event) {
         if (!(event.getEntity() instanceof AbstractClientPlayer))
@@ -43,7 +46,7 @@ public class PlayerAnimationOverrider {
 
         AnimationStack animationStack = PlayerAnimationAccess.getPlayerAnimLayer(player);
 
-        VmdAnimation animation = this.animation.get(event.getCombo());
+        VmdAnimation animation = this.getAnimation().get(event.getCombo());
 
         if (animation != null) {
             animationStack.removeLayer(0);
@@ -132,9 +135,7 @@ public class PlayerAnimationOverrider {
 
         map.put(ComboStateRegistry.WAVE_EDGE_VERTICAL.getId(), new VmdAnimation(MotionLocation, 1600, 1693, false));
         map.put(ComboStateRegistry.JUDGEMENT_CUT_END.getId(), new VmdAnimation(MotionLocation, 1923, 1963, false));
-        
-        MinecraftForge.EVENT_BUS.post(new RegisterPlayerAnimationEvent(map));
-        
+
         return map;
     }
 

@@ -15,7 +15,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class SlashBladeShapedRecipe extends ShapedRecipe {
-    // TODO: 处理这边的BUG
+
     public static final RecipeSerializer<SlashBladeShapedRecipe> SERIALIZER = new SlashBladeShapedRecipeSerializer<>(
             RecipeSerializer.SHAPED_RECIPE, SlashBladeShapedRecipe::new);
 
