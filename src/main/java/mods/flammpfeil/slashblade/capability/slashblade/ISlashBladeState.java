@@ -6,6 +6,7 @@ import com.google.common.collect.RangeMap;
 
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
 import mods.flammpfeil.slashblade.event.BladeMotionEvent;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.item.SwordType;
 import mods.flammpfeil.slashblade.network.ActiveStateSyncMessage;
 import mods.flammpfeil.slashblade.network.NetworkManager;
@@ -397,6 +398,8 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
     }
 
     default ResourceLocation resolvCurrentComboState(LivingEntity user) {
+    	if(!(user.getMainHandItem().getItem() instanceof ItemSlashBlade))
+    		return ComboStateRegistry.NONE.getId();
         return resolvCurrentComboStateTicks(user).getValue();
     }
 

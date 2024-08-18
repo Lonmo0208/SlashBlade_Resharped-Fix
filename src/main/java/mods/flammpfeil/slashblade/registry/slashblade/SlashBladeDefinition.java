@@ -120,10 +120,17 @@ public class SlashBladeDefinition {
         @Override
         public int compare(Entry<ResourceKey<SlashBladeDefinition>, SlashBladeDefinition> left,
                 Entry<ResourceKey<SlashBladeDefinition>, SlashBladeDefinition> right) {
+     
+        	if(left.getKey().location().getNamespace().equalsIgnoreCase(SlashBlade.MODID))
+        		return -1;
+        	
+        	if(right.getKey().location().getNamespace().equalsIgnoreCase(SlashBlade.MODID))
+        		return 1;
+        	
             String leftName = left.getKey().location().toString();
             String rightName = right.getKey().location().toString();
+            
             return leftName.compareToIgnoreCase(rightName);
         }
     }
-
 }

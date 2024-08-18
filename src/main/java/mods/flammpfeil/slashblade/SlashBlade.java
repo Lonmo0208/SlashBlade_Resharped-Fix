@@ -21,8 +21,10 @@ import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import mods.flammpfeil.slashblade.registry.SpecialEffectsRegistry;
 import mods.flammpfeil.slashblade.registry.combo.ComboCommands;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
+import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
@@ -31,12 +33,15 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -281,6 +286,31 @@ public class SlashBlade {
                             @Override
                             public int getEnchantmentValue(ItemStack stack) {
                                 return 200;
+                            }
+                            
+                            @Override
+                            @OnlyIn(Dist.CLIENT)
+                            public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag flag)
+                            {
+                                if (stack.getTag() != null)
+                                {
+                                    CompoundTag tag = stack.getTag();
+                                    if (tag.contains("SpecialEffectType"))
+                                    {
+                                    	Minecraft mcinstance = Minecraft.getInstance();
+                                		Player player = mcinstance.player;
+                                        ResourceLocation se = new ResourceLocation(tag.getString("SpecialEffectType"));
+                                        if (SpecialEffectsRegistry.REGISTRY.get().containsKey(se))
+                                        {
+                                        	components.add(Component.translatable("slashblade.tooltip.special_effect", SpecialEffect.getDescription(se),
+                                					Component.literal(String.valueOf(SpecialEffect.getRequestLevel(se)))
+                                							.withStyle(SpecialEffect.isEffective(se, player.experienceLevel) ? ChatFormatting.RED
+                                									: ChatFormatting.DARK_GRAY))
+                                					.withStyle(ChatFormatting.GRAY));
+                                        }
+                                    }
+                                }
+                                super.appendHoverText(stack, level, components, flag);
                             }
                         });
 

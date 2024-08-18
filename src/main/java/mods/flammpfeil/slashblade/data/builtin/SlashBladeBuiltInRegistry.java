@@ -56,10 +56,13 @@ public class SlashBladeBuiltInRegistry {
     	bootstrap.register(KOSEKI,
                 new SlashBladeDefinition(SlashBlade.prefix("koseki"),
                         RenderDefinition.Builder
-                                .newInstance().textureName(SlashBlade.prefix("model/named/dios/koseki.png"))
+                                .newInstance()
+                                .effectColor(0x303030)
+                                .textureName(SlashBlade.prefix("model/named/dios/koseki.png"))
                                 .modelName(SlashBlade.prefix("model/named/dios/dios.obj")).build(),
                         PropertiesDefinition.Builder.newInstance()
                         .baseAttackModifier(5.0F).maxDamage(70)
+                        
                         .defaultSwordType(List.of(SwordType.BEWITCHED))
                         .slashArtsType(SlashArtsRegistry.DRIVE_VERTICAL.getId())
                         .addSpecialEffect(SpecialEffectsRegistry.WITHER_EDGE.getId())

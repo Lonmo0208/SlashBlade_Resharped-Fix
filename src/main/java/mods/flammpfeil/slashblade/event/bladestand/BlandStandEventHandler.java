@@ -1,9 +1,17 @@
 package mods.flammpfeil.slashblade.event.bladestand;
 
+import java.util.Map;
+
+import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.data.builtin.SlashBladeBuiltInRegistry;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
+import mods.flammpfeil.slashblade.recipe.RequestDefinition;
+import mods.flammpfeil.slashblade.recipe.SlashBladeIngredient;
+import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
+import mods.flammpfeil.slashblade.registry.SpecialEffectsRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -13,7 +21,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -28,13 +40,53 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @EventBusSubscriber()
 public class BlandStandEventHandler {
 	@SubscribeEvent
+	public static void eventKoseki(SlashBladeEvent.BladeStandAttackEvent event) {
+		var slashBladeDefinitionRegistry = SlashBlade.getSlashBladeDefinitionRegistry(event.getBladeStand().level());
+		if(!slashBladeDefinitionRegistry.containsKey(SlashBladeBuiltInRegistry.KOSEKI.location()))
+			return;
+		if (!(event.getDamageSource().getEntity() instanceof WitherBoss))
+			return;
+		if(!event.getDamageSource().is(DamageTypeTags.IS_EXPLOSION))
+			return;
+		var in = SlashBladeIngredient.of(RequestDefinition.Builder.newInstance().build());
+		if(!in.test(event.getBlade()))
+			return;
+		event.getBladeStand().setItem(slashBladeDefinitionRegistry.get(SlashBladeBuiltInRegistry.KOSEKI).getBlade());
+		event.setCanceled(true);
+	}
+
+	@SubscribeEvent
 	public static void eventChangeSE(SlashBladeEvent.BladeStandAttackEvent event) {
-		if(!(event.getDamageSource().getEntity() instanceof ServerPlayer))
+		if (!(event.getDamageSource().getEntity() instanceof Player))
 			return;
 		Player player = (Player) event.getDamageSource().getEntity();
 		ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
+		ItemStack blade = event.getBlade();
+		if (blade.isEmpty())
+			return;
+		if (!stack.is(SBItems.proudsoul_crystal))
+			return;
+		var world = player.level();
+		var state = event.getSlashBladeState();
+		var bladeStand = event.getBladeStand();
+		if (stack.getTag() == null)
+			return;
 
-
+		CompoundTag tag = stack.getTag();
+		if (tag.contains("SpecialEffectType")) {
+			ResourceLocation SEKey = new ResourceLocation(tag.getString("SpecialEffectType"));
+			if (!(SpecialEffectsRegistry.REGISTRY.get().containsKey(SEKey)))
+				return;
+			if (state.hasSpecialEffect(SEKey))
+				return;
+			state.addSpecialEffect(SEKey);
+			world.playSound(bladeStand, bladeStand.getPos(), SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
+			if (world.isClientSide())
+				Minecraft.getInstance().particleEngine.createTrackingEmitter(bladeStand, ParticleTypes.PORTAL);
+			if (!player.isCreative())
+				stack.shrink(1);
+			event.setCanceled(true);
+		}
 	}
 
 	@SubscribeEvent
@@ -79,7 +131,6 @@ public class BlandStandEventHandler {
 			}
 		});
 		event.setCanceled(true);//防止掉落拔刀
-
 	}
 
 	@SubscribeEvent
@@ -88,84 +139,114 @@ public class BlandStandEventHandler {
 			return;
 		Player player = (Player) event.getDamageSource().getEntity();
 		ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
+		ItemStack blade = event.getBlade();
+		if (blade.isEmpty())
+			return;
+		if (!stack.is(SBItems.proudsoul_crystal))
+			return;
+		var world = player.level();
+		var state = event.getSlashBladeState();
+		var bladeStand = event.getBladeStand();
+		var specialEffects = state.getSpecialEffects();
 
-
+		for (var se : specialEffects) {
+			if (!SpecialEffectsRegistry.REGISTRY.get().containsKey(se))
+				continue;
+			if (!SpecialEffectsRegistry.REGISTRY.get().getValue(se).isCopiable())
+				continue;
+			ItemStack orb = new ItemStack(SBItems.proudsoul_crystal);
+			CompoundTag tag = new CompoundTag();
+			tag.putString("SpecialEffectType", se.toString());
+			orb.setTag(tag);
+			if (!player.isCreative())
+				stack.shrink(1);
+			world.playSound(bladeStand, bladeStand.getPos(), SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
+			if (world.isClientSide())
+				Minecraft.getInstance().particleEngine.createTrackingEmitter(bladeStand, ParticleTypes.PORTAL);
+			player.drop(orb, true);
+			if(SpecialEffectsRegistry.REGISTRY.get().getValue(se).isRemovable())
+				state.removeSpecialEffect(se);
+			event.setCanceled(true);
+			return;
+		}
 	}
 
 	@SubscribeEvent
 	public static void eventCopySA(SlashBladeEvent.BladeStandAttackEvent event) {
-		if(!(event.getDamageSource().getEntity() instanceof ServerPlayer))
+		if (!(event.getDamageSource().getEntity() instanceof Player))
 			return;
 		Player player = (Player) event.getDamageSource().getEntity();
 		ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
+		ItemStack blade = event.getBlade();
+		if (blade.isEmpty())
+			return;
+		if (!stack.is(SBItems.proudsoul_ingot) || !stack.isEnchanted())
+			return;
+		var world = player.level();
+		var state = event.getSlashBladeState();
+		var bladeStand = event.getBladeStand();
 
-
+		ResourceLocation SA = state.getSlashArtsKey();
+		if (SA != null && !SA.equals(SlashArtsRegistry.NONE.getId())) {
+			ItemStack orb = new ItemStack(SBItems.proudsoul_sphere);
+			CompoundTag tag = new CompoundTag();
+			tag.putString("SpecialAttackType", state.getSlashArtsKey().toString());
+			orb.setTag(tag);
+			if (!player.isCreative())
+				stack.shrink(1);
+			world.playSound(bladeStand, bladeStand.getPos(), SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
+			if (world.isClientSide())
+				Minecraft.getInstance().particleEngine.createTrackingEmitter(bladeStand, ParticleTypes.PORTAL);
+			player.drop(orb, true);
+			event.setCanceled(true);
+		}
+	
 	}
 
-	@SubscribeEvent(priority = EventPriority.LOWEST)
+	@SubscribeEvent
 	public static void eventProudSoulEnchantment(SlashBladeEvent.BladeStandAttackEvent event) {
-		if(!(event.getDamageSource().getEntity() instanceof ServerPlayer))
+		if (!(event.getDamageSource().getEntity() instanceof Player))
 			return;
 		Player player = (Player) event.getDamageSource().getEntity();
 		ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
-		if(!stack.isEnchanted())
-			return ;
-
-		float successProbability;
-		if (stack.is(SBItems.proudsoul_tiny)){
-			successProbability = 0.25f;
-		}else if (stack.is(SBItems.proudsoul)){
-			successProbability = 0.5f;
-		}else if (stack.is(SBItems.proudsoul_ingot)){
-			successProbability = 0.75f;
-		} else if (stack.is(SBItems.proudsoul_sphere) || stack.is(SBItems.proudsoul_crystal)
-				|| stack.is(SBItems.proudsoul_trapezohedron)) {
-			successProbability = 1f;
-		} else {
-			return;
-		}
-
 		ItemStack blade = event.getBlade();
-		RandomSource random = player.getRandom();
-		Map<Enchantment, Integer> currentBladeEnchantments = EnchantmentHelper.getEnchantments(blade);
-		AtomicBoolean canEnchanted = new AtomicBoolean(false);
-		stack.getAllEnchantments().forEach((enchantment,level)->{
-			if(!blade.canApplyAtEnchantingTable(enchantment))
+
+		if (blade.isEmpty())
+			return;
+
+		if (!stack.isEnchanted())
+			return;
+		
+		var world = player.level();
+		var random = world.getRandom();
+		var bladeStand = event.getBladeStand();
+		Map<Enchantment, Integer> currentBladeEnchantments = blade.getAllEnchantments();
+		stack.getAllEnchantments().forEach((enchantment, level) -> {
+			if(event.isCanceled()) 
 				return;
-			if (currentBladeEnchantments.containsKey(enchantment)){
-				if (currentBladeEnchantments.get(enchantment) >= enchantment.getMaxLevel())//已达该附魔的最大等级则不添加
-					return;
-				currentBladeEnchantments.put(enchantment, currentBladeEnchantments.get(enchantment) + level);
-				canEnchanted.set(true);
-			}else {
-				currentBladeEnchantments.put(enchantment, level);
-				canEnchanted.set(true);
-			}
-		});
+			if (!blade.canApplyAtEnchantingTable(enchantment))
+				return;
 
-		if (canEnchanted.get()){
-			if (random.nextFloat() <= successProbability){
+			var probability = 1.0F;
+			if (stack.is(SBItems.proudsoul_tiny))
+				probability = 0.25F;
+			if (stack.is(SBItems.proudsoul))
+				probability = 0.5F;
+			if (stack.is(SBItems.proudsoul_ingot))
+				probability = 0.75F;
+			if (random.nextFloat() <= probability) {
+				int enchantLevel = EnchantmentHelper.getTagEnchantmentLevel(enchantment, blade) + 1;
+				currentBladeEnchantments.put(enchantment, enchantLevel);
 				EnchantmentHelper.setEnchantments(currentBladeEnchantments, blade);
-
-				player.level().playSound(event.getBladeStand(), event.getBladeStand().getPos(),
-						SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1f, random.nextFloat() * 0.1F + 0.9F);
-				for(int i = 0; i < 32; ++i) {
-					double d0 = (random.nextFloat() * 2.0F - 1.0F);
-					double d1 = (random.nextFloat() * 2.0F - 1.0F);
-					double d2 = (random.nextFloat() * 2.0F - 1.0F);
-					if (!(d0 * d0 + d1 * d1 + d2 * d2 > 1.0D)) {
-						double d3 = event.getBladeStand().getX(d0 / 4.0D);
-						double d4 = event.getBladeStand().getY(0.5D + d1 / 4.0D);
-						double d5 = event.getBladeStand().getZ(d2 / 4.0D);
-						((ServerLevel)player.level()).sendParticles(ParticleTypes.ENCHANTED_HIT, d3, d4, d5,0, d0, d1 + 0.2D, d2,1);
-					}
-				}
+				world.playSound(bladeStand, bladeStand.getPos(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS,
+						1.0F, random.nextFloat() * 0.1F + 0.9F);
+				if (world.isClientSide())
+					Minecraft.getInstance().particleEngine.createTrackingEmitter(bladeStand,
+							ParticleTypes.ENCHANTED_HIT);
 			}
-
-			if (!player.isCreative()){
+			if (!player.isCreative())
 				stack.shrink(1);
-			}
-		}
-		event.setCanceled(true);//防止掉落拔刀
+			event.setCanceled(true);
+		});
 	}
 }
