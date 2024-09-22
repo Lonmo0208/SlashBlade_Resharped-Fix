@@ -9,7 +9,9 @@ import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRan
 import mods.flammpfeil.slashblade.entity.EntityAbstractSummonedSword;
 import mods.flammpfeil.slashblade.entity.EntitySlashEffect;
 import mods.flammpfeil.slashblade.entity.IShootable;
+import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,6 +25,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
+
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -67,7 +71,13 @@ public class AttackManager {
 
         if (playerIn.level().isClientSide())
             return null;
-
+        ItemStack blade = playerIn.getMainHandItem();
+		if(!blade.getCapability(ItemSlashBlade.BLADESTATE).isPresent())
+        	return null;
+        if (MinecraftForge.EVENT_BUS.post(new SlashBladeEvent.DoSlashEvent(blade, 
+        		blade.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new),
+        		playerIn, roll, critical, damage, knockback)))
+			return null;
         Vec3 pos = playerIn.position().add(0.0D, (double) playerIn.getEyeHeight() * 0.75D, 0.0D)
                 .add(playerIn.getLookAngle().scale(0.3f));
 

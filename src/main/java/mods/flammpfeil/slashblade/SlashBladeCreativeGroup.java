@@ -66,20 +66,16 @@ public class SlashBladeCreativeGroup {
         }
     }
 
-    private static void fillSASpheres(CreativeModeTab.Output output)
-    {
-        if (Minecraft.getInstance().getConnection() != null)
-        {
-            SlashArtsRegistry.REGISTRY.get().forEach(slashArts ->
-                {
-                    ResourceLocation key = SlashArtsRegistry.REGISTRY.get().getKey(slashArts);
-                    if (slashArts.equals(SlashArtsRegistry.NONE.get()) || key == null) return;
-                    ItemStack sphere = new ItemStack(SBItems.proudsoul_sphere);
-                    CompoundTag tag = new CompoundTag();
-                    tag.putString("SpecialAttackType", key.toString());
-                    sphere.setTag(tag);
-                    output.accept(sphere);
-                });
-        }
+    private static void fillSASpheres(CreativeModeTab.Output output){
+        SlashArtsRegistry.REGISTRY.get().forEach(slashArts ->
+            {
+                ResourceLocation key = SlashArtsRegistry.REGISTRY.get().getKey(slashArts);
+                if (slashArts.equals(SlashArtsRegistry.NONE.get()) || key == null) return;
+                ItemStack sphere = new ItemStack(SBItems.proudsoul_sphere);
+                CompoundTag tag = new CompoundTag();
+                tag.putString("SpecialAttackType", key.toString());
+                sphere.setTag(tag);
+                output.accept(sphere);
+            });
     }
 }

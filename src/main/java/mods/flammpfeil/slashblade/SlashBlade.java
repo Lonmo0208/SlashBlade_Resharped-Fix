@@ -209,6 +209,8 @@ public class SlashBlade {
 
                         return false;
                     }
+                    
+                    
 
                     @Override
                     public boolean isFoil(ItemStack stack) {

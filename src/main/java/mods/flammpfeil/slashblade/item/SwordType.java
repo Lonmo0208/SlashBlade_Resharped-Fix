@@ -22,10 +22,10 @@ public enum SwordType {
 
         if (state.isPresent()) {
             itemStackIn.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s -> {
-                if (s.isBroken())
+                if (s.isBroken() || itemStackIn.getOrCreateTagElement("bladeState").getBoolean("isBroken"))
                     types.add(BROKEN);
 
-                if (s.isSealed())
+                if (s.isSealed() || itemStackIn.getOrCreateTagElement("bladeState").getBoolean("isSealed"))
                     types.add(SEALED);
 
                 if (!s.isSealed() && itemStackIn.isEnchanted()

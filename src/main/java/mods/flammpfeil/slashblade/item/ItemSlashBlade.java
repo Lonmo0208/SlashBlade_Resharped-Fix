@@ -83,7 +83,9 @@ public class ItemSlashBlade extends SwordItem {
 	});
 
 	public static final List<Enchantment> exEnchantment = List.of(Enchantments.SOUL_SPEED, Enchantments.POWER_ARROWS,
-			Enchantments.FALL_PROTECTION);
+			Enchantments.FALL_PROTECTION,
+			Enchantments.FIRE_PROTECTION,
+			Enchantments.THORNS);
 
 	public ItemSlashBlade(Tier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
 		super(tier, attackDamageIn, attackSpeedIn, builder);
@@ -470,8 +472,13 @@ public class ItemSlashBlade extends SwordItem {
 
 	@Override
 	public String getDescriptionId(ItemStack stack) {
-		return stack.getCapability(BLADESTATE).filter((s) -> !s.getTranslationKey().isEmpty())
-				.map((state) -> state.getTranslationKey()).orElseGet(() -> super.getDescriptionId(stack));
+		return stack.getCapability(BLADESTATE).filter((s) -> !s.getTranslationKey().isBlank())
+				.map((state) -> state.getTranslationKey()).orElseGet(() -> stackDefaultDescriptionId(stack));
+	}
+
+	private String stackDefaultDescriptionId(ItemStack stack) {
+		String key = stack.getOrCreateTagElement("bladeState").getString("translationKey");
+		return !key.isBlank() ? key : super.getDescriptionId(stack);
 	}
 
 	public boolean isDestructable(ItemStack stack) {
@@ -509,10 +516,10 @@ public class ItemSlashBlade extends SwordItem {
 	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 		stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s -> {
 			this.appendSwordType(stack, worldIn, tooltip, flagIn);
-			this.appendProudSoulCount(tooltip, s);
-			this.appendKillCount(tooltip, s);
+			this.appendProudSoulCount(tooltip, stack);
+			this.appendKillCount(tooltip, stack);
 			this.appendSlashArt(stack, tooltip, s);
-			this.appendRefineCount(tooltip, s);
+			this.appendRefineCount(tooltip, stack);
 			this.appendSpecialEffects(tooltip, s);
 		});
 
@@ -529,31 +536,34 @@ public class ItemSlashBlade extends SwordItem {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void appendRefineCount(List<Component> tooltip, @NotNull ISlashBladeState s) {
-		if (s.getRefine() > 0) {
-			tooltip.add(Component.translatable("slashblade.tooltip.refine", s.getRefine())
-					.withStyle((ChatFormatting) refineColor.get(s.getRefine())));
+	public void appendRefineCount(List<Component> tooltip, @NotNull ItemStack stack) {
+		int refine = stack.getOrCreateTagElement("bladeState").getInt("RepairCounter");
+		if (refine > 0) {
+			tooltip.add(Component.translatable("slashblade.tooltip.refine", refine)
+					.withStyle((ChatFormatting) refineColor.get(refine)));
 		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void appendProudSoulCount(List<Component> tooltip, @NotNull ISlashBladeState s) {
-		if (s.getProudSoulCount() > 0) {
+	public void appendProudSoulCount(List<Component> tooltip, @NotNull ItemStack stack) {
+		int proudsoul = stack.getOrCreateTagElement("bladeState").getInt("proudSoul");
+		if (proudsoul > 0) {
 			MutableComponent countComponent = Component
-					.translatable("slashblade.tooltip.proud_soul", s.getProudSoulCount())
+					.translatable("slashblade.tooltip.proud_soul", proudsoul)
 					.withStyle(ChatFormatting.GRAY);
-			if (s.getProudSoulCount() > 1000)
+			if (proudsoul > 1000)
 				countComponent = countComponent.withStyle(ChatFormatting.DARK_PURPLE);
 			tooltip.add(countComponent);
 		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void appendKillCount(List<Component> tooltip, @NotNull ISlashBladeState s) {
-		if (s.getKillCount() > 0) {
+	public void appendKillCount(List<Component> tooltip, @NotNull ItemStack stack) {
+		int killCount = stack.getOrCreateTagElement("bladeState").getInt("killCount");
+		if (killCount > 0) {
 			MutableComponent killCountComponent = Component
-					.translatable("slashblade.tooltip.killcount", s.getKillCount()).withStyle(ChatFormatting.GRAY);
-			if (s.getKillCount() > 1000)
+					.translatable("slashblade.tooltip.killcount", killCount).withStyle(ChatFormatting.GRAY);
+			if (killCount > 1000)
 				killCountComponent = killCountComponent.withStyle(ChatFormatting.DARK_PURPLE);
 			tooltip.add(killCountComponent);
 		}

@@ -67,6 +67,8 @@ public class Guard {
             return;
         if (slashBlade.filter(b -> b.isBroken()).isPresent())
             return;
+        if (stack.getEnchantmentLevel(Enchantments.THORNS) <= 0)
+        	return;
 
         // user check
         if (!victim.onGround())
@@ -103,7 +105,7 @@ public class Guard {
         long timeCurrent = victim.level().getGameTime();
 
         int soulSpeedLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.SOUL_SPEED, victim);
-        int justAcceptancePeriod = 3 + soulSpeedLevel;
+        int justAcceptancePeriod = 5 + soulSpeedLevel;
 
         boolean isJust = false;
         if (timeCurrent - timeStartPress < justAcceptancePeriod) {

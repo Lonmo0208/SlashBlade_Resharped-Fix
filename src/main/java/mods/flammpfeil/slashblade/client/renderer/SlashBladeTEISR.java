@@ -1,6 +1,7 @@
 package mods.flammpfeil.slashblade.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+
 import mods.flammpfeil.slashblade.client.renderer.model.BladeFirstPersonRender;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModel;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
@@ -9,13 +10,16 @@ import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import mods.flammpfeil.slashblade.entity.BladeStandEntity;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.item.ItemSlashBladeDetune;
 import mods.flammpfeil.slashblade.init.DefaultResources;
 import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.SwordType;
+import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -28,6 +32,8 @@ import com.mojang.math.Axis;
 
 import java.awt.*;
 import java.util.EnumSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
 
@@ -137,11 +143,11 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
 
         ResourceLocation modelLocation = stack.getCapability(ItemSlashBlade.BLADESTATE)
                 .filter(s -> s.getModel().isPresent()).map(s -> s.getModel().get())
-                .orElseGet(() -> DefaultResources.resourceDefaultModel);
+                .orElseGet(() -> stackDefaultModel(stack));
         WavefrontObject model = BladeModelManager.getInstance().getModel(modelLocation);
         ResourceLocation textureLocation = stack.getCapability(ItemSlashBlade.BLADESTATE)
                 .filter(s -> s.getTexture().isPresent()).map(s -> s.getTexture().get())
-                .orElseGet(() -> DefaultResources.resourceDefaultTexture);
+                .orElseGet(() -> stackDefaultTexture(stack));
 
         String renderTarget;
         if (types.contains(SwordType.BROKEN))
@@ -184,6 +190,41 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
         }
     }
 
+	private ResourceLocation stackDefaultModel(ItemStack stack) {
+		CompoundTag stateTag = stack.getOrCreateTagElement("bladeState");
+		String name = stateTag.getString("ModelName");
+		if(!(stack.getItem() instanceof ItemSlashBladeDetune)) {
+			String key = stateTag.getString("translationKey");
+			if(!key.isBlank()) {
+				ResourceLocation bladeName = 
+						ResourceLocation.tryParse(key.substring(5).replaceFirst(Pattern.quote("."), Matcher.quoteReplacement(":")));
+				SlashBladeDefinition slashBladeDefinition = BladeModelManager.getClientSlashBladeRegistry().get(bladeName);
+				
+				if(slashBladeDefinition != null)
+					name = slashBladeDefinition.getRenderDefinition().getModelName().toString();
+			}
+		}
+		return !name.isBlank() 
+				? ResourceLocation.tryParse(name) : DefaultResources.resourceDefaultModel;
+	}
+	
+	private ResourceLocation stackDefaultTexture(ItemStack stack) {
+		CompoundTag stateTag = stack.getOrCreateTagElement("bladeState");
+		String name = stateTag.getString("TextureName");
+		if(!(stack.getItem() instanceof ItemSlashBladeDetune)) {
+			String key = stateTag.getString("translationKey");
+			if(!key.isBlank()) {
+				ResourceLocation bladeName = 
+						ResourceLocation.tryParse(key.substring(5).replaceFirst(Pattern.quote("."), Matcher.quoteReplacement(":")));
+				SlashBladeDefinition slashBladeDefinition = BladeModelManager.getClientSlashBladeRegistry().get(bladeName);
+				if(slashBladeDefinition != null)
+					name = slashBladeDefinition.getRenderDefinition().getTextureName().toString();
+			}
+		}
+		return !name.isBlank() 
+				? ResourceLocation.tryParse(name) : DefaultResources.resourceDefaultTexture;
+	}
+
     private void renderModel(ItemStack stack, PoseStack matrixStack, MultiBufferSource bufferIn, int lightIn) {
 
         float scale = 0.003125f;
@@ -196,11 +237,11 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
 
         ResourceLocation modelLocation = stack.getCapability(ItemSlashBlade.BLADESTATE)
                 .filter(s -> s.getModel().isPresent()).map(s -> s.getModel().get())
-                .orElseGet(() -> DefaultResources.resourceDefaultModel);
+                .orElseGet(() -> stackDefaultModel(stack));
         WavefrontObject model = BladeModelManager.getInstance().getModel(modelLocation);
         ResourceLocation textureLocation = stack.getCapability(ItemSlashBlade.BLADESTATE)
                 .filter(s -> s.getTexture().isPresent()).map(s -> s.getTexture().get())
-                .orElseGet(() -> DefaultResources.resourceDefaultTexture);
+                .orElseGet(() -> stackDefaultTexture(stack));
 
         Vec3 bladeOffset = Vec3.ZERO;
         float bladeOffsetRot = 0;

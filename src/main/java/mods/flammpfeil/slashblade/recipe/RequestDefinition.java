@@ -121,6 +121,7 @@ public class RequestDefinition {
             state.setProudSoulCount(getProudSoulCount());
             state.setKillCount(getKillCount());
             state.setRefine(getRefineCount());
+            
             this.getEnchantments()
                     .forEach(enchantment -> blade.enchant(
                             ForgeRegistries.ENCHANTMENTS.getValue(enchantment.getEnchantmentID()),
@@ -133,12 +134,15 @@ public class RequestDefinition {
                     state.setBroken(true);
                 }
                 case SEALED -> state.setSealed(true);
-                default -> {
-                }
+                default -> {}
                 }
             });
+            
+            blade.getOrCreateTag().put("bladeState", state.serializeNBT());
         });
     }
+    
+    
 
     public boolean test(ItemStack blade) {
         if (blade == null || blade.isEmpty())

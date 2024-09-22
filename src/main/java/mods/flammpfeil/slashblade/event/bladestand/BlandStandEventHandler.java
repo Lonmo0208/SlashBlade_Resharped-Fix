@@ -4,15 +4,14 @@ import java.util.Map;
 
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.data.builtin.SlashBladeBuiltInRegistry;
+import mods.flammpfeil.slashblade.entity.BladeStandEntity;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import mods.flammpfeil.slashblade.recipe.RequestDefinition;
 import mods.flammpfeil.slashblade.recipe.SlashBladeIngredient;
-import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import mods.flammpfeil.slashblade.registry.SpecialEffectsRegistry;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -21,8 +20,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
@@ -33,9 +30,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @EventBusSubscriber()
 public class BlandStandEventHandler {
@@ -57,7 +51,7 @@ public class BlandStandEventHandler {
 
 	@SubscribeEvent
 	public static void eventChangeSE(SlashBladeEvent.BladeStandAttackEvent event) {
-		if (!(event.getDamageSource().getEntity() instanceof Player))
+		if (!(event.getDamageSource().getEntity() instanceof ServerPlayer))
 			return;
 		Player player = (Player) event.getDamageSource().getEntity();
 		ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
@@ -68,21 +62,35 @@ public class BlandStandEventHandler {
 			return;
 		var world = player.level();
 		var state = event.getSlashBladeState();
-		var bladeStand = event.getBladeStand();
+		
 		if (stack.getTag() == null)
 			return;
 
 		CompoundTag tag = stack.getTag();
 		if (tag.contains("SpecialEffectType")) {
+			var bladeStand = event.getBladeStand();
 			ResourceLocation SEKey = new ResourceLocation(tag.getString("SpecialEffectType"));
 			if (!(SpecialEffectsRegistry.REGISTRY.get().containsKey(SEKey)))
 				return;
 			if (state.hasSpecialEffect(SEKey))
 				return;
 			state.addSpecialEffect(SEKey);
-			world.playSound(bladeStand, bladeStand.getPos(), SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
-			if (world.isClientSide())
-				Minecraft.getInstance().particleEngine.createTrackingEmitter(bladeStand, ParticleTypes.PORTAL);
+			RandomSource random = player.getRandom();
+			world.playSound(bladeStand, bladeStand.getPos(),
+					SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
+			for(int i = 0; i < 32; ++i) {
+				if(player.level().isClientSide())
+					break;
+				double xDist = (random.nextFloat() * 2.0F - 1.0F);
+				double yDist = (random.nextFloat() * 2.0F - 1.0F);
+				double zDist = (random.nextFloat() * 2.0F - 1.0F);
+				if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
+					double x = bladeStand.getX(xDist / 4.0D);
+					double y = bladeStand.getY(0.5D + yDist / 4.0D);
+					double z = bladeStand.getZ(zDist / 4.0D);
+					((ServerLevel)world).sendParticles(ParticleTypes.PORTAL, x, y, z,0, xDist, yDist + 0.2D, zDist,1);
+				}
+			}
 			if (!player.isCreative())
 				stack.shrink(1);
 			event.setCanceled(true);
@@ -111,16 +119,19 @@ public class BlandStandEventHandler {
 				state.setSlashArtsKey(SAKey);
 
 				RandomSource random = player.getRandom();
-				player.level().playSound(event.getBladeStand(), event.getBladeStand().getPos(),
+				BladeStandEntity bladeStand = event.getBladeStand();
+				player.level().playSound(bladeStand, bladeStand.getPos(),
 						SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
 				for(int i = 0; i < 32; ++i) {
+					if(player.level().isClientSide())
+						break;
 					double xDist = (random.nextFloat() * 2.0F - 1.0F);
 					double yDist = (random.nextFloat() * 2.0F - 1.0F);
 					double zDist = (random.nextFloat() * 2.0F - 1.0F);
 					if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
-						double x = event.getBladeStand().getX(xDist / 4.0D);
-						double y = event.getBladeStand().getY(0.5D + yDist / 4.0D);
-						double z = event.getBladeStand().getZ(zDist / 4.0D);
+						double x = bladeStand.getX(xDist / 4.0D);
+						double y = bladeStand.getY(0.5D + yDist / 4.0D);
+						double z = bladeStand.getZ(zDist / 4.0D);
 						((ServerLevel)player.level()).sendParticles(ParticleTypes.PORTAL, x, y, z,0, xDist, yDist + 0.2D, zDist,1);
 					}
 				}
@@ -160,9 +171,22 @@ public class BlandStandEventHandler {
 			orb.setTag(tag);
 			if (!player.isCreative())
 				stack.shrink(1);
-			world.playSound(bladeStand, bladeStand.getPos(), SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
-			if (world.isClientSide())
-				Minecraft.getInstance().particleEngine.createTrackingEmitter(bladeStand, ParticleTypes.PORTAL);
+			RandomSource random = player.getRandom();
+			world.playSound(bladeStand, bladeStand.getPos(),
+					SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
+			for(int i = 0; i < 32; ++i) {
+				if(world.isClientSide())
+					break;
+				double xDist = (random.nextFloat() * 2.0F - 1.0F);
+				double yDist = (random.nextFloat() * 2.0F - 1.0F);
+				double zDist = (random.nextFloat() * 2.0F - 1.0F);
+				if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
+					double x = bladeStand.getX(xDist / 4.0D);
+					double y = bladeStand.getY(0.5D + yDist / 4.0D);
+					double z = bladeStand.getZ(zDist / 4.0D);
+					((ServerLevel)world).sendParticles(ParticleTypes.PORTAL, x, y, z,0, xDist, yDist + 0.2D, zDist,1);
+				}
+			}
 			player.drop(orb, true);
 			if(SpecialEffectsRegistry.REGISTRY.get().getValue(se).isRemovable())
 				state.removeSpecialEffect(se);
@@ -185,25 +209,43 @@ public class BlandStandEventHandler {
 		var world = player.level();
 		var state = event.getSlashBladeState();
 		var bladeStand = event.getBladeStand();
-
+		var enchantments = EnchantmentHelper.getEnchantments(stack).keySet();
 		ResourceLocation SA = state.getSlashArtsKey();
 		if (SA != null && !SA.equals(SlashArtsRegistry.NONE.getId())) {
 			ItemStack orb = new ItemStack(SBItems.proudsoul_sphere);
+			for (Enchantment e : enchantments)
+            {
+			if (EnchantmentHelper.getTagEnchantmentLevel(e, blade) < e.getMaxLevel())
+				return;
+            }
 			CompoundTag tag = new CompoundTag();
 			tag.putString("SpecialAttackType", state.getSlashArtsKey().toString());
 			orb.setTag(tag);
+
 			if (!player.isCreative())
 				stack.shrink(1);
 			world.playSound(bladeStand, bladeStand.getPos(), SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
-			if (world.isClientSide())
-				Minecraft.getInstance().particleEngine.createTrackingEmitter(bladeStand, ParticleTypes.PORTAL);
+			RandomSource random = player.getRandom();
+			for(int i = 0; i < 32; ++i) {
+				if(world.isClientSide())
+					break;
+				double xDist = (random.nextFloat() * 2.0F - 1.0F);
+				double yDist = (random.nextFloat() * 2.0F - 1.0F);
+				double zDist = (random.nextFloat() * 2.0F - 1.0F);
+				if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
+					double x = bladeStand.getX(xDist / 4.0D);
+					double y = bladeStand.getY(0.5D + yDist / 4.0D);
+					double z = bladeStand.getZ(zDist / 4.0D);
+					((ServerLevel)world).sendParticles(ParticleTypes.PORTAL, x, y, z,0, xDist, yDist + 0.2D, zDist,1);
+				}
+			}
 			player.drop(orb, true);
 			event.setCanceled(true);
 		}
 	
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void eventProudSoulEnchantment(SlashBladeEvent.BladeStandAttackEvent event) {
 		if (!(event.getDamageSource().getEntity() instanceof Player))
 			return;
@@ -235,14 +277,23 @@ public class BlandStandEventHandler {
 			if (stack.is(SBItems.proudsoul_ingot))
 				probability = 0.75F;
 			if (random.nextFloat() <= probability) {
-				int enchantLevel = Math.max(enchantment.getMaxLevel(), EnchantmentHelper.getTagEnchantmentLevel(enchantment, blade) + 1);
+				int enchantLevel = Math.min(enchantment.getMaxLevel(), EnchantmentHelper.getTagEnchantmentLevel(enchantment, blade) + 1);
 				currentBladeEnchantments.put(enchantment, enchantLevel);
 				EnchantmentHelper.setEnchantments(currentBladeEnchantments, blade);
-				world.playSound(bladeStand, bladeStand.getPos(), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS,
-						1.0F, random.nextFloat() * 0.1F + 0.9F);
-				if (world.isClientSide())
-					Minecraft.getInstance().particleEngine.createTrackingEmitter(bladeStand,
-							ParticleTypes.ENCHANTED_HIT);
+				world.playSound(bladeStand, bladeStand.getPos(), SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
+				for(int i = 0; i < 32; ++i) {
+					if(player.level().isClientSide())
+						break;
+					double xDist = (random.nextFloat() * 2.0F - 1.0F);
+					double yDist = (random.nextFloat() * 2.0F - 1.0F);
+					double zDist = (random.nextFloat() * 2.0F - 1.0F);
+					if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
+						double x = bladeStand.getX(xDist / 4.0D);
+						double y = bladeStand.getY(0.5D + yDist / 4.0D);
+						double z = bladeStand.getZ(zDist / 4.0D);
+						((ServerLevel)world).sendParticles(ParticleTypes.PORTAL, x, y, z,0, xDist, yDist + 0.2D, zDist,1);
+					}
+				}
 			}
 			if (!player.isCreative())
 				stack.shrink(1);

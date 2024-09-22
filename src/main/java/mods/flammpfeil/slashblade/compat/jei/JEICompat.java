@@ -34,7 +34,7 @@ public class JEICompat implements IModPlugin {
                 state.setModel(blade.getRenderDefinition().getModelName());
                 state.setTexture(blade.getRenderDefinition().getTextureName());
             }
-            ;
+
             return transKey;
         });
     }

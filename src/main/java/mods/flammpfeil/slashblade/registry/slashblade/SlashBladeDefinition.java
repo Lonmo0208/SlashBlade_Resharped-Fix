@@ -74,6 +74,7 @@ public class SlashBladeDefinition {
     public ItemStack getBlade(Item bladeItem) {
         ItemStack result = new ItemStack(bladeItem);
         result.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
+
             state.setBaseAttackModifier(this.stateDefinition.getBaseAttackModifier());
             state.setMaxDamage(this.stateDefinition.getMaxDamage());
             state.setComboRoot(this.stateDefinition.getComboRoot());
@@ -100,7 +101,7 @@ public class SlashBladeDefinition {
             state.setEffectColorInverse(this.renderDefinition.isSummonedSwordColorInverse());
             state.setCarryType(this.renderDefinition.getStandbyRenderType());
             if (!this.getName().equals(SlashBlade.prefix("none")))
-                state.setTranslationKey(getTranslationKey());
+                state.setTranslationKey(this.getTranslationKey());
             
             result.getOrCreateTag().put("bladeState", state.serializeNBT());
         });

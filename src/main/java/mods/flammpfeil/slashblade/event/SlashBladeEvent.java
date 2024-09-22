@@ -2,6 +2,7 @@ package mods.flammpfeil.slashblade.event;
 
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.BladeStandEntity;
+import mods.flammpfeil.slashblade.util.KnockBacks;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -98,5 +99,60 @@ public abstract class SlashBladeEvent extends Event {
 			return isSelected;
 		}
 
+	}
+	
+	@Cancelable
+	public static class DoSlashEvent extends SlashBladeEvent {
+		private final LivingEntity user;
+		private float roll;
+		private boolean critical;
+		private double damage;
+		private KnockBacks knockback;
+		public DoSlashEvent(ItemStack blade, ISlashBladeState state, LivingEntity user, 
+				float roll, boolean critical, double damage, KnockBacks knockback) {
+			super(blade, state);
+			this.user = user;
+			this.roll = roll;
+			this.critical = critical;
+			this.knockback = knockback;
+			this.damage = damage;
+		}
+		
+		public LivingEntity getUser() {
+			return user;
+		}
+
+		public float getRoll() {
+			return roll;
+		}
+
+		public void setRoll(float roll) {
+			this.roll = roll;
+		}
+
+		public boolean isCritical() {
+			return critical;
+		}
+
+		public void setCritical(boolean critical) {
+			this.critical = critical;
+		}
+
+		public double getDamage() {
+			return damage;
+		}
+
+		public void setDamage(double damage) {
+			this.damage = damage;
+		}
+
+		public KnockBacks getKnockback() {
+			return knockback;
+		}
+
+		public void setKnockback(KnockBacks knockback) {
+			this.knockback = knockback;
+		}
+		
 	}
 }
