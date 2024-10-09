@@ -57,8 +57,8 @@ public class BladeRenderState extends RenderStateShard {
                 Util.memoize(RenderType::entitySmoothCutout), true);
         Face.forceQuad = false;
 
-        // renderOverrided(stack, model, target, texture, matrixStackIn, bufferIn,
-        // packedLightIn, Util.memoize(BladeRenderState::getSlashBladeBlend), true);
+        renderOverrided(stack, model, target, texture, matrixStackIn, bufferIn,
+                packedLightIn, Util.memoize(BladeRenderState::getSlashBladeBlend), true);
     }
 
     static public void renderOverridedColorWrite(ItemStack stack, WavefrontObject model, String target,
