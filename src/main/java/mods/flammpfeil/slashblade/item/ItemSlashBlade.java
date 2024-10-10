@@ -355,7 +355,13 @@ public class ItemSlashBlade extends SwordItem {
 
 				// sa.tickAction(entityLiving);
 				if (!sa.equals(ComboStateRegistry.NONE.getId())) {
-					stack.hurtAndBreak(1, entityLiving, ItemSlashBlade.getOnBroken(stack));
+					
+					var cost = state.getSlashArts().getProudSoulCost();
+					if(state.getProudSoulCount() >= cost) 
+						state.setProudSoulCount(state.getProudSoulCount()-cost);
+					else 
+						stack.hurtAndBreak(1, entityLiving, ItemSlashBlade.getOnBroken(stack));
+					
 					entityLiving.swing(InteractionHand.MAIN_HAND);
 				}
 			});

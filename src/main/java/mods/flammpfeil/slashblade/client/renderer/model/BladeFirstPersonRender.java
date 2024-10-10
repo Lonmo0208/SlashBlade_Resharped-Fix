@@ -19,12 +19,13 @@ import com.mojang.math.Axis;
  * Created by Furia on 2016/02/07.
  */
 public class BladeFirstPersonRender {
-    private LayerMainBlade layer = null;
+    private LayerMainBlade<LocalPlayer, ?> layer = null;
 
-    private BladeFirstPersonRender() {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	private BladeFirstPersonRender() {
         Minecraft mc = Minecraft.getInstance();
 
-        EntityRenderer renderer = mc.getEntityRenderDispatcher().getRenderer(mc.player);
+        EntityRenderer<?> renderer = mc.getEntityRenderDispatcher().getRenderer(mc.player);
         if (renderer instanceof RenderLayerParent)
             layer = new LayerMainBlade((RenderLayerParent) renderer);
     }

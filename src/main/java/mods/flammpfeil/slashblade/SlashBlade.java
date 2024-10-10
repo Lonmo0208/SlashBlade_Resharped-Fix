@@ -38,8 +38,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -114,7 +114,7 @@ public class SlashBlade {
         Untouchable.getInstance().register();
         EnemyStep.getInstance().register();
         KickJump.getInstance().register();
-//        SuperSlashArts.getInstance().register();
+        SuperSlashArts.getInstance().register();
 
         ComboCommands.initDefaultStandByCommands();
     }
@@ -479,10 +479,10 @@ public class SlashBlade {
     public static Registry<SlashBladeDefinition> getSlashBladeDefinitionRegistry(Level level) {
         if (level.isClientSide())
             return BladeModelManager.getClientSlashBladeRegistry();
-        return SlashBlade.getSlashBladeDefinitionRegistry(level.registryAccess());
+        return level.registryAccess().registryOrThrow(SlashBladeDefinition.REGISTRY_KEY);
     }
 
-    public static Registry<SlashBladeDefinition> getSlashBladeDefinitionRegistry(RegistryAccess access) {
-        return access.registryOrThrow(SlashBladeDefinition.REGISTRY_KEY);
+    public static HolderLookup.RegistryLookup<SlashBladeDefinition> getSlashBladeDefinitionRegistry(HolderLookup.Provider access) {
+        return access.lookupOrThrow(SlashBladeDefinition.REGISTRY_KEY);
     }
 }

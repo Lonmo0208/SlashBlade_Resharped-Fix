@@ -53,6 +53,8 @@ public class SlashArts {
         return ComboStateRegistry.NONE.getId();
     }
 
+    private int costSoul = 20;
+    
     public SlashArts(Function<LivingEntity, ResourceLocation> state) {
         this.comboState = state;
         this.comboStateJust = state;
@@ -81,7 +83,15 @@ public class SlashArts {
         return this;
 	}
 
-    public Component getDescription() {
+    public int getProudSoulCost() {
+		return costSoul;
+	}
+
+	public void setProudSoulCost(int costSoul) {
+		this.costSoul = costSoul;
+	}
+
+	public Component getDescription() {
         return Component.translatable(this.getDescriptionId());
     }
 

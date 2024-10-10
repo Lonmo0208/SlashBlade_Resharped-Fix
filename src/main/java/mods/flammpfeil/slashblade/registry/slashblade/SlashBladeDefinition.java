@@ -12,6 +12,7 @@ import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.Util;
+import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -117,19 +118,19 @@ public class SlashBladeDefinition {
     public static final BladeComparator COMPARATOR = new BladeComparator();
 
     private static class BladeComparator
-            implements Comparator<Entry<ResourceKey<SlashBladeDefinition>, SlashBladeDefinition>> {
+            implements Comparator<Reference<SlashBladeDefinition>> {
         @Override
-        public int compare(Entry<ResourceKey<SlashBladeDefinition>, SlashBladeDefinition> left,
-                Entry<ResourceKey<SlashBladeDefinition>, SlashBladeDefinition> right) {
+        public int compare(Reference<SlashBladeDefinition> left,
+        		Reference<SlashBladeDefinition> right) {
      
-        	if(left.getKey().location().getNamespace().equalsIgnoreCase(SlashBlade.MODID))
+        	if(left.key().location().getNamespace().equalsIgnoreCase(SlashBlade.MODID))
         		return -1;
         	
-        	if(right.getKey().location().getNamespace().equalsIgnoreCase(SlashBlade.MODID))
+        	if(right.key().location().getNamespace().equalsIgnoreCase(SlashBlade.MODID))
         		return 1;
         	
-            String leftName = left.getKey().location().toString();
-            String rightName = right.getKey().location().toString();
+            String leftName = left.key().location().toString();
+            String rightName = right.key().location().toString();
             
             return leftName.compareToIgnoreCase(rightName);
         }

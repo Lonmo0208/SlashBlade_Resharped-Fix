@@ -10,6 +10,7 @@ public class SlashBladeConfig {
     public static ForgeConfigSpec.IntValue SUMMON_SWORD_ART_COST;
     public static ForgeConfigSpec.DoubleValue BEWITCHED_HUNGER_EXHAUSTION;
     public static ForgeConfigSpec.BooleanValue PVP_ENABLE;
+    public static ForgeConfigSpec.BooleanValue FRIENDLY_ENABLE;
     public static ForgeConfigSpec.DoubleValue SABIGATANA_SPAWN_CHANCE;
     public static ForgeConfigSpec.DoubleValue BROKEN_SABIGATANA_SPAWN_CHANCE;
     static {
@@ -27,7 +28,9 @@ public class SlashBladeConfig {
                 .define("hunger_can_repair", true);
         PVP_ENABLE = COMMON_BUILDER.comment("Determines whether to enable slashblade's PVP.",
                 "If enable, player can attack player with SlashBlade.").define("pvp_enable", false);
-
+        FRIENDLY_ENABLE = COMMON_BUILDER.comment("Determines whether to enable slashblade's friendly fire.",
+                "If enable, player can attack friendly entity with SlashBlade.").define("friendly_enable", false);
+        
         SUMMON_SWORD_COST = COMMON_BUILDER.comment("Determining the proud soul cost for single summon mirage blade.")
                 .defineInRange("summon_sword_cost", 2, 1, Integer.MAX_VALUE);
         SUMMON_SWORD_ART_COST = COMMON_BUILDER.comment("Determining the proud soul cost for summon blade arts.")

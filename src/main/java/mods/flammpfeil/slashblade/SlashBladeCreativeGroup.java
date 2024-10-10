@@ -1,11 +1,9 @@
 package mods.flammpfeil.slashblade;
 
-import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
 import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -51,19 +49,15 @@ public class SlashBladeCreativeGroup {
                 output.accept(SBItems.slashblade);
 
 
-                fillBlades(output);
+                fillBlades(features, output);
             }).build();
 
     public static final RegistryObject<CreativeModeTab> SLASHBLADE_GROUP = CREATIVE_MODE_TABS.register("slashblade",
             () -> SLASHBLADE);
 
-    private static void fillBlades(CreativeModeTab.Output output) {
-        if (Minecraft.getInstance().getConnection() != null) {
-            BladeModelManager.getClientSlashBladeRegistry().entrySet().stream().sorted(SlashBladeDefinition.COMPARATOR)
-                    .forEach(entry -> {
-                        output.accept(entry.getValue().getBlade());
-                    });
-        }
+    private static void fillBlades(CreativeModeTab.ItemDisplayParameters features,CreativeModeTab.Output output) {
+        SlashBlade.getSlashBladeDefinitionRegistry(features.holders()).listElements().sorted(SlashBladeDefinition.COMPARATOR)
+        .forEach( entry -> {output.accept(entry.value().getBlade()); });
     }
 
     private static void fillSASpheres(CreativeModeTab.Output output){

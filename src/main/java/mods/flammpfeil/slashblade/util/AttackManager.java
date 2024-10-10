@@ -136,7 +136,7 @@ public class AttackManager {
             @Override
             protected void tryDespawn() {
                 if (!this.level().isClientSide()) {
-                    if (getLifetime() < this.tickCount) {
+                    if (this.getLifetime() < this.tickCount) {
                         this.level().playSound((Player) null, this.getX(), this.getY(), this.getZ(),
                                 SoundEvents.GLASS_BREAK, SoundSource.PLAYERS, 1.0F,
                                 0.625F + 0.1f * this.random.nextFloat());
@@ -145,10 +145,11 @@ public class AttackManager {
                         this.getAlreadyHits().forEach(entity -> {
 
                             if (entity.isAlive()) {
-                                entity.addDeltaMovement(new Vec3(
-                                        (double) (-Math.sin(getOwner().getYRot() * (float) Math.PI / 180.0F) * 0.5),
+                                float yRot = this.getOwner() != null ? this.getOwner().getYRot() : 0;
+								entity.addDeltaMovement(new Vec3(
+                                        (double) (-Math.sin(yRot * (float) Math.PI / 180.0F) * 0.5),
                                         0.05D,
-                                        (double) (Math.cos(getOwner().getYRot() * (float) Math.PI / 180.0F) * 0.5)));
+                                        (double) (Math.cos(yRot * (float) Math.PI / 180.0F) * 0.5)));
                                 doAttackWith(this.damageSources().indirectMagic(this, this.getShooter()),
                                         (float) (living.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2F), entity, true,
                                         true);

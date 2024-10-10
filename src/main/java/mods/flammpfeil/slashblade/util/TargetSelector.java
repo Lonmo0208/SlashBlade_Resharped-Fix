@@ -11,6 +11,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -83,6 +84,9 @@ public class TargetSelector {
                     return true;
                 else
                     return false;
+            
+            if (!SlashBladeConfig.FRIENDLY_ENABLE.get() && !(livingentity instanceof Enemy))
+                return false;
 
             if (livingentity.hasPassenger(entity -> entity instanceof Player))
                 return false;
@@ -137,7 +141,12 @@ public class TargetSelector {
     static public List<Entity> getTargettableEntitiesWithinAABB(Level world, LivingEntity attacker, AABB aabb) {
         double reach = TargetSelector.getResolvedReach(attacker);
 
-        List<Entity> list1 = Lists.newArrayList();
+        return getTargettableEntitiesWithinAABB(world, attacker, aabb, reach);
+    }
+
+	public static List<Entity> getTargettableEntitiesWithinAABB(Level world, LivingEntity attacker, AABB aabb,
+			double reach) {
+		List<Entity> list1 = Lists.newArrayList();
 
         list1.addAll(getReflectableEntitiesWithinAABB(attacker));
         list1.addAll(getExtinguishableEntitiesWithinAABB(attacker));
@@ -170,7 +179,7 @@ public class TargetSelector {
                 }).collect(Collectors.toList()));
 
         return list1;
-    }
+	}
 
     static public <E extends Entity & IShootable> List<Entity> getTargettableEntitiesWithinAABB(Level world,
             double reach, E owner) {

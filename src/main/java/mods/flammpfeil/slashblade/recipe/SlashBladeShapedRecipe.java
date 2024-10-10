@@ -1,8 +1,8 @@
 package mods.flammpfeil.slashblade.recipe;
 
-import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -43,7 +43,7 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
         ItemStack result = SlashBladeShapedRecipe.getResultBlade(this.getOutputBlade());
 
         if (!ForgeRegistries.ITEMS.getKey(result.getItem()).equals(getOutputBlade())) {
-            result = SlashBlade.getSlashBladeDefinitionRegistry(access).get(getOutputBlade())
+            result = access.registryOrThrow(SlashBladeDefinition.REGISTRY_KEY).get(getOutputBlade())
                     .getBlade(result.getItem());
         }
 

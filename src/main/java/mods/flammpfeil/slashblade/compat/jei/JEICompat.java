@@ -19,6 +19,7 @@ public class JEICompat implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
+    	
         registration.registerSubtypeInterpreter(SBItems.slashblade, (stack, context) -> {
             if (!stack.getCapability(ItemSlashBlade.BLADESTATE).isPresent())
                 return "";
