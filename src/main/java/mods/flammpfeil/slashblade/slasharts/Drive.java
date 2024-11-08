@@ -7,6 +7,7 @@ import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.KnockBacks;
 import mods.flammpfeil.slashblade.util.VectorHelper;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
 
 public class Drive {
@@ -38,9 +39,11 @@ public class Drive {
                 .add(VectorHelper.getVectorForRotation(0, playerIn.getViewYRot(0) + 90).scale(centerOffset.z))
                 .add(lookAngle.scale(centerOffset.z));
         EntityDrive drive = new EntityDrive(SlashBlade.RegistryEvents.Drive, playerIn.level());
-
+        
+        int powerLevel = playerIn.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
+        
         drive.setPos(pos.x, pos.y, pos.z);
-        drive.setDamage(damage);
+        drive.setDamage(damage + powerLevel);
         drive.setSpeed(speed);
         drive.shoot(lookAngle.x, lookAngle.y, lookAngle.z, drive.getSpeed(),
                 0);

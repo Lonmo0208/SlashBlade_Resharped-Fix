@@ -78,8 +78,6 @@ public class Face {
         matrix = null;
     }
 
-    public static boolean forceQuad = false;
-
     public Vertex[] vertices;
     public Vertex[] vertexNormals;
     public Vertex faceNormal;
@@ -117,10 +115,6 @@ public class Face {
             transform = me.pose();
         } else {
             transform = defaultTransform.get();
-        }
-
-        if (forceQuad) {
-            putVertex(wr, 0, transform, textureOffset, averageU, averageV);
         }
 
         for (int i = 0; i < vertices.length; ++i) {

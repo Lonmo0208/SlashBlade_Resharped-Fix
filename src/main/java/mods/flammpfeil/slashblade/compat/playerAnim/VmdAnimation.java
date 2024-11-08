@@ -43,7 +43,6 @@ public class VmdAnimation implements IAnimation {
 
     static final LazyOptional<MmdMotionPlayerGL2> motionPlayer = LazyOptional.of(() -> {
         MmdMotionPlayerGL2 mmp = new MmdMotionPlayerGL2();
-        ;
 
         alex.ifPresent(pmd -> {
             try {

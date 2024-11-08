@@ -324,6 +324,8 @@ public class SlashBladeState implements ISlashBladeState {
 
     @Override
     public ResourceLocation getComboRoot() {
+    	if(this.comboRootName == null || !ComboStateRegistry.REGISTRY.get().containsKey(this.comboRootName))
+    		return ComboStateRegistry.STANDBY.getId();
         return this.comboRootName;
     }
 

@@ -140,16 +140,8 @@ public class EntityStormSwords extends EntityAbstractSummonedSword {
         this.xRotO = this.getXRot();
         this.yRotO = this.getYRot();
 
-        // ■初期位置・初期角度等の設定
         setPos(dir);
 
-        final double pitchFactor = 7.5;
-
-        // Vec2 rot = rotate(rotMat.last().pose());
-        // setRot((float)Math.toDegrees(rot.y), (float)Math.toDegrees(rot.x));
-
-        // setRot((float)degYaw,0);
-        // setRot((float) (-degYaw),(float)(-(pitchFactor) * Math.sin(yaw))/**/);
         setRot((float) (-degYaw) - 180, 0);
 
     }

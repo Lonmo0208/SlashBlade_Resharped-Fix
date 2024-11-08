@@ -412,24 +412,7 @@ public class SummonedSwordArts {
 
                 AdvancementHelper.grantCriterion(sender, ADVANCEMENT_SUMMONEDSWORDS);
 
-                Optional<Entity> foundTarget = Stream.of(Optional.ofNullable(state.getTargetEntity(sender.level())),
-                        RayTraceHelper
-                                .rayTrace(sender.level(), sender, sender.getEyePosition(1.0f), sender.getLookAngle(),
-                                        12, 12, (e) -> true)
-                                .filter(r -> r.getType() == HitResult.Type.ENTITY).filter(r -> {
-                                    EntityHitResult er = (EntityHitResult) r;
-                                    Entity target = er.getEntity();
-
-                                    boolean isMatch = true;
-                                    if (target instanceof LivingEntity)
-                                        isMatch = TargetSelector.lockon_focus.test(sender, (LivingEntity) target);
-
-                                    if (target instanceof IShootable)
-                                        isMatch = ((IShootable) target).getShooter() != sender;
-
-                                    return isMatch;
-                                }).map(r -> ((EntityHitResult) r).getEntity()))
-                        .filter(Optional::isPresent).map(Optional::get).findFirst();
+                Optional<Entity> foundTarget = findTarget(sender, state.getTargetEntity(sender.level()));
 
                 Level worldIn = sender.level();
                 Vec3 targetPos = foundTarget.map((e) -> new Vec3(e.getX(), e.getY() + e.getEyeHeight() * 0.5, e.getZ()))
@@ -464,6 +447,28 @@ public class SummonedSwordArts {
             });
         }
     }
+
+	public Optional<Entity> findTarget(ServerPlayer sender, Entity lockedT) {
+		Optional<Entity> foundTarget = Stream.of(Optional.ofNullable(lockedT),
+		        RayTraceHelper
+		                .rayTrace(sender.level(), sender, sender.getEyePosition(1.0f), sender.getLookAngle(),
+		                        12, 12, (e) -> true)
+		                .filter(r -> r.getType() == HitResult.Type.ENTITY).filter(r -> {
+		                    EntityHitResult er = (EntityHitResult) r;
+		                    Entity target = er.getEntity();
+
+		                    boolean isMatch = true;
+		                    if (target instanceof LivingEntity)
+		                        isMatch = TargetSelector.lockon.test(sender, (LivingEntity) target);
+
+		                    if (target instanceof IShootable)
+		                        isMatch = ((IShootable) target).getShooter() != sender;
+
+		                    return isMatch;
+		                }).map(r -> ((EntityHitResult) r).getEntity()))
+		        .filter(Optional::isPresent).map(Optional::get).findFirst();
+		return foundTarget;
+	}
 
     Vec3 calculateViewVector(float x, float y) {
         float f = x * ((float) Math.PI / 180F);

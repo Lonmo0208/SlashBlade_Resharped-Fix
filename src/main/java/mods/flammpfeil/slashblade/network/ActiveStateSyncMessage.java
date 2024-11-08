@@ -45,6 +45,7 @@ public class ActiveStateSyncMessage {
             Entity target = Minecraft.getInstance().level.getEntity(msg.id);
 
             if (target instanceof LivingEntity) {
+            	
                 ItemStack stack = ((LivingEntity) target).getItemInHand(InteractionHand.MAIN_HAND);
                 if (stack.isEmpty())
                     return;

@@ -52,10 +52,10 @@ public class BladeRenderState extends RenderStateShard {
     static public void renderOverrided(ItemStack stack, WavefrontObject model, String target, ResourceLocation texture,
             PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
 
-        Face.forceQuad = true;
-        renderOverrided(stack, model, target, texture, matrixStackIn, bufferIn, packedLightIn,
-                Util.memoize(RenderType::entitySmoothCutout), true);
-        Face.forceQuad = false;
+//        Face.forceQuad = true;
+//        renderOverrided(stack, model, target, texture, matrixStackIn, bufferIn, packedLightIn,
+//                Util.memoize(RenderType::entitySmoothCutout), true);
+//        Face.forceQuad = false;
 
         renderOverrided(stack, model, target, texture, matrixStackIn, bufferIn,
                 packedLightIn, Util.memoize(BladeRenderState::getSlashBladeBlend), true);
@@ -111,11 +111,8 @@ public class BladeRenderState extends RenderStateShard {
         event.getModel().tessellateOnly(vb, event.getTarget());
 
         if (stack.hasFoil() && enableEffect) {
-            boolean forceQuad = Face.forceQuad;
-            Face.forceQuad = true;
-            vb = bufferIn.getBuffer(RenderType.entityGlint());
+            vb = bufferIn.getBuffer(BladeRenderState.getSlashBladeGlint());
             event.getModel().tessellateOnly(vb, event.getTarget());
-            Face.forceQuad = forceQuad;
         }
 
         Face.resetMatrix();
@@ -161,12 +158,29 @@ public class BladeRenderState extends RenderStateShard {
                 .setOutputState(RenderStateShard.TRANSLUCENT_TARGET)
                 .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, false, false))
                 .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
+//                .setCullState(NO_CULL)
                 // .setDiffuseLightingState(DIFFUSE_LIGHTING)
-                .setLightmapState(LIGHTMAP).setOverlayState(RenderStateShard.OVERLAY)
+                .setLightmapState(LIGHTMAP)
+                .setOverlayState(RenderStateShard.OVERLAY)
                 // .overlay(OVERLAY_ENABLED)
                 .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE).createCompositeState(true);
 
         return RenderType.create("slashblade_blend", WavefrontObject.POSITION_TEX_LMAP_COL_NORMAL,
+                VertexFormat.Mode.TRIANGLES, 256, true, false, state);
+    }
+    
+    public static RenderType getSlashBladeGlint() {
+        RenderType.CompositeState state = RenderType.CompositeState.builder()
+        	    .setShaderState(RENDERTYPE_ENTITY_GLINT_SHADER)
+        	    .setTextureState(new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ENTITY, true, false))
+        	    .setWriteMaskState(COLOR_WRITE)
+        	    .setCullState(NO_CULL)
+        	    .setDepthTestState(EQUAL_DEPTH_TEST)
+        	    .setTransparencyState(LIGHTNING_ADDITIVE_TRANSPARENCY)
+        	    .setOutputState(ITEM_ENTITY_TARGET)
+        	    .setTexturingState(ENTITY_GLINT_TEXTURING)
+        	    .createCompositeState(false);
+        return RenderType.create("slashblade_glint", WavefrontObject.POSITION_TEX_LMAP_COL_NORMAL,
                 VertexFormat.Mode.TRIANGLES, 256, true, false, state);
     }
 

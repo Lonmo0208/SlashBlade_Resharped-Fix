@@ -4,6 +4,7 @@ import java.util.Map;
 
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.data.builtin.SlashBladeBuiltInRegistry;
+import mods.flammpfeil.slashblade.data.tag.SlashBladeItemTags;
 import mods.flammpfeil.slashblade.entity.BladeStandEntity;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.init.SBItems;
@@ -256,6 +257,9 @@ public class BlandStandEventHandler {
 		if (blade.isEmpty())
 			return;
 
+		if (!stack.is(SlashBladeItemTags.PROUD_SOULS))
+			return;
+		
 		if (!stack.isEnchanted())
 			return;
 		

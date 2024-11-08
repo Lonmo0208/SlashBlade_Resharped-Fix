@@ -2,8 +2,6 @@ package mods.flammpfeil.slashblade.registry.slashblade;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map.Entry;
-
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -122,15 +120,19 @@ public class SlashBladeDefinition {
         @Override
         public int compare(Reference<SlashBladeDefinition> left,
         		Reference<SlashBladeDefinition> right) {
-     
-        	if(left.key().location().getNamespace().equalsIgnoreCase(SlashBlade.MODID))
-        		return -1;
         	
-        	if(right.key().location().getNamespace().equalsIgnoreCase(SlashBlade.MODID))
-        		return 1;
-        	
-            String leftName = left.key().location().toString();
-            String rightName = right.key().location().toString();
+        	ResourceLocation leftKey = left.key().location();
+        	ResourceLocation rightKey = right.key().location();
+        	boolean checkSame = leftKey.getNamespace().equalsIgnoreCase(rightKey.getNamespace());
+        	if(!checkSame) {
+				if(leftKey.getNamespace().equalsIgnoreCase(SlashBlade.MODID))
+	        		return -1;
+	        	
+				if(rightKey.getNamespace().equalsIgnoreCase(SlashBlade.MODID))
+	        		return 1;
+        	}
+            String leftName = leftKey.toString();
+            String rightName = rightKey.toString();
             
             return leftName.compareToIgnoreCase(rightName);
         }

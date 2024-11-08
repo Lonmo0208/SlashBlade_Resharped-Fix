@@ -207,9 +207,9 @@ public class SlayerStyleArts {
             if (!isHandled && sender.onGround() && current.contains(InputCommand.SPRINT)
                     && current.stream().anyMatch(cc -> move.contains(cc))) {
                 // quick avoid ground
-
+            	Level level = sender.level();
                 int count = sender.getCapability(CapabilityMobEffect.MOB_EFFECT)
-                        .map(ef -> ef.doAvoid(sender.level().getGameTime())).orElse(0);
+                        .map(ef -> ef.doAvoid(level.getGameTime())).orElse(0);
 
                 if (0 < count) {
                     Untouchable.setUntouchable(sender, TRICKACTION_UNTOUCHABLE_TIME);
@@ -274,8 +274,7 @@ public class SlayerStyleArts {
         if (!(entityIn.level() instanceof ServerLevel))
             return;
 
-        if (entityIn instanceof Player) {
-            Player player = ((Player) entityIn);
+        if (entityIn instanceof Player player) {
             player.playNotifySound(SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.75F, 1.25F);
 
             player.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
@@ -300,18 +299,18 @@ public class SlayerStyleArts {
         if (!Level.isInSpawnableBounds(blockpos)) {
             return;
         } else {
-            if (entityIn instanceof ServerPlayer) {
+            if (entityIn instanceof ServerPlayer serverPlayer) {
                 ChunkPos chunkpos = new ChunkPos(blockpos);
                 worldIn.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkpos, 1, entityIn.getId());
                 entityIn.stopRiding();
-                if (((ServerPlayer) entityIn).isSleeping()) {
-                    ((ServerPlayer) entityIn).stopSleepInBed(true, true);
+                if (serverPlayer.isSleeping()) {
+                	serverPlayer.stopSleepInBed(true, true);
                 }
 
                 if (worldIn == entityIn.level()) {
-                    ((ServerPlayer) entityIn).connection.teleport(x, y, z, yaw, pitch, relativeList);
+                	serverPlayer.connection.teleport(x, y, z, yaw, pitch, relativeList);
                 } else {
-                    ((ServerPlayer) entityIn).teleportTo(worldIn, x, y, z, yaw, pitch);
+                	serverPlayer.teleportTo(worldIn, x, y, z, yaw, pitch);
                 }
 
                 entityIn.setYHeadRot(yaw);
@@ -402,7 +401,8 @@ public class SlayerStyleArts {
     static final float stepUpBoost = 1.1f;
     static final float stepUpDefault = 0.6f;
 
-    @SubscribeEvent
+    @SuppressWarnings("deprecation")
+	@SubscribeEvent
     public void onTick(TickEvent.PlayerTickEvent event) {
         switch (event.phase) {
         case START -> {
@@ -410,21 +410,21 @@ public class SlayerStyleArts {
 
             LivingEntity player = event.player;
             Vec3 deltaMovement;
-            {
-                Vec3 input = new Vec3((double) player.xxa, (double) player.yya, (double) player.zza);
-                double scale = 1.0;
-                float yRot = player.getYRot();
-                double d0 = input.lengthSqr();
-                if (d0 < 1.0E-7D) {
-                    deltaMovement = Vec3.ZERO;
-                } else {
-                    Vec3 vec3 = (d0 > 1.0D ? input.normalize() : input).scale((double) scale);
-                    float f = Mth.sin(yRot * ((float) Math.PI / 180F));
-                    float f1 = Mth.cos(yRot * ((float) Math.PI / 180F));
-                    deltaMovement = new Vec3(vec3.x * (double) f1 - vec3.z * (double) f, vec3.y,
-                            vec3.z * (double) f1 + vec3.x * (double) f);
-                }
+            
+            Vec3 input = new Vec3((double) player.xxa, (double) player.yya, (double) player.zza);
+            double scale = 1.0;
+            float yRot = player.getYRot();
+            double d0 = input.lengthSqr();
+            if (d0 < 1.0E-7D) {
+                deltaMovement = Vec3.ZERO;
+            } else {
+                Vec3 vec3 = (d0 > 1.0D ? input.normalize() : input).scale((double) scale);
+                float f = Mth.sin(yRot * ((float) Math.PI / 180F));
+                float f1 = Mth.cos(yRot * ((float) Math.PI / 180F));
+                deltaMovement = new Vec3(vec3.x * (double) f1 - vec3.z * (double) f, vec3.y,
+                        vec3.z * (double) f1 + vec3.x * (double) f);
             }
+            
 
             boolean doStepupBoost = true;
 

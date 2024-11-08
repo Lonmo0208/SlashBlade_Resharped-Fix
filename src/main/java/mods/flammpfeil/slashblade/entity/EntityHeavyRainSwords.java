@@ -13,10 +13,8 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PlayMessages;
 
@@ -104,35 +102,6 @@ public class EntityHeavyRainSwords extends EntityAbstractSummonedSword {
         /*
          * if(!level().isClientSide()) hitCheck();
          */
-    }
-
-    private void hitCheck() {
-        Vec3 positionVec = this.position();
-        Vec3 dirVec = this.getViewVector(1.0f);
-        EntityHitResult raytraceresult = null;
-
-        // todo : replace TargetSelector
-        EntityHitResult entityraytraceresult = this.getRayTrace(positionVec, dirVec);
-        if (entityraytraceresult != null) {
-            raytraceresult = entityraytraceresult;
-        }
-
-        if (raytraceresult != null && raytraceresult.getType() == HitResult.Type.ENTITY) {
-            Entity entity = ((EntityHitResult) raytraceresult).getEntity();
-            Entity entity1 = this.getShooter();
-            if (entity instanceof Player && entity1 instanceof Player
-                    && !((Player) entity1).canHarmPlayer((Player) entity)) {
-                raytraceresult = null;
-                entityraytraceresult = null;
-            }
-        }
-
-        if (raytraceresult != null && raytraceresult.getType() == HitResult.Type.ENTITY
-                && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
-            this.onHit(raytraceresult);
-            this.resetAlreadyHits();
-            this.hasImpulse = true;
-        }
     }
 
     private void faceEntityStandby() {

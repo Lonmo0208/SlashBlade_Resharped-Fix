@@ -77,7 +77,7 @@ public class LockOnManager {
                 boolean isMatch = false;
 
                 if (target instanceof LivingEntity)
-                    isMatch = TargetSelector.lockon_focus.test(player, (LivingEntity) target);
+                    isMatch = TargetSelector.lockon.test(player, (LivingEntity) target);
 
                 return isMatch;
             }).map(r -> ((EntityHitResult) r).getEntity());

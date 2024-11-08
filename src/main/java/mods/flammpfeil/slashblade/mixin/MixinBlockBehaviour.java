@@ -2,11 +2,11 @@ package mods.flammpfeil.slashblade.mixin;
 
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -25,7 +25,7 @@ public class MixinBlockBehaviour {
     @Inject(at = @At("HEAD"), method = "getCollisionShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;", cancellable = true, remap = true)
     public void getCollisionShape(BlockGetter p_60743_, BlockPos p_60744_, CollisionContext p_60745_,
             CallbackInfoReturnable<VoxelShape> callback) {
-        if (!(asState().getBlock() instanceof LeavesBlock))
+        if (!(asState().is(BlockTags.LEAVES)))
             return;
         if (p_60745_.isDescending())
             return;
@@ -48,7 +48,7 @@ public class MixinBlockBehaviour {
     @Inject(at = @At("HEAD"), method = "getVisualShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;", cancellable = true, remap = true)
     public void getVisualShape(BlockGetter p_60743_, BlockPos p_60744_, CollisionContext p_60745_,
             CallbackInfoReturnable<VoxelShape> callback) {
-        if (!(asState().getBlock() instanceof LeavesBlock))
+        if (!(asState().is(BlockTags.LEAVES)))
             return;
 
         callback.setReturnValue(Blocks.SCAFFOLDING.getVisualShape(Blocks.SCAFFOLDING.defaultBlockState(), p_60743_,

@@ -36,13 +36,12 @@ import java.util.stream.Stream;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Targeting;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 
 public class TargetSelector {
     static public final TargetingConditions lockon = (TargetingConditions.forCombat()).range(12.0D)
             .selector(new AttackablePredicate());
-
-    static public final TargetingConditions lockon_focus = (TargetingConditions.forCombat()).range(12.0D);
 
     static final String AttackableTag = "RevengeAttacker";
 
@@ -85,8 +84,11 @@ public class TargetSelector {
                 else
                     return false;
             
-            if (!SlashBladeConfig.FRIENDLY_ENABLE.get() && !(livingentity instanceof Enemy))
+            if (!SlashBladeConfig.FRIENDLY_ENABLE.get() && !(livingentity instanceof Enemy)){
+            	if(livingentity instanceof Targeting targeting)
+            		return targeting.getTarget() instanceof Player;
                 return false;
+            }
 
             if (livingentity.hasPassenger(entity -> entity instanceof Player))
                 return false;

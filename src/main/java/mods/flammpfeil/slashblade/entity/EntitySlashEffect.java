@@ -255,7 +255,7 @@ public class EntitySlashEffect extends Projectile implements IShootable {
 
     // disallowedHitBlock
     public boolean isNoClip() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             return this.noPhysics;
         } else {
             refreshFlags();
