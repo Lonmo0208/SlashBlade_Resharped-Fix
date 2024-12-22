@@ -19,36 +19,44 @@ import com.mojang.math.Axis;
  * Created by Furia on 2016/02/07.
  */
 public class BladeFirstPersonRender {
-    private LayerMainBlade layer = null;
-    private BladeFirstPersonRender(){
+    private LayerMainBlade<LocalPlayer, ?> layer = null;
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	private BladeFirstPersonRender() {
         Minecraft mc = Minecraft.getInstance();
 
-        EntityRenderer renderer = mc.getEntityRenderDispatcher().getRenderer(mc.player);
-        if(renderer instanceof RenderLayerParent)
-            layer = new LayerMainBlade((RenderLayerParent)renderer);
+        EntityRenderer<?> renderer = mc.getEntityRenderDispatcher().getRenderer(mc.player);
+        if (renderer instanceof RenderLayerParent)
+            layer = new LayerMainBlade((RenderLayerParent) renderer);
     }
+
     private static final class SingletonHolder {
         private static final BladeFirstPersonRender instance = new BladeFirstPersonRender();
     }
-    public static BladeFirstPersonRender getInstance(){
+
+    public static BladeFirstPersonRender getInstance() {
         return SingletonHolder.instance;
     }
 
-    public void render(PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn){
-        if(layer == null)
+    public void render(PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn) {
+        if (layer == null)
             return;
-        
+
         Minecraft mc = Minecraft.getInstance();
-        boolean flag = mc.getCameraEntity() instanceof LivingEntity && ((LivingEntity) mc.getCameraEntity()).isSleeping();
-        if (!(mc.options.getCameraType() == CameraType.FIRST_PERSON && !flag && !mc.options.hideGui && !mc.gameMode.isAlwaysFlying())) {
+        boolean flag = mc.getCameraEntity() instanceof LivingEntity
+                && ((LivingEntity) mc.getCameraEntity()).isSleeping();
+        if (!(mc.options.getCameraType() == CameraType.FIRST_PERSON && !flag && !mc.options.hideGui
+                && !mc.gameMode.isAlwaysFlying())) {
             return;
         }
         LocalPlayer player = mc.player;
         ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
-        if (stack.isEmpty()) return;
-        if (!(stack.getItem() instanceof ItemSlashBlade)) return;
+        if (stack.isEmpty())
+            return;
+        if (!(stack.getItem() instanceof ItemSlashBlade))
+            return;
 
-        try(MSAutoCloser msac = MSAutoCloser.pushMatrix(matrixStack)){
+        try (MSAutoCloser msac = MSAutoCloser.pushMatrix(matrixStack)) {
             PoseStack.Pose me = matrixStack.last();
             me.pose().identity();
             me.normal().identity();
@@ -57,10 +65,10 @@ public class BladeFirstPersonRender {
             matrixStack.mulPose(Axis.ZP.rotationDegrees(180.0f));
             matrixStack.scale(1.2F, 1.0F, 1.0F);
 
-            //no sync pitch
+            // no sync pitch
             matrixStack.mulPose(Axis.XP.rotationDegrees(-mc.player.getXRot()));
 
-            //layer.disableOffhandRendering();
+            // layer.disableOffhandRendering();
             float partialTicks = mc.getFrameTime();
             layer.render(matrixStack, bufferIn, combinedLightIn, mc.player, 0, 0, partialTicks, 0, 0, 0);
         }

@@ -3,7 +3,6 @@ package mods.flammpfeil.slashblade.capability.concentrationrank;
 import mods.flammpfeil.slashblade.util.NBTHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -13,9 +12,10 @@ import javax.annotation.Nullable;
 
 public class ConcentrationRankCapabilityProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
-    public static final Capability<IConcentrationRank> RANK_POINT = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<IConcentrationRank> RANK_POINT = CapabilityManager.get(new CapabilityToken<>() {
+    });
 
-    protected LazyOptional<IConcentrationRank> state = LazyOptional.of(()->new ConcentrationRank());
+    protected LazyOptional<IConcentrationRank> state = LazyOptional.of(() -> new ConcentrationRank());
 
     @Nonnull
     @Override
@@ -28,9 +28,8 @@ public class ConcentrationRankCapabilityProvider implements ICapabilityProvider,
         CompoundTag baseTag = new CompoundTag();
 
         state.ifPresent(instance -> {
-            NBTHelper.getNBTCoupler(baseTag)
-                    .put("rawPoint", instance.getRawRankPoint())
-                    .put("lastupdate", instance.getLastUpdate());
+            NBTHelper.getNBTCoupler(baseTag).put("rawPoint", instance.getRawRankPoint()).put("lastupdate",
+                    instance.getLastUpdate());
         });
 
         return baseTag;
@@ -39,8 +38,7 @@ public class ConcentrationRankCapabilityProvider implements ICapabilityProvider,
     @Override
     public void deserializeNBT(CompoundTag baseTag) {
         state.ifPresent(instance -> NBTHelper.getNBTCoupler((CompoundTag) baseTag)
-                .get("rawPoint", instance::setRawRankPoint)
-                .get("lastupdate", instance::setLastUpdte));
+                .get("rawPoint", instance::setRawRankPoint).get("lastupdate", instance::setLastUpdte));
         ;
     }
 }

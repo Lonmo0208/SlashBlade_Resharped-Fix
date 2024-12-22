@@ -6,10 +6,10 @@ import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRan
 import mods.flammpfeil.slashblade.capability.inputstate.CapabilityInputState;
 import mods.flammpfeil.slashblade.capability.inputstate.IInputState;
 import mods.flammpfeil.slashblade.capability.slashblade.CapabilitySlashBlade;
-import mods.flammpfeil.slashblade.capability.slashblade.ComboState;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
-import mods.flammpfeil.slashblade.capability.slashblade.combo.Extra;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
+import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import mods.flammpfeil.slashblade.util.AdvancementHelper;
 import mods.flammpfeil.slashblade.util.InputCommand;
 import net.minecraft.resources.ResourceLocation;
@@ -47,137 +47,151 @@ public class Guard {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    static public final ResourceLocation ADVANCEMENT_GUARD = new ResourceLocation(SlashBlade.modid, "abilities/guard");
-    static public final ResourceLocation ADVANCEMENT_GUARD_JUST = new ResourceLocation(SlashBlade.modid, "abilities/guard_just");
+    static public final ResourceLocation ADVANCEMENT_GUARD = new ResourceLocation(SlashBlade.MODID, "abilities/guard");
+    static public final ResourceLocation ADVANCEMENT_GUARD_JUST = new ResourceLocation(SlashBlade.MODID,
+            "abilities/guard_just");
 
-    final static EnumSet<InputCommand> move = EnumSet.of(InputCommand.FORWARD, InputCommand.BACK, InputCommand.LEFT, InputCommand.RIGHT);
+    final static EnumSet<InputCommand> move = EnumSet.of(InputCommand.FORWARD, InputCommand.BACK, InputCommand.LEFT,
+            InputCommand.RIGHT);
 
     @SubscribeEvent
-    public void onLivingAttack(LivingAttackEvent event){
+    public void onLivingAttack(LivingAttackEvent event) {
         LivingEntity victim = event.getEntity();
         DamageSource source = event.getSource();
 
-        //begin executable check -----------------
-        //item check
+        // begin executable check -----------------
+        // item check
         ItemStack stack = victim.getMainHandItem();
         LazyOptional<ISlashBladeState> slashBlade = stack.getCapability(CapabilitySlashBlade.BLADESTATE);
-        if(!slashBlade.isPresent()) return;
-        if(slashBlade.filter(b->b.isBroken()).isPresent()) return;
+        if (!slashBlade.isPresent())
+            return;
+        if (slashBlade.filter(b -> b.isBroken()).isPresent())
+            return;
+        if (stack.getEnchantmentLevel(Enchantments.THORNS) <= 0)
+        	return;
 
-        //user check
-        if(!victim.onGround()) return;
+        // user check
+        if (!victim.onGround())
+            return;
         LazyOptional<IInputState> input = victim.getCapability(CapabilityInputState.INPUT_STATE);
-        if(!input.isPresent()) return;
+        if (!input.isPresent())
+            return;
 
-        //commanc check
+        // commanc check
         InputCommand targetCommand = InputCommand.SNEAK;
-        boolean handleCommand = input.filter(i->i.getCommands().contains(targetCommand) && !i.getCommands().stream().anyMatch(cc->move.contains(cc))).isPresent();
+        boolean handleCommand = input.filter(i -> i.getCommands().contains(targetCommand)
+                && !i.getCommands().stream().anyMatch(cc -> move.contains(cc))).isPresent();
 
-        if(handleCommand)
-            AdvancementHelper.grantCriterion(victim,ADVANCEMENT_GUARD);
+        if (handleCommand)
+            AdvancementHelper.grantCriterion(victim, ADVANCEMENT_GUARD);
 
-        //ninja run
-        handleCommand |= (input.filter(i->i.getCommands().contains(InputCommand.SPRINT)).isPresent() && victim.isSprinting());
+        // ninja run
+        handleCommand |= (input.filter(i -> i.getCommands().contains(InputCommand.SPRINT)).isPresent()
+                && victim.isSprinting());
 
-        if(!handleCommand) return;
+        if (!handleCommand)
+            return;
 
+        // range check
+        if (!isInsideGuardableRange(source, victim))
+            return;
 
-
-        //range check
-        if(!isInsideGuardableRange(source, victim)) return;
-
-
-        //performance branch -----------------
-        //just check
-        long timeStartPress = input.map(i->{
+        // performance branch -----------------
+        // just check
+        long timeStartPress = input.map(i -> {
             Long l = i.getLastPressTime(targetCommand);
             return l == null ? 0 : l;
         }).get();
         long timeCurrent = victim.level().getGameTime();
 
-        int soulSpeedLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.SOUL_SPEED,victim);
-        int justAcceptancePeriod = 3 + soulSpeedLevel;
+        int soulSpeedLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.SOUL_SPEED, victim);
+        int justAcceptancePeriod = 5 + soulSpeedLevel;
 
         boolean isJust = false;
-        if(timeCurrent - timeStartPress < justAcceptancePeriod) {
+        if (timeCurrent - timeStartPress < justAcceptancePeriod) {
             isJust = true;
-            AdvancementHelper.grantedIf(Enchantments.SOUL_SPEED,victim);
+            AdvancementHelper.grantedIf(Enchantments.SOUL_SPEED, victim);
         }
 
-        //rank check
+        // rank check
         boolean isHighRank = false;
         LazyOptional<IConcentrationRank> rank = victim.getCapability(CapabilityConcentrationRank.RANK_POINT);
-        if(rank.filter(r-> IConcentrationRank.ConcentrationRanks.S.level <= r.getRank(timeCurrent).level).isPresent())
+        if (rank.filter(r -> IConcentrationRank.ConcentrationRanks.S.level <= r.getRank(timeCurrent).level).isPresent())
             isHighRank = true;
 
-        //damage sauce check
-        boolean isProjectile = source.is(DamageTypeTags.IS_PROJECTILE) || source.getDirectEntity() instanceof Projectile;
+        // damage sauce check
+        boolean isProjectile = source.is(DamageTypeTags.IS_PROJECTILE)
+                || source.getDirectEntity() instanceof Projectile;
 
-        //after executable check -----------------
-        if(!isJust){
-            if(!isProjectile) return;
-            if(!isHighRank && source.is(DamageTypeTags.BYPASSES_ARMOR)) return;
+        // after executable check -----------------
+        if (!isJust) {
+            if (!isProjectile)
+                return;
+            if (!isHighRank && source.is(DamageTypeTags.BYPASSES_ARMOR))
+                return;
 
-            boolean inMotion = slashBlade.filter(s->{
-                ComboState current = s.resolvCurrentComboState(victim);
-                if(current != ComboState.NONE && current == current.getNext(victim))
+            boolean inMotion = slashBlade.filter(s -> {
+                ResourceLocation current = s.resolvCurrentComboState(victim);
+                ComboState currentCS = ComboStateRegistry.REGISTRY.get().getValue(current);
+                if (!current.equals(ComboStateRegistry.NONE.getId()) && current == currentCS.getNext(victim))
                     return true;
                 else
                     return false;
             }).isPresent();
-            if(inMotion) return;
-        }else{
-            if(!isProjectile && !(source.getDirectEntity() instanceof LivingEntity))
+            if (inMotion)
+                return;
+        } else {
+            if (!isProjectile && !(source.getDirectEntity() instanceof LivingEntity))
                 return;
         }
 
-        //execute performance------------------
-        //damage cancel
+        // execute performance------------------
+        // damage cancel
         event.setCanceled(true);
 
-        //Motion
-        if(isJust){
-            slashBlade.ifPresent(s->s.updateComboSeq(victim, Extra.EX_COMBO_A1));
-        }else{
-            slashBlade.ifPresent(s->s.updateComboSeq(victim, Extra.EX_COMBO_A1_END2));
+        // Motion
+        if (isJust) {
+            slashBlade.ifPresent(s -> s.updateComboSeq(victim, ComboStateRegistry.COMBO_A1.getId()));
+        } else {
+            slashBlade.ifPresent(s -> s.updateComboSeq(victim, ComboStateRegistry.COMBO_A1_END2.getId()));
         }
 
-        //DirectAttack knockback
-        if(!isProjectile){
+        // DirectAttack knockback
+        if (!isProjectile) {
             Entity entity = source.getDirectEntity();
             if (entity instanceof LivingEntity) {
-                ((LivingEntity)entity).knockback(0.5D, entity.getX() - victim.getX(), entity.getZ() - victim.getZ());
+                ((LivingEntity) entity).knockback(0.5D, entity.getX() - victim.getX(), entity.getZ() - victim.getZ());
             }
         }
 
-        //untouchable time
-        if(isJust)
+        // untouchable time
+        if (isJust)
             Untouchable.setUntouchable(victim, 10);
 
-        //rankup
-        if(isJust)
-            rank.ifPresent(r->r.addRankPoint(victim.level().damageSources().thorns(victim)));
+        // rankup
+        if (isJust)
+            rank.ifPresent(r -> r.addRankPoint(victim.level().damageSources().thorns(victim)));
 
-        //play sound
-        if(victim instanceof Player){
-            victim.playSound(SoundEvents.TRIDENT_HIT_GROUND, 1.0F, 1.0F + victim.level().random.nextFloat() * 0.4F);
+        // play sound
+        if (victim instanceof Player) {
+            victim.playSound(SoundEvents.TRIDENT_HIT_GROUND, 1.0F,
+                    1.0F + victim.level().getRandom().nextFloat() * 0.4F);
         }
 
-        //advancement
-        if(isJust)
-            AdvancementHelper.grantCriterion(victim,ADVANCEMENT_GUARD_JUST);
+        // advancement
+        if (isJust)
+            AdvancementHelper.grantCriterion(victim, ADVANCEMENT_GUARD_JUST);
 
-        //cost-------------------------
-        if(!isJust && !isHighRank){
-            slashBlade.ifPresent(s->{
-                s.damageBlade(stack, 1, victim, ItemSlashBlade.getOnBroken(stack));
+        // cost-------------------------
+        if (!isJust && !isHighRank) {
+            slashBlade.ifPresent(s -> {
+                stack.hurtAndBreak(1, victim, ItemSlashBlade.getOnBroken(stack));
             });
         }
 
     }
 
-
-    public boolean isInsideGuardableRange(DamageSource source, LivingEntity victim){
+    public boolean isInsideGuardableRange(DamageSource source, LivingEntity victim) {
         Vec3 sPos = source.getSourcePosition();
         if (sPos != null) {
             Vec3 viewVec = victim.getViewVector(1.0F);

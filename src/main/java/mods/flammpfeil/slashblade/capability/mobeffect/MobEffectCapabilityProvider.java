@@ -3,7 +3,6 @@ package mods.flammpfeil.slashblade.capability.mobeffect;
 import mods.flammpfeil.slashblade.util.NBTHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -13,9 +12,10 @@ import javax.annotation.Nullable;
 
 public class MobEffectCapabilityProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
-    public static final Capability<IMobEffectState> MOB_EFFECT = CapabilityManager.get(new CapabilityToken<>(){});
+    public static final Capability<IMobEffectState> MOB_EFFECT = CapabilityManager.get(new CapabilityToken<>() {
+    });
 
-    protected LazyOptional<IMobEffectState> state = LazyOptional.of(()->new MobEffectState());
+    protected LazyOptional<IMobEffectState> state = LazyOptional.of(() -> new MobEffectState());
 
     @Nonnull
     @Override
@@ -27,16 +27,13 @@ public class MobEffectCapabilityProvider implements ICapabilityProvider, INBTSer
     public CompoundTag serializeNBT() {
         CompoundTag baseTag = new CompoundTag();
 
-        state.ifPresent(instance -> NBTHelper.getNBTCoupler(baseTag)
-                .put("StunTimeout", instance.getStunTimeOut()));
+        state.ifPresent(instance -> NBTHelper.getNBTCoupler(baseTag).put("StunTimeout", instance.getStunTimeOut()));
 
         return baseTag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        state.ifPresent(instance ->
-                NBTHelper.getNBTCoupler(nbt)
-                .get("StunTimeout", instance::setStunTimeOut));
+        state.ifPresent(instance -> NBTHelper.getNBTCoupler(nbt).get("StunTimeout", instance::setStunTimeOut));
     }
 }

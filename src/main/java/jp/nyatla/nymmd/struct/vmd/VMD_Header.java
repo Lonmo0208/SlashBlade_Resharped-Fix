@@ -37,27 +37,24 @@
  */
 package jp.nyatla.nymmd.struct.vmd;
 
-
 import jp.nyatla.nymmd.MmdException;
 import jp.nyatla.nymmd.struct.DataReader;
 import jp.nyatla.nymmd.struct.StructType;
 
-public class VMD_Header implements StructType
-{
-	public String szHeader;
-	public String szModelName;
-	public void read(DataReader i_reader) throws MmdException
-	{
-		//szHeader
-		this.szHeader=i_reader.readAscii(30);
-		//szModelName
-		this.szModelName=i_reader.readAscii(20);
-		return;
-	}	
-	
-	
-/*
-	char	szHeader[30];			// "Vocaloid Motion Data 0002"
-	char	szModelName[20];		// 対象モデル名
-*/
+public class VMD_Header implements StructType {
+    public String szHeader;
+    public String szModelName;
+
+    public void read(DataReader i_reader) throws MmdException {
+        // szHeader
+        this.szHeader = i_reader.readAscii(30);
+        // szModelName
+        this.szModelName = i_reader.readAscii(20);
+        return;
+    }
+
+    /*
+     * char szHeader[30]; // "Vocaloid Motion Data 0002" char szModelName[20]; //
+     * 対象モデル名
+     */
 }

@@ -4,15 +4,17 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.init.DefaultResources;
+import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
-import java.util.stream.Stream;
 
 /**
  * Created by Furia on 2016/02/06.
@@ -28,43 +30,41 @@ public class BladeModelManager {
         return SingletonHolder.instance;
     }
 
-    WavefrontObject defaultModel;
-    public static final ResourceLocation resourceDefaultModel = new ResourceLocation("slashblade","model/blade.obj");
-    public static final ResourceLocation resourceDefaultTexture = new ResourceLocation("slashblade","model/blade.png");
+    public static Registry<SlashBladeDefinition> getClientSlashBladeRegistry() {
+        return Minecraft.getInstance().getConnection().registryAccess()
+                .registryOrThrow(SlashBladeDefinition.REGISTRY_KEY);
+    }
 
-    public static final ResourceLocation resourceDurabilityModel = new ResourceLocation("slashblade","model/util/durability.obj");
-    public static final ResourceLocation resourceDurabilityTexture = new ResourceLocation("slashblade","model/util/durability.png");
+    WavefrontObject defaultModel;
 
     LoadingCache<ResourceLocation, WavefrontObject> cache;
 
     private BladeModelManager() {
-        defaultModel = new WavefrontObject(resourceDefaultModel);
+        defaultModel = new WavefrontObject(DefaultResources.resourceDefaultModel);
 
         cache = CacheBuilder.newBuilder()
-                .build(
-                CacheLoader.asyncReloading(new CacheLoader<ResourceLocation, WavefrontObject>() {
+                .build(CacheLoader.asyncReloading(new CacheLoader<ResourceLocation, WavefrontObject>() {
                     @Override
                     public WavefrontObject load(ResourceLocation key) throws Exception {
-                        try{
+                        try {
                             return new WavefrontObject(key);
-                        }catch(Exception e){
+                        } catch (Exception e) {
                             return defaultModel;
                         }
                     }
 
-                }, Executors.newCachedThreadPool())
-        );
+                }, Executors.newCachedThreadPool()));
     }
 
     @SubscribeEvent
-    public void reload(TextureStitchEvent.Post event){
+    public void reload(TextureStitchEvent.Post event) {
         cache.invalidateAll();
 
-        defaultModel = new WavefrontObject(resourceDefaultModel);
+        defaultModel = new WavefrontObject(DefaultResources.resourceDefaultModel);
     }
 
     public WavefrontObject getModel(ResourceLocation loc) {
-        if(loc != null){
+        if (loc != null) {
             try {
                 return cache.get(loc);
             } catch (Exception e) {

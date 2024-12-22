@@ -37,46 +37,43 @@
  */
 package jp.nyatla.nymmd.struct;
 
-
 import jp.nyatla.nymmd.MmdException;
 import jp.nyatla.nymmd.types.*;
 
-public class StructReader
-{
-	public static void read(MmdColor4 i_dest,DataReader i_reader)  throws MmdException
-	{
-		i_dest.r=i_reader.readFloat();
-		i_dest.g=i_reader.readFloat();
-		i_dest.b=i_reader.readFloat();
-		i_dest.a=i_reader.readFloat();
-		return;
-	}
-	public static void read(MmdColor3 i_dest,DataReader i_reader)  throws MmdException
-	{
-		i_dest.r=i_reader.readFloat();
-		i_dest.g=i_reader.readFloat();
-		i_dest.b=i_reader.readFloat();
-		return;
-	}
-	public static void read(MmdTexUV i_dest,DataReader i_reader)  throws MmdException
-	{
-		i_dest.u=i_reader.readFloat();
-		i_dest.v=i_reader.readFloat();
-		return;
-	}
-	public static void read(MmdVector3 i_dest,DataReader i_reader)  throws MmdException
-	{
-		i_dest.x=i_reader.readFloat();
-		i_dest.y=i_reader.readFloat();
-		i_dest.z=i_reader.readFloat();
-		return;
-	}	
-	public static void read(MmdVector4 i_dest,DataReader i_reader) throws MmdException
-	{
-		i_dest.x=i_reader.readFloat();
-		i_dest.y=i_reader.readFloat();
-		i_dest.z=i_reader.readFloat();
-		i_dest.w=i_reader.readFloat();
-		return;
-	}	
+public class StructReader {
+    public static void read(MmdColor4 i_dest, DataReader i_reader) throws MmdException {
+        i_dest.r = i_reader.readFloat();
+        i_dest.g = i_reader.readFloat();
+        i_dest.b = i_reader.readFloat();
+        i_dest.a = i_reader.readFloat();
+        return;
+    }
+
+    public static void read(MmdColor3 i_dest, DataReader i_reader) throws MmdException {
+        i_dest.r = i_reader.readFloat();
+        i_dest.g = i_reader.readFloat();
+        i_dest.b = i_reader.readFloat();
+        return;
+    }
+
+    public static void read(MmdTexUV i_dest, DataReader i_reader) throws MmdException {
+        i_dest.u = i_reader.readFloat();
+        i_dest.v = i_reader.readFloat();
+        return;
+    }
+
+    public static void read(MmdVector3 i_dest, DataReader i_reader) throws MmdException {
+        i_dest.x = i_reader.readFloat();
+        i_dest.y = i_reader.readFloat();
+        i_dest.z = i_reader.readFloat();
+        return;
+    }
+
+    public static void read(MmdVector4 i_dest, DataReader i_reader) throws MmdException {
+        i_dest.x = i_reader.readFloat();
+        i_dest.y = i_reader.readFloat();
+        i_dest.z = i_reader.readFloat();
+        i_dest.w = i_reader.readFloat();
+        return;
+    }
 }

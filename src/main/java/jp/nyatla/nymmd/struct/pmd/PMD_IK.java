@@ -37,47 +37,39 @@
  */
 package jp.nyatla.nymmd.struct.pmd;
 
-
-
 import jp.nyatla.nymmd.MmdException;
 import jp.nyatla.nymmd.struct.DataReader;
 import jp.nyatla.nymmd.struct.StructType;
 
-public class PMD_IK implements StructType
-{
-	public int nTargetNo;	// IKターゲットボーン番号
-	public int nEffNo;		// IK先端ボーン番号
-	public int	cbNumLink;	// IKを構成するボーンの数
-	public int unCount;
-	public float fFact;
-	public int[] punLinkNo;// IKを構成するボーンの配列(可変長配列)
-	
-	public void read(DataReader i_reader) throws MmdException
-	{
-		this.nTargetNo=i_reader.readShort();
-		this.nEffNo=i_reader.readShort();
-		this.cbNumLink=i_reader.read();
-		this.unCount=i_reader.readUnsignedShort();
-		this.fFact=i_reader.readFloat();
-		//必要な数だけ配列を確保しなおす。
-		this.punLinkNo=new int[this.cbNumLink];
-		for(int i=0;i<this.cbNumLink;i++){
-			this.punLinkNo[i]=i_reader.readUnsignedShort();
-		}
-		return;
-	}	
-	
-	
-	
-/*	
-	short			nTargetNo;	// IKターゲットボーン番号
-	short			nEffNo;		// IK先端ボーン番号
+public class PMD_IK implements StructType {
+    public int nTargetNo; // IKターゲットボーン番号
+    public int nEffNo; // IK先端ボーン番号
+    public int cbNumLink; // IKを構成するボーンの数
+    public int unCount;
+    public float fFact;
+    public int[] punLinkNo;// IKを構成するボーンの配列(可変長配列)
 
-	unsigned char	cbNumLink;	// IKを構成するボーンの数
+    public void read(DataReader i_reader) throws MmdException {
+        this.nTargetNo = i_reader.readShort();
+        this.nEffNo = i_reader.readShort();
+        this.cbNumLink = i_reader.read();
+        this.unCount = i_reader.readUnsignedShort();
+        this.fFact = i_reader.readFloat();
+        // 必要な数だけ配列を確保しなおす。
+        this.punLinkNo = new int[this.cbNumLink];
+        for (int i = 0; i < this.cbNumLink; i++) {
+            this.punLinkNo[i] = i_reader.readUnsignedShort();
+        }
+        return;
+    }
 
-	unsigned short	unCount;
-	float			fFact;
-
-	unsigned short	punLinkNo[1];// IKを構成するボーンの配列
-*/
+    /*
+     * short nTargetNo; // IKターゲットボーン番号 short nEffNo; // IK先端ボーン番号
+     * 
+     * unsigned char cbNumLink; // IKを構成するボーンの数
+     * 
+     * unsigned short unCount; float fFact;
+     * 
+     * unsigned short punLinkNo[1];// IKを構成するボーンの配列
+     */
 }

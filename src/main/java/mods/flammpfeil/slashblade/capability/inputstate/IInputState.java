@@ -12,25 +12,25 @@ public interface IInputState {
 
     Scheduler getScheduler();
 
-    EnumMap<InputCommand,Long> getLastPressTimes();
+    EnumMap<InputCommand, Long> getLastPressTimes();
 
-    default long getLastPressTime(InputCommand command){
-        if(this.getLastPressTimes().containsKey(command)){
+    default long getLastPressTime(InputCommand command) {
+        if (this.getLastPressTimes().containsKey(command)) {
             return this.getLastPressTimes().get(command);
-        }else{
+        } else {
             return -1;
         }
     }
 
-    default EnumSet<InputCommand> getCommands(LivingEntity owner){
+    default EnumSet<InputCommand> getCommands(LivingEntity owner) {
         EnumSet<InputCommand> commands = getCommands().clone();
 
-        if(owner.onGround()) {
+        if (owner.onGround()) {
             commands.add(InputCommand.ON_GROUND);
-            //commands.remove(InputCommand.ON_AIR);
-        }else {
+            // commands.remove(InputCommand.ON_AIR);
+        } else {
             commands.add(InputCommand.ON_AIR);
-            //commands.remove(InputCommand.ON_GROUND);
+            // commands.remove(InputCommand.ON_GROUND);
         }
         return commands;
     }

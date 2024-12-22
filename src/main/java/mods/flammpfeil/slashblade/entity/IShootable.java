@@ -7,6 +7,7 @@ public interface IShootable {
     void shoot(double x, double y, double z, float velocity, float inaccuracy);
 
     Entity getShooter();
+
     void setShooter(Entity shooter);
 
     double getDamage();

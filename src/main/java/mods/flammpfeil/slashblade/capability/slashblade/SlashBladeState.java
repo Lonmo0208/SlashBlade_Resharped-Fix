@@ -19,85 +19,91 @@
 
 package mods.flammpfeil.slashblade.capability.slashblade;
 
-import mods.flammpfeil.slashblade.capability.slashblade.combo.Extra;
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
-import mods.flammpfeil.slashblade.util.EnumSetConverter;
-import mods.flammpfeil.slashblade.util.NBTHelper;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.nbt.CompoundTag;
+import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
+import mods.flammpfeil.slashblade.registry.SpecialEffectsRegistry;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
+
+import org.joml.Math;
+
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Reference implementation of {@link ISlashBladeState}. Use/extend this or implement your own.
+ * Reference implementation of {@link ISlashBladeState}. Use/extend this or
+ * implement your own.
  *
- * Derived from the Redstone Flux power system designed by King Lemming and originally utilized in Thermal Expansion and related mods.
- * Created with consent and permission of King Lemming and Team CoFH. Released with permission under LGPL 2.1 when bundled with Forge.
+ * Derived from the Redstone Flux power system designed by King Lemming and
+ * originally utilized in Thermal Expansion and related mods. Created with
+ * consent and permission of King Lemming and Team CoFH. Released with
+ * permission under LGPL 2.1 when bundled with Forge.
  */
-public class SlashBladeState implements ISlashBladeState{
+public class SlashBladeState implements ISlashBladeState {
 
-    //action state
-    protected long lastActionTime; //lastActionTime
-    protected int targetEntityId; //TargetEntity
-    protected boolean _onClick; //_onClick
+    // action state
+    protected long lastActionTime; // lastActionTime
+    protected int targetEntityId; // TargetEntity
+    protected boolean _onClick; // _onClick
     protected float fallDecreaseRate;
-    protected boolean isCharged; //isCharged
-    protected float attackAmplifier; //AttackAmplifier
-    protected ComboState comboSeq; //comboSeq
-    protected String lastPosHash; //lastPosHash
-    protected boolean _hasShield;//HasShield
-    protected boolean isBroken; //isBroken
+    protected boolean isCharged; // isCharged
+    protected float attackAmplifier; // AttackAmplifier
+    protected ResourceLocation comboSeq; // comboSeq
+    protected String lastPosHash; // lastPosHash
+    protected boolean isBroken; // isBroken
 
-    //protected int lumbmanager; //lumbmanager EntityID
+    // protected int lumbmanager; //lumbmanager EntityID
 
+    // passive state
+    protected boolean isNoScabbard; // isNoScabbard
+    protected boolean isSealed; // isSealed
 
-    //passive state
-    protected boolean isNoScabbard; //isNoScabbard
-    protected boolean isSealed; //isSealed
+    protected float baseAttackModifier = 4F; // BaseAttackModifier
 
-    protected float baseAttackModifier; //BaseAttackModifier
+    protected int killCount; // killCount
+    protected int refine; // RepairCounter
 
-    protected int killCount; //killCount
-    protected int refine; //RepairCounter
+    protected UUID owner; // Owner
 
-    protected UUID owner; //Owner
-
-    protected UUID uniqueId = UUID.randomUUID(); //Owner
+    protected UUID uniqueId = UUID.randomUUID(); // Owner
 
     protected String translationKey = "";
 
+    // performance setting
+    protected ResourceLocation slashArtsKey; // SpecialAttackType
+    protected boolean isDefaultBewitched = false; // isDefaultBewitched
 
-    //performance setting
-    protected RangeAttack rangeAttackType; //RangeAttackType
-    protected String slashArtsKey; //SpecialAttackType
-    protected boolean isDestructable; //isDestructable
-    protected boolean isDefaultBewitched; //isDefaultBewitched
-    protected Optional<Rarity> rarity = Optional.empty();
-    ; //rarityType
+    protected ResourceLocation comboRootName;
 
-    protected String comboRootName;
-    protected String comboRootAirName;
+    // render info
+    protected Optional<CarryType> carryType = Optional.empty(); // StandbyRenderType
+    protected Optional<Color> effectColor = Optional.empty(); // SummonedSwordColor
+    protected boolean effectColorInverse;// SummonedSwordColorInverse
+    protected Optional<Vec3> adjust = Optional.empty();// adjustXYZ
 
-    //render info
-    protected Optional<CarryType> carryType = Optional.empty(); //StandbyRenderType
-    protected Optional<Color> effectColor = Optional.empty(); //SummonedSwordColor
-    protected boolean effectColorInverse;//SummonedSwordColorInverse
-    protected Optional<Vec3> adjust = Optional.empty();//adjustXYZ
+    protected Optional<ResourceLocation> texture = Optional.empty(); // TextureName
+    protected Optional<ResourceLocation> model = Optional.empty();// ModelName
 
-    protected Optional<ResourceLocation> texture = Optional.empty(); //TextureName
-    protected Optional<ResourceLocation> model = Optional.empty();//ModelName
+    protected LazyOptional<ResourceLocation> rootCombo = instantiateRootComboHolder();
 
-    private CompoundTag shareTag = null;
+    protected int maxDamage = 40;
+    protected int damage = 0;
 
-    public SlashBladeState() {
+    protected int proudSoul = 0;
+
+    public SlashBladeState(ItemStack blade) {
+    	if(!blade.isEmpty()) {
+    		if(blade.getOrCreateTag().contains("bladeState"))
+    			this.deserializeNBT(blade.getTagElement("bladeState"));
+    	}
     }
 
     @Override
@@ -137,18 +143,6 @@ public class SlashBladeState implements ISlashBladeState{
     }
 
     @Override
-    public boolean isCharged() {
-        return isCharged;
-    }
-
-    @Override
-    public void setCharged(boolean charged) {
-        isCharged = charged;
-
-        setHasChangedActiveState(true);
-    }
-
-    @Override
     public float getAttackAmplifier() {
         return attackAmplifier;
     }
@@ -156,43 +150,18 @@ public class SlashBladeState implements ISlashBladeState{
     @Override
     public void setAttackAmplifier(float attackAmplifier) {
         this.attackAmplifier = attackAmplifier;
-
         setHasChangedActiveState(true);
     }
 
     @Override
     @Nonnull
-    public ComboState getComboSeq() {
-        return ComboState.NONE.orNone(comboSeq);
+    public ResourceLocation getComboSeq() {
+        return comboSeq != null ? comboSeq : ComboStateRegistry.NONE.getId();
     }
 
     @Override
-    public void setComboSeq(ComboState comboSeq) {
+    public void setComboSeq(ResourceLocation comboSeq) {
         this.comboSeq = comboSeq;
-
-        setHasChangedActiveState(true);
-    }
-
-    @Override
-    public String getLastPosHash() {
-        return lastPosHash != null ? lastPosHash : "";
-    }
-
-    @Override
-    public void setLastPosHash(String lastPosHash) {
-        this.lastPosHash = lastPosHash;
-
-        setHasChangedActiveState(true);
-    }
-
-    @Override
-    public boolean hasShield() {
-        return _hasShield;
-    }
-
-    @Override
-    public void setHasShield(boolean hasShield) {
-        this._hasShield = hasShield;
 
         setHasChangedActiveState(true);
     }
@@ -206,16 +175,6 @@ public class SlashBladeState implements ISlashBladeState{
     public void setBroken(boolean broken) {
         isBroken = broken;
         setHasChangedActiveState(true);
-    }
-
-    @Override
-    public boolean isNoScabbard() {
-        return isNoScabbard;
-    }
-
-    @Override
-    public void setNoScabbard(boolean noScabbard) {
-        isNoScabbard = noScabbard;
     }
 
     @Override
@@ -261,44 +220,13 @@ public class SlashBladeState implements ISlashBladeState{
     }
 
     @Override
-    public UUID getOwner() {
-        return owner;
-    }
-
-    @Override
-    public void setOwner(UUID owner) {
-        this.owner = owner;
-    }
-
-    @Override
-    @Nonnull
-    public RangeAttack getRangeAttackType() {
-        return RangeAttack.NONE.orNone(rangeAttackType);
-    }
-
-    @Override
-    public void setRangeAttackType(RangeAttack rangeAttackType) {
-        this.rangeAttackType = rangeAttackType;
-    }
-
-    @Override
-    public String getSlashArtsKey() {
+    public ResourceLocation getSlashArtsKey() {
         return this.slashArtsKey;
     }
 
     @Override
-    public void setSlashArtsKey(String key) {
+    public void setSlashArtsKey(ResourceLocation key) {
         this.slashArtsKey = key;
-    }
-
-    @Override
-    public boolean isDestructable() {
-        return isDestructable;
-    }
-
-    @Override
-    public void setDestructable(boolean destructable) {
-        isDestructable = destructable;
     }
 
     @Override
@@ -309,17 +237,6 @@ public class SlashBladeState implements ISlashBladeState{
     @Override
     public void setDefaultBewitched(boolean defaultBewitched) {
         isDefaultBewitched = defaultBewitched;
-    }
-
-    @Override
-    @Nonnull
-    public Rarity getRarity() {
-        return rarity.orElse(Rarity.COMMON);
-    }
-
-    @Override
-    public void setRarity(Rarity rarity) {
-        this.rarity = Optional.ofNullable(rarity);
     }
 
     @Override
@@ -405,78 +322,32 @@ public class SlashBladeState implements ISlashBladeState{
         setHasChangedActiveState(true);
     }
 
-    LazyOptional<ComboState> rootCombo = instantiateRootComboHolder();
     @Override
-    public String getComboRootName() {
+    public ResourceLocation getComboRoot() {
+    	if(this.comboRootName == null || !ComboStateRegistry.REGISTRY.get().containsKey(this.comboRootName))
+    		return ComboStateRegistry.STANDBY.getId();
         return this.comboRootName;
     }
 
     @Override
-    public void setComboRootName(String comboRootName) {
-        this.comboRootName = comboRootName;
+    public void setComboRoot(ResourceLocation rootLoc) {
+        this.comboRootName = ComboStateRegistry.REGISTRY.get().containsKey(rootLoc) ? rootLoc
+                : ComboStateRegistry.STANDBY.getId();
         this.rootCombo = instantiateRootComboHolder();
     }
 
-    private LazyOptional<ComboState> instantiateRootComboHolder(){
-        return LazyOptional.of(()->{
-            if(ComboState.NONE.valueOf(getComboRootName()) == null){
-                return Extra.STANDBY_EX;
-            }else{
-                return ComboState.NONE.valueOf(getComboRootName());
+    private LazyOptional<ResourceLocation> instantiateRootComboHolder() {
+        return LazyOptional.of(() -> {
+            if (!ComboStateRegistry.REGISTRY.get().containsKey(this.getComboRoot())) {
+                return ComboStateRegistry.STANDBY.getId();
+            } else {
+                return this.getComboRoot();
             }
         });
     }
 
-    LazyOptional<ComboState> rootComboAir = instantiateRootComboAirHolder();
-    @Override
-    public String getComboRootAirName() {
-        return this.comboRootAirName;
-    }
+    protected boolean isChangedActiveState = false;
 
-    @Override
-    public void setComboRootAirName(String comboRootName) {
-        this.comboRootName = comboRootName;
-        this.rootComboAir = instantiateRootComboAirHolder();
-    }
-
-    private LazyOptional<ComboState> instantiateRootComboAirHolder(){
-        return LazyOptional.of(()->{
-            if(ComboState.NONE.valueOf(getComboRootName()) == null){
-                return Extra.STANDBY_EX;
-            }else{
-                return ComboState.NONE.valueOf(getComboRootAirName());
-            }
-        });
-    }
-
-
-    @Override
-    public CompoundTag getShareTag() {
-        return this.shareTag;
-    }
-
-    @Override
-    public void setShareTag(CompoundTag shareTag) {
-        this.shareTag = shareTag;
-    }
-
-    private float damage = 0;
-    @Override
-    public float getDamage() {
-        return this.damage;
-    }
-
-    @Override
-    public void setDamage(float damage) {
-        if(!this.isSealed() && damage <= 0.0f)
-            this.setBroken(false);
-
-        this.damage = Math.max(0.0f,Math.min(damage,1.0f));
-
-        setHasChangedActiveState(true);
-    }
-
-    boolean isChangedActiveState = false;
     @Override
     public boolean hasChangedActiveState() {
         return this.isChangedActiveState;
@@ -496,4 +367,78 @@ public class SlashBladeState implements ISlashBladeState{
     public void setUniqueId(UUID uniqueId) {
         this.uniqueId = uniqueId;
     }
+
+    @Override
+    public int getMaxDamage() {
+        return this.maxDamage;
+    }
+
+    @Override
+    public void setMaxDamage(int damage) {
+        this.maxDamage = damage;
+    }
+
+    @Override
+    public int getDamage() {
+        return this.damage;
+    }
+
+    @Override
+    public void setDamage(int damage) {
+        this.damage = Math.max(0, damage);
+        setHasChangedActiveState(true);
+    }
+
+    @Override
+    public int getProudSoulCount() {
+        return this.proudSoul;
+    }
+
+    @Override
+    public void setProudSoulCount(int psCount) {
+        this.proudSoul = Math.max(0, psCount);
+        setHasChangedActiveState(true);
+    }
+    
+    protected List<ResourceLocation> specialEffects = new ArrayList<>();
+
+	@Override
+	public List<ResourceLocation> getSpecialEffects() {
+		return this.specialEffects;
+	}
+
+	@Override
+	public void setSpecialEffects(ListTag list) {
+		List<ResourceLocation> result = new ArrayList<>();
+		list.forEach(tag->{
+			ResourceLocation se = ResourceLocation.tryParse(tag.getAsString());
+			if(SpecialEffectsRegistry.REGISTRY.get().containsKey(se))
+				result.add(se);
+			
+		});
+		this.specialEffects = result;
+	}
+
+	@Override
+	public boolean addSpecialEffect(ResourceLocation se) {
+		if(SpecialEffectsRegistry.REGISTRY.get().containsKey(se)) {
+			return this.specialEffects.add(se);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean removeSpecialEffect(ResourceLocation se) {
+		return this.specialEffects.remove(se);
+	}
+
+	@Override
+	public boolean hasSpecialEffect(ResourceLocation se) {
+		if(SpecialEffectsRegistry.REGISTRY.get().containsKey(se)) {
+			return this.specialEffects.contains(se);
+		}
+		this.specialEffects.remove(se);
+		return true;
+	}
+	
 }

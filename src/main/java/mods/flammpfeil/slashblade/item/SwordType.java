@@ -1,52 +1,53 @@
 package mods.flammpfeil.slashblade.item;
 
-import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.EnumSet;
 
-public enum SwordType{
-    None,
-    EdgeFragment,
-    Broken,
-    Perfect,
-    Enchanted,
-    Bewitched,
-    SoulEeater,
-    FiercerEdge,
-    NoScabbard,
-    Sealed,
-    Cursed,
-    ;
+import com.mojang.serialization.Codec;
 
-    static public EnumSet<SwordType> from(ItemStack itemStackIn){
+import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
+
+public enum SwordType {
+    NONE, EDGEFRAGMENT, BROKEN, ENCHANTED, BEWITCHED, FIERCEREDGE, NOSCABBARD, SEALED,;
+
+    public static final Codec<SwordType> CODEC = Codec.STRING.xmap(string -> SwordType.valueOf(string.toUpperCase()),
+            instance -> instance.name().toLowerCase());
+
+    public static EnumSet<SwordType> from(ItemStack itemStackIn) {
         EnumSet<SwordType> types = EnumSet.noneOf(SwordType.class);
 
         LazyOptional<ISlashBladeState> state = itemStackIn.getCapability(ItemSlashBlade.BLADESTATE);
 
-        if(state.isPresent()){
-            itemStackIn.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s->{
-                if(s.isBroken())
-                    types.add(Broken);
+        if (state.isPresent()) {
+            itemStackIn.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s -> {
+                if (s.isBroken() || itemStackIn.getOrCreateTagElement("bladeState").getBoolean("isBroken"))
+                    types.add(BROKEN);
 
-                if(s.isNoScabbard())
-                    types.add(NoScabbard);
+                if (s.isSealed() || itemStackIn.getOrCreateTagElement("bladeState").getBoolean("isSealed"))
+                    types.add(SEALED);
 
-                if(s.isSealed())
-                    types.add(Cursed);
+                if (!s.isSealed() && itemStackIn.isEnchanted()
+                        && (itemStackIn.hasCustomHoverName() || s.isDefaultBewitched()))
+                    types.add(BEWITCHED);
 
-                if(!s.isSealed() && itemStackIn.isEnchanted() && (itemStackIn.hasCustomHoverName() || s.isDefaultBewitched()))
-                    types.add(Bewitched);
+                if (s.getKillCount() >= 1000)
+                    types.add(FIERCEREDGE);
+
             });
-        }else{
-            types.add(NoScabbard);
-            types.add(EdgeFragment);
+        } else {
+            types.add(NOSCABBARD);
+            types.add(EDGEFRAGMENT);
         }
 
+        if (itemStackIn.isEnchanted())
+            types.add(ENCHANTED);
 
-        if(itemStackIn.isEnchanted())
-            types.add(Enchanted);
+        if (itemStackIn.getItem() instanceof ItemSlashBladeDetune) {
+            types.remove(SwordType.ENCHANTED);
+            types.remove(SwordType.BEWITCHED);
+        }
 
         return types;
     }

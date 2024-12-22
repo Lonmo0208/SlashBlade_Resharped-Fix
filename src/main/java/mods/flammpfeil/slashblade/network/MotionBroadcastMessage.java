@@ -1,10 +1,7 @@
 package mods.flammpfeil.slashblade.network;
 
-import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.capability.concentrationrank.CapabilityConcentrationRank;
-import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank;
-import mods.flammpfeil.slashblade.capability.slashblade.ComboState;
 import mods.flammpfeil.slashblade.event.BladeMotionEvent;
+import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -19,16 +16,14 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.UUID;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class MotionBroadcastMessage {
     public UUID playerId;
     public String combo;
 
-
-
-    public MotionBroadcastMessage(){}
+    public MotionBroadcastMessage() {
+    }
 
     static public MotionBroadcastMessage decode(FriendlyByteBuf buf) {
         MotionBroadcastMessage msg = new MotionBroadcastMessage();
@@ -45,13 +40,14 @@ public class MotionBroadcastMessage {
     static public void handle(MotionBroadcastMessage msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().setPacketHandled(true);
 
-        if(ctx.get().getDirection() != NetworkDirection.PLAY_TO_CLIENT) {
+        if (ctx.get().getDirection() != NetworkDirection.PLAY_TO_CLIENT) {
             return;
         }
 
-        BiConsumer<UUID,String> handler = DistExecutor.callWhenOn(Dist.CLIENT, ()->()-> MotionBroadcastMessage::setPoint);
+        BiConsumer<UUID, String> handler = DistExecutor.callWhenOn(Dist.CLIENT,
+                () -> () -> MotionBroadcastMessage::setPoint);
 
-        if(handler != null)
+        if (handler != null)
             ctx.get().enqueueWork(() -> {
                 handler.accept(msg.playerId, msg.combo);
             });
@@ -59,14 +55,17 @@ public class MotionBroadcastMessage {
     }
 
     @OnlyIn(Dist.CLIENT)
-    static public void setPoint(UUID playerId, String combo){
+    static public void setPoint(UUID playerId, String combo) {
         Player target = Minecraft.getInstance().level.getPlayerByUUID(playerId);
 
-        if(target == null) return;
-        if(!(target instanceof AbstractClientPlayer)) return;
+        if (target == null)
+            return;
+        if (!(target instanceof AbstractClientPlayer))
+            return;
 
-        ComboState state = ComboState.NONE.valueOf(combo);
-        if(state == null) return;
+        ResourceLocation state = ResourceLocation.tryParse(combo);
+        if (state == null || !ComboStateRegistry.REGISTRY.get().containsKey(state))
+            return;
 
         MinecraftForge.EVENT_BUS.post(new BladeMotionEvent(target, state));
     }

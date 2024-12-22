@@ -28,71 +28,72 @@ public class Untouchable {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    public static void setUntouchable(LivingEntity entity, int ticks){
-        entity.getCapability(CapabilityMobEffect.MOB_EFFECT).ifPresent(ef->{
+    public static void setUntouchable(LivingEntity entity, int ticks) {
+        entity.getCapability(CapabilityMobEffect.MOB_EFFECT).ifPresent(ef -> {
             ef.setManagedUntouchable(entity.level().getGameTime(), ticks);
             ef.storeEffects(entity.getActiveEffectsMap().keySet());
             ef.storeHealth(entity.getHealth());
         });
     }
 
-    private boolean checkUntouchable(LivingEntity entity){
+    private boolean checkUntouchable(LivingEntity entity) {
         Optional<Boolean> isUntouchable = entity.getCapability(CapabilityMobEffect.MOB_EFFECT)
-                .map(ef->ef.isUntouchable(entity.getCommandSenderWorld().getGameTime()));
+                .map(ef -> ef.isUntouchable(entity.getCommandSenderWorld().getGameTime()));
 
-        return isUntouchable.orElseGet(()->false);
+        return isUntouchable.orElseGet(() -> false);
     }
 
-    private void doWitchTime(Entity entity){
-        if(entity == null) return;
+    private void doWitchTime(Entity entity) {
+        if (entity == null)
+            return;
 
-        if(!(entity instanceof LivingEntity)) return;
+        if (!(entity instanceof LivingEntity))
+            return;
 
         StunManager.setStun((LivingEntity) entity);
     }
 
     @SubscribeEvent
-    public void onLivingHurt(LivingHurtEvent event){
-        if(checkUntouchable(event.getEntity())) {
+    public void onLivingHurt(LivingHurtEvent event) {
+        if (checkUntouchable(event.getEntity())) {
             event.setCanceled(true);
             doWitchTime(event.getSource().getEntity());
         }
     }
 
     @SubscribeEvent
-    public void onLivingDamage(LivingDamageEvent event){
-        if(checkUntouchable(event.getEntity())) {
+    public void onLivingDamage(LivingDamageEvent event) {
+        if (checkUntouchable(event.getEntity())) {
             event.setCanceled(true);
             doWitchTime(event.getSource().getEntity());
         }
     }
 
     @SubscribeEvent
-    public void onLivingAttack(LivingAttackEvent event){
-        if(checkUntouchable(event.getEntity())) {
+    public void onLivingAttack(LivingAttackEvent event) {
+        if (checkUntouchable(event.getEntity())) {
             event.setCanceled(true);
             doWitchTime(event.getSource().getEntity());
         }
     }
 
     @SubscribeEvent
-    public void onLivingDeath(LivingDeathEvent event){
-        if(checkUntouchable(event.getEntity())) {
+    public void onLivingDeath(LivingDeathEvent event) {
+        if (checkUntouchable(event.getEntity())) {
             event.setCanceled(true);
             doWitchTime(event.getSource().getEntity());
 
             LivingEntity entity = event.getEntity();
 
-            entity.getCapability(CapabilityMobEffect.MOB_EFFECT).ifPresent(ef->{
-                if(ef.hasUntouchableWorked()) {
+            entity.getCapability(CapabilityMobEffect.MOB_EFFECT).ifPresent(ef -> {
+                if (ef.hasUntouchableWorked()) {
                     List<MobEffect> filterd = entity.getActiveEffectsMap().keySet().stream()
-                            .filter(p -> !(ef.getEffectSet().contains(p) || p.isBeneficial()))
-                            .toList();
+                            .filter(p -> !(ef.getEffectSet().contains(p) || p.isBeneficial())).toList();
 
                     filterd.forEach(p -> entity.removeEffect(p));
 
                     float storedHealth = ef.getStoredHealth();
-                    if(ef.getStoredHealth() < storedHealth)
+                    if (ef.getStoredHealth() < storedHealth)
                         entity.setHealth(ef.getStoredHealth());
                 }
             });
@@ -100,34 +101,32 @@ public class Untouchable {
     }
 
     @SubscribeEvent
-    public void onLivingTicks(LivingEvent.LivingTickEvent event){
+    public void onLivingTicks(LivingEvent.LivingTickEvent event) {
         LivingEntity entity = event.getEntity();
 
-        if(entity.level().isClientSide) return;
+        if (entity.level().isClientSide())
+            return;
 
-        entity.getCapability(CapabilityMobEffect.MOB_EFFECT).ifPresent(ef->{
-            if(ef.hasUntouchableWorked()) {
+        entity.getCapability(CapabilityMobEffect.MOB_EFFECT).ifPresent(ef -> {
+            if (ef.hasUntouchableWorked()) {
                 ef.setUntouchableWorked(false);
                 List<MobEffect> filterd = entity.getActiveEffectsMap().keySet().stream()
-                        .filter(p -> !(ef.getEffectSet().contains(p) || p.isBeneficial()))
-                        .toList();
+                        .filter(p -> !(ef.getEffectSet().contains(p) || p.isBeneficial())).toList();
 
                 filterd.forEach(p -> entity.removeEffect(p));
 
                 float storedHealth = ef.getStoredHealth();
-                if(ef.getStoredHealth() < storedHealth)
+                if (ef.getStoredHealth() < storedHealth)
                     entity.setHealth(ef.getStoredHealth());
             }
         });
     }
 
-
     final static int JUMP_TICKS = 10;
 
     @SubscribeEvent
-    public void onPlayerJump(LivingEvent.LivingJumpEvent event){
-        if(!event.getEntity().getMainHandItem()
-                .getCapability(ItemSlashBlade.BLADESTATE).isPresent())
+    public void onPlayerJump(LivingEvent.LivingJumpEvent event) {
+        if (!event.getEntity().getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).isPresent())
             return;
 
         Untouchable.setUntouchable(event.getEntity(), JUMP_TICKS);

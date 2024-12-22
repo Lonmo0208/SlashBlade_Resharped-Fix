@@ -37,24 +37,21 @@
  */
 package jp.nyatla.nymmd.struct.vmd;
 
-
-
 import jp.nyatla.nymmd.MmdException;
 import jp.nyatla.nymmd.struct.DataReader;
 import jp.nyatla.nymmd.struct.StructType;
 
-public class VMD_Face implements StructType
-{
-	public String szFaceName;
-	public long  ulFrameNo;
-	public float fFactor;
-	public void read(DataReader i_reader) throws MmdException
-	{
-		//szFaceName
-		this.szFaceName=i_reader.readAscii(15);
-		this.ulFrameNo=i_reader.readInt();
-		this.fFactor=i_reader.readFloat();
-		return;
-	}
+public class VMD_Face implements StructType {
+    public String szFaceName;
+    public long ulFrameNo;
+    public float fFactor;
+
+    public void read(DataReader i_reader) throws MmdException {
+        // szFaceName
+        this.szFaceName = i_reader.readAscii(15);
+        this.ulFrameNo = i_reader.readInt();
+        this.fFactor = i_reader.readFloat();
+        return;
+    }
 
 }

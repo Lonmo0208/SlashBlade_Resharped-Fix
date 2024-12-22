@@ -20,7 +20,7 @@ version = mod_version
 group = mod_group_id
 
 base {
-    archivesName = "SlashBlade-1.20.1"
+    archivesName = "SlashBladeResharped-1.20.1"
 }
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
@@ -105,7 +105,6 @@ minecraft {
 
         server {
             property 'forge.enabledGameTestNamespaces', mod_id
-            args '--nogui'
 
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
@@ -153,6 +152,18 @@ repositories {
         name "KosmX's maven"
         url 'https://maven.kosmx.dev/'
     }
+    
+    maven {
+      // location of a maven mirror for JEI files, as a fallback
+      name = "ModMaven"
+      url = "https://modmaven.dev"
+    }
+    
+	maven {
+		name = "TerraformersMC"
+		url = "https://maven.terraformersmc.com/"
+	}    
+
 }
 
 dependencies {
@@ -182,6 +193,15 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${project.player_anim}")
+    
+        // compile against the JEI API but do not include it at runtime
+    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
+    compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
+    // at runtime, use the full JEI jar for Forge
+    runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
+    
+    compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}:api")
+	runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}") 
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -226,16 +246,21 @@ tasks.named('jar', Jar).configure {
 //     dependsOn 'reobfJar'
 // }
 
-// Example configuration to allow publishing using the maven-publish plugin
+java {
+    // 编译源码文件，方便发布 maven
+    withSourcesJar()
+}
+
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
-            artifact jar
-        }
-    }
+        	artifact jar
+	    }
+	}
+	
     repositories {
         maven {
-            url "file://${project.projectDir}/mcmodsrepo"
+            url "file://${maven_loc}"
         }
     }
 }

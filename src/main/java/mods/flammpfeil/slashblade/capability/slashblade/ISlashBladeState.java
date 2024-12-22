@@ -1,196 +1,288 @@
-/*
- * Minecraft Forge
- * Copyright (c) 2016-2019.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation version 2.1
- * of the License.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
 package mods.flammpfeil.slashblade.capability.slashblade;
 
 import com.google.common.collect.ImmutableRangeMap;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
-import mods.flammpfeil.slashblade.capability.slashblade.combo.Extra;
+
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
 import mods.flammpfeil.slashblade.event.BladeMotionEvent;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.item.SwordType;
 import mods.flammpfeil.slashblade.network.ActiveStateSyncMessage;
 import mods.flammpfeil.slashblade.network.NetworkManager;
-import mods.flammpfeil.slashblade.specialattack.SlashArts;
+import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
+import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
+import mods.flammpfeil.slashblade.registry.combo.ComboState;
+import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import mods.flammpfeil.slashblade.util.AdvancementHelper;
+import mods.flammpfeil.slashblade.util.EnumSetConverter;
 import mods.flammpfeil.slashblade.util.NBTHelper;
 import mods.flammpfeil.slashblade.util.TimeValueHelper;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.stats.Stats;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
+
+import java.awt.Color;
 import java.util.AbstractMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
-/**
- * An slashblade state is the unit of interaction with Energy inventories.
- * <p>
- * A reference implementation can be found at {@link SlashBladeState}.
- *
- * Derived from the Redstone Flux power system designed by King Lemming and originally utilized in Thermal Expansion and related mods.
- * Created with consent and permission of King Lemming and Team CoFH. Released with permission under LGPL 2.1 when bundled with Forge.
- *
- */
-public interface ISlashBladeState {
+public interface ISlashBladeState extends INBTSerializable<CompoundTag>
+{
+    @Override
+    default CompoundTag serializeNBT()
+    {
+        CompoundTag tag = new CompoundTag();
+        // action state
+        tag.putLong("lastActionTime", this.getLastActionTime());
+        tag.putInt("TargetEntity", this.getTargetEntityId());
+        tag.putBoolean("_onClick", this.onClick());
+        tag.putFloat("fallDecreaseRate", this.getFallDecreaseRate());
+        tag.putFloat("AttackAmplifier", this.getAttackAmplifier());
+        tag.putString("currentCombo", this.getComboSeq().toString());
+        tag.putInt("Damage", this.getDamage());
+        tag.putInt("maxDamage", this.getMaxDamage());
+        tag.putInt("proudSoul", this.getProudSoulCount());
+        tag.putBoolean("isBroken", this.isBroken());
+
+        // passive state
+        tag.putBoolean("isSealed", this.isSealed());
+
+        tag.putFloat("baseAttackModifier", this.getBaseAttackModifier());
+
+        tag.putInt("killCount", this.getKillCount());
+        tag.putInt("RepairCounter", this.getRefine());
+
+        UUID bladeId = this.getUniqueId();
+        tag.putUUID("BladeUniqueId", bladeId);
+
+        // performance setting
+
+        tag.putString("SpecialAttackType", Optional.ofNullable(this.getSlashArtsKey())
+        .orElse(SlashArtsRegistry.JUDGEMENT_CUT.getId()).toString());
+        tag.putBoolean("isDefaultBewitched", this.isDefaultBewitched());
+        tag.putString("translationKey", this.getTranslationKey());
+
+        // render info
+        tag.putByte("StandbyRenderType", (byte) this.getCarryType().ordinal());
+        tag.putInt("SummonedSwordColor", this.getColorCode());
+        tag.putBoolean("SummonedSwordColorInverse", this.isEffectColorInverse());
+        tag.put("adjustXYZ", NBTHelper.newDoubleNBTList(this.getAdjust()));
+
+        this.getTexture().ifPresent(loc -> tag.putString("TextureName", loc.toString()));
+        this.getModel().ifPresent(loc -> tag.putString("ModelName", loc.toString()));
+
+        tag.putString("ComboRoot",
+                      Optional.ofNullable(this.getComboRoot()).orElse(ComboStateRegistry.STANDBY.getId()).toString());
+        
+        if(this.getSpecialEffects()!=null && !this.getSpecialEffects().isEmpty()) {
+        	ListTag seList = new ListTag();
+        	this.getSpecialEffects().forEach(se->seList.add(StringTag.valueOf(se.toString())));
+        	tag.put("SpecialEffects", seList);
+        }
+        
+        return tag;
+    }
+
+    @Override
+    default void deserializeNBT(CompoundTag tag)
+    {
+        if (tag == null) return;
+
+        // action state
+        this.setLastActionTime(tag.getLong("lastActionTime"));
+        this.setTargetEntityId(tag.getInt("TargetEntity"));
+        this.setOnClick(tag.getBoolean("_onClick"));
+        this.setFallDecreaseRate(tag.getFloat("fallDecreaseRate"));
+        this.setAttackAmplifier(tag.getFloat("AttackAmplifier"));
+        this.setComboSeq(ResourceLocation.tryParse(tag.getString("currentCombo")));
+        this.setDamage(tag.getInt("Damage"));
+        this.setMaxDamage(tag.getInt("maxDamage"));
+        this.setProudSoulCount(tag.getInt("proudSoul"));
+        this.setBroken(tag.getBoolean("isBroken"));
+
+        this.setHasChangedActiveState(true);
+
+        // passive state
+        this.setSealed(tag.getBoolean("isSealed"));
+
+        this.setBaseAttackModifier(tag.getFloat("baseAttackModifier"));
+
+        this.setKillCount(tag.getInt("killCount"));
+        this.setRefine(tag.getInt("RepairCounter"));
+
+        this.setUniqueId(tag.hasUUID("BladeUniqueId") ? tag.getUUID("BladeUniqueId") : UUID.randomUUID());
+
+        // performance setting
+
+        this.setSlashArtsKey(ResourceLocation.tryParse(tag.getString("SpecialAttackType")));
+        this.setDefaultBewitched(tag.getBoolean("isDefaultBewitched"));
+
+        this.setTranslationKey(tag.getString("translationKey"));
+
+        // render info
+        this.setCarryType(EnumSetConverter.fromOrdinal(CarryType.values(), tag.getByte("StandbyRenderType"),
+                                                           CarryType.DEFAULT));
+        this.setColorCode(tag.getInt("SummonedSwordColor"));
+        this.setEffectColorInverse(tag.getBoolean("SummonedSwordColorInverse"));
+        this.setAdjust(NBTHelper.getVector3d(tag, "adjustXYZ"));
+
+        if (tag.contains("TextureName"))
+            this.setTexture(new ResourceLocation(tag.getString("TextureName")));
+        else
+            this.setTexture(null);
+
+        if (tag.contains("ModelName"))
+            this.setModel(new ResourceLocation(tag.getString("ModelName")));
+        else
+            this.setModel(null);
+
+        this.setComboRoot(ResourceLocation.tryParse(tag.getString("ComboRoot")));
+        if(tag.contains("SpecialEffects")) {
+        	ListTag list = tag.getList("SpecialEffects", 8);
+        	this.setSpecialEffects(list);
+        }
+    }
 
     long getLastActionTime();
+
     void setLastActionTime(long lastActionTime);
-    default long getElapsedTime(LivingEntity user){
+
+    default long getElapsedTime(LivingEntity user) {
         long ticks = (Math.max(0, user.level().getGameTime() - this.getLastActionTime()));
 
-        if(user.level().isClientSide)
+        if (user.level().isClientSide())
             ticks = Math.max(0, ticks + 1);
 
         return ticks;
     }
 
     boolean onClick();
-	void setOnClick(boolean onClick);
+
+    void setOnClick(boolean onClick);
 
     float getFallDecreaseRate();
-	void setFallDecreaseRate(float fallDecreaseRate);
 
-    boolean isCharged();
-	void setCharged(boolean charged);
+    void setFallDecreaseRate(float fallDecreaseRate);
 
     float getAttackAmplifier();
-	void setAttackAmplifier(float attackAmplifier);
 
-	@Nonnull
-    ComboState getComboSeq();
-	void setComboSeq(ComboState comboSeq);
+    void setAttackAmplifier(float attackAmplifier);
 
-    String getLastPosHash();
-	void setLastPosHash(String lastPosHash);
+    @Nonnull
+    ResourceLocation getComboSeq();
 
-    boolean hasShield();
-	void setHasShield(boolean hasShield);
+    void setComboSeq(ResourceLocation comboSeq);
 
     boolean isBroken();
-	void setBroken(boolean broken);
 
-    boolean isNoScabbard();
-	void setNoScabbard(boolean noScabbard);
+    void setBroken(boolean broken);
 
     boolean isSealed();
-	void setSealed(boolean sealed);
+
+    void setSealed(boolean sealed);
 
     float getBaseAttackModifier();
-	void setBaseAttackModifier(float baseAttackModifier);
+
+    void setBaseAttackModifier(float baseAttackModifier);
+
+    int getProudSoulCount();
+
+    void setProudSoulCount(int psCount);
 
     int getKillCount();
-	void setKillCount(int killCount);
+
+    void setKillCount(int killCount);
 
     int getRefine();
-	void setRefine(int refine);
 
-    UUID getOwner();
-    void setOwner(UUID owner);
+    void setRefine(int refine);
 
     UUID getUniqueId();
+
     void setUniqueId(UUID id);
 
     @Nonnull
-    RangeAttack getRangeAttackType();
-	void setRangeAttackType(RangeAttack rangeAttackType);
-
-    @Nonnull
-    default SlashArts getSlashArts(){
-        String key = getSlashArtsKey();
+    default SlashArts getSlashArts() {
+        ResourceLocation key = getSlashArtsKey();
         SlashArts result = null;
-        if(key != null)
-            result = SlashArts.NONE.valueOf(key);
+        if (key != null)
+            result = SlashArtsRegistry.REGISTRY.get().containsKey(key) ? SlashArtsRegistry.REGISTRY.get().getValue(key)
+                    : SlashArtsRegistry.JUDGEMENT_CUT.get();
 
-        if(result == SlashArts.NONE)
+        if (key == SlashArtsRegistry.NONE.getId())
             result = null;
 
-        return result != null ? result : SlashArts.JUDGEMENT_CUT;
+        return result != null ? result : SlashArtsRegistry.JUDGEMENT_CUT.get();
     }
-	void setSlashArtsKey(String slashArts);
-	String getSlashArtsKey();
 
-    boolean isDestructable();
-	void setDestructable(boolean destructable);
+    void setSlashArtsKey(ResourceLocation slashArts);
+
+    ResourceLocation getSlashArtsKey();
 
     boolean isDefaultBewitched();
-	void setDefaultBewitched(boolean defaultBewitched);
 
-	@Nonnull
-    Rarity getRarity();
-	void setRarity(Rarity rarity);
+    void setDefaultBewitched(boolean defaultBewitched);
 
     @Nonnull
-	String getTranslationKey();
-	void setTranslationKey(String translationKey);
+    String getTranslationKey();
+
+    void setTranslationKey(String translationKey);
 
     @Nonnull
     CarryType getCarryType();
-	void setCarryType(CarryType carryType);
+
+    void setCarryType(CarryType carryType);
 
     @Nonnull
     Color getEffectColor();
-	void setEffectColor(Color effectColor);
+
+    void setEffectColor(Color effectColor);
 
     boolean isEffectColorInverse();
-	void setEffectColorInverse(boolean effectColorInverse);
 
-	default void setColorCode(int colorCode){
+    void setEffectColorInverse(boolean effectColorInverse);
+
+    default void setColorCode(int colorCode) {
         setEffectColor(new Color(colorCode));
     }
 
-    default int getColorCode(){
+    default int getColorCode() {
         return getEffectColor().getRGB();
     }
 
     @Nonnull
     Vec3 getAdjust();
-	void setAdjust(Vec3 adjust);
+
+    void setAdjust(Vec3 adjust);
 
     @Nonnull
     Optional<ResourceLocation> getTexture();
-	void setTexture(ResourceLocation texture);
+
+    void setTexture(ResourceLocation texture);
 
     @Nonnull
     Optional<ResourceLocation> getModel();
-	void setModel(ResourceLocation model);
+
+    void setModel(ResourceLocation model);
 
     int getTargetEntityId();
-	void setTargetEntityId(int id);
+
+    void setTargetEntityId(int id);
 
     @Nullable
     default Entity getTargetEntity(Level world) {
@@ -201,55 +293,69 @@ public interface ISlashBladeState {
             return world.getEntity(id);
     }
 
-	default void setTargetEntityId(Entity target) {
+    default void setTargetEntityId(Entity target) {
         if (target != null)
             this.setTargetEntityId(target.getId());
         else
             this.setTargetEntityId(-1);
     }
 
-    default int getFullChargeTicks(LivingEntity user){
+    default int getFullChargeTicks(LivingEntity user) {
         return SlashArts.ChargeTicks;
     }
 
-    default boolean isCharged(LivingEntity user){
+    default boolean isCharged(LivingEntity user) {
+        if (!(SwordType.from(user.getMainHandItem()).contains(SwordType.ENCHANTED)))
+            return false;
+        if (this.isBroken() || this.isSealed())
+            return false;
         int elapsed = user.getTicksUsingItem();
         return getFullChargeTicks(user) < elapsed;
     }
 
+    default ResourceLocation progressCombo(LivingEntity user, boolean isVirtual) {
+        ResourceLocation currentloc = resolvCurrentComboState(user);
+        ComboState current = ComboStateRegistry.REGISTRY.get().getValue(currentloc);
+        
+        if(current == null)
+        	return ComboStateRegistry.NONE.getId();
+        
+        ResourceLocation next = current.getNext(user);
+        if (!next.equals(ComboStateRegistry.NONE.getId()) && next.equals(currentloc))
+            return ComboStateRegistry.NONE.getId();
 
-    default ComboState progressCombo(LivingEntity user, boolean isVirtual){
-        ComboState current = resolvCurrentComboState(user);
+        ResourceLocation rootNext = ComboStateRegistry.REGISTRY.get().getValue(getComboRoot()).getNext(user);
+        ComboState nextCS = ComboStateRegistry.REGISTRY.get().getValue(next);
+        ComboState rootNextCS = ComboStateRegistry.REGISTRY.get().getValue(rootNext);
+        ResourceLocation resolved = nextCS.getPriority() <= rootNextCS.getPriority() ? next : rootNext;
 
-        ComboState next = current.getNext(user);
-
-        if(next != ComboState.NONE && next == current)
-            return ComboState.NONE;
-
-        ComboState rootNext = getComboRoot().getNext(user);
-
-        ComboState resolved = next.getPriority() <= rootNext.getPriority()
-                ? next : rootNext;
-
-        if(!isVirtual) {
+        if (!isVirtual) {
             this.updateComboSeq(user, resolved);
         }
 
         return resolved;
     }
-    default ComboState progressCombo(LivingEntity user){
+
+    default ResourceLocation progressCombo(LivingEntity user) {
         return progressCombo(user, false);
     }
 
-    default ComboState doChargeAction(LivingEntity user, int elapsed){
-        Map.Entry<Integer, ComboState> current = resolvCurrentComboStateTicks(user);
-
+    default ResourceLocation doChargeAction(LivingEntity user, int elapsed) {
         if (elapsed <= 2)
-            return ComboState.NONE;
+            return ComboStateRegistry.NONE.getId();
+        
+        if (this.isBroken() || this.isSealed())
+            return ComboStateRegistry.NONE.getId();
+        
+        Map.Entry<Integer, ResourceLocation> currentloc = resolvCurrentComboStateTicks(user);
 
-        //Uninterrupted
-        if(current.getValue() != ComboState.NONE && current.getValue().getNext(user) == current.getValue())
-            return ComboState.NONE;
+        ComboState current = ComboStateRegistry.REGISTRY.get().getValue(currentloc.getValue());
+        if(current == null)
+        	return ComboStateRegistry.NONE.getId();
+        
+        // Uninterrupted
+        if (currentloc.getValue() != ComboStateRegistry.NONE.getId() && current.getNext(user) == currentloc.getValue())
+            return ComboStateRegistry.NONE.getId();
 
         int fullChargeTicks = getFullChargeTicks(user);
         int justReceptionSpan = SlashArts.getJustReceptionSpan(user);
@@ -258,207 +364,125 @@ public interface ISlashBladeState {
         RangeMap<Integer, SlashArts.ArtsType> charge_accept = ImmutableRangeMap.<Integer, SlashArts.ArtsType>builder()
                 .put(Range.lessThan(fullChargeTicks), SlashArts.ArtsType.Fail)
                 .put(Range.closedOpen(fullChargeTicks, justChargePeriod), SlashArts.ArtsType.Jackpot)
-                .put(Range.atLeast(justChargePeriod), SlashArts.ArtsType.Success)
-                .build();
+                .put(Range.atLeast(justChargePeriod), SlashArts.ArtsType.Success).build();
 
         SlashArts.ArtsType type = charge_accept.get(elapsed);
 
-        if(type != SlashArts.ArtsType.Jackpot){
-            //quick charge
-            SlashArts.ArtsType result = current.getValue().releaseAction(user, current.getKey());
+        if (type != SlashArts.ArtsType.Jackpot) {
+            // quick charge
+            SlashArts.ArtsType result = current.releaseAction(user, currentloc.getKey());
 
-            if(result != SlashArts.ArtsType.Fail)
+            if (result != SlashArts.ArtsType.Fail)
                 type = result;
         }
 
-        ComboState cs = this.getSlashArts().doArts(type, user);
-        if(current.getValue() != cs && cs != ComboState.NONE){
-            if(current.getValue().getPriority() > cs.getPriority()) {
-                if(type == SlashArts.ArtsType.Jackpot)
-                    AdvancementHelper.grantedIf(Enchantments.SOUL_SPEED,user);
-
-                updateComboSeq(user, cs);
+        ResourceLocation csloc = this.getSlashArts().doArts(type, user);
+        ComboState cs = ComboStateRegistry.REGISTRY.get().getValue(csloc);
+        if (csloc != ComboStateRegistry.NONE.getId() && !currentloc.getValue().equals(csloc)) {
+        	
+            if (current.getPriority() > cs.getPriority()) {
+                if (type == SlashArts.ArtsType.Jackpot)
+                    AdvancementHelper.grantedIf(Enchantments.SOUL_SPEED, user);
+                this.updateComboSeq(user, csloc);
             }
         }
-        return cs;
+        return csloc;
     }
 
-    default ComboState doBrokenAction(LivingEntity user){
-        Map.Entry<Integer, ComboState> current = resolvCurrentComboStateTicks(user);
-
-        //Uninterrupted
-        if(current.getValue() != ComboState.NONE && current.getValue().getNext(user) == current.getValue())
-            return ComboState.NONE;
-
-        SlashArts.ArtsType type = SlashArts.ArtsType.Broken;
-
-        ComboState cs = this.getSlashArts().doArts(type, user);
-        if(current.getValue() != cs && cs != ComboState.NONE){
-            if(current.getValue().getPriority() > cs.getPriority())
-                updateComboSeq(user, cs);
-        }
-        return cs;
-    }
-
-    default void updateComboSeq(LivingEntity entity, ComboState cs){
-        this.setComboSeq(cs);
+    default void updateComboSeq(LivingEntity entity, ResourceLocation loc) {
+        MinecraftForge.EVENT_BUS.post(new BladeMotionEvent(entity, loc));
+        this.setComboSeq(loc);
         this.setLastActionTime(entity.level().getGameTime());
-
+        ComboState cs = ComboStateRegistry.REGISTRY.get().getValue(loc);
         cs.clickAction(entity);
-
-        MinecraftForge.EVENT_BUS.post(new BladeMotionEvent(entity, cs));
     }
 
-    default ComboState resolvCurrentComboState(LivingEntity user){
+    default ResourceLocation resolvCurrentComboState(LivingEntity user) {
+    	if(!(user.getMainHandItem().getItem() instanceof ItemSlashBlade))
+    		return ComboStateRegistry.NONE.getId();
         return resolvCurrentComboStateTicks(user).getValue();
     }
 
-    default Map.Entry<Integer, ComboState> resolvCurrentComboStateTicks(LivingEntity user){
-        ComboState current = getComboSeq();
+    default Map.Entry<Integer, ResourceLocation> resolvCurrentComboStateTicks(LivingEntity user) {
+        ResourceLocation current = ComboStateRegistry.REGISTRY.get().containsKey(getComboSeq()) ? getComboSeq()
+                : ComboStateRegistry.NONE.getId();
+        ComboState currentCS = ComboStateRegistry.REGISTRY.get().getValue(current) != null
+                ? ComboStateRegistry.REGISTRY.get().getValue(current)
+                : ComboStateRegistry.NONE.get();
+        int time = (int) TimeValueHelper.getMSecFromTicks(getElapsedTime(user));
 
-        int time = (int)TimeValueHelper.getMSecFromTicks(getElapsedTime(user));
+        while (!current.equals(ComboStateRegistry.NONE.getId()) && currentCS.getTimeoutMS() < time) {
+            time -= currentCS.getTimeoutMS();
 
-        while(current != ComboState.NONE && current.getTimeoutMS() < time){
-            time -= current.getTimeoutMS();
-
-            current = current.getNextOfTimeout();
+            current = currentCS.getNextOfTimeout(user);
+            this.updateComboSeq(user, current);
         }
 
-        int ticks = (int)TimeValueHelper.getTicksFromMSec(time);
-
-        return new AbstractMap.SimpleImmutableEntry(ticks, current);
+        int ticks = (int) TimeValueHelper.getTicksFromMSec(time);
+        return new AbstractMap.SimpleImmutableEntry<>(ticks, current);
     }
 
-    default boolean hasEnergy(){
-        return true;
-    }
+    ResourceLocation getComboRoot();
 
-    String getComboRootName();
-    void setComboRootName(String comboRootName);
+    void setComboRoot(ResourceLocation resourceLocation);
 
-    default ComboState getComboRoot(){
-        return Optional.ofNullable(ComboState.NONE.valueOf(this.getComboRootName())).orElseGet(()-> Extra.STANDBY_EX);
-    }
+    int getDamage();
 
-    String getComboRootAirName();
-    void setComboRootAirName(String comboRootName);
+    void setDamage(int damage);
 
-    default ComboState getComboRootAir(){
-        return Optional.ofNullable(ComboState.NONE.valueOf(this.getComboRootAirName())).orElseGet(()-> Extra.STANDBY_INAIR);
-    }
+    int getMaxDamage();
 
-    CompoundTag getShareTag();
-    void setShareTag(CompoundTag shareTag);
-
-    float getDamage();
-    void setDamage(float damage);
-
-    default <T extends LivingEntity> void damageBlade(ItemStack stack, int amount, T entityIn, Consumer<T> onBroken){
-        if(amount <= 0) return;
-
-        boolean current = this.isBroken();
-
-        stack.hurtAndBreak(1, entityIn, (s)->{});
-
-        if(1.0f <= this.getDamage())
-            this.setBroken(true);
-
-        if(current != this.isBroken()){
-            onBroken.accept(entityIn);
-
-            if (entityIn instanceof ServerPlayer) {
-                stack.getShareTag();
-                CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer)entityIn, stack);
-            }
-
-            if(entityIn instanceof Player)
-                ((Player)entityIn).awardStat(Stats.ITEM_BROKEN.get(stack.getItem()));
-        }
-
-
-        if(this.isBroken() && this.isDestructable())
-            stack.shrink(1);
-    }
-
-    default float getDurabilityForDisplay(){
-        return Math.max(0,Math.min(getDamage(), 1.0f));
-    }
-
+    void setMaxDamage(int damage);
+    
+    List<ResourceLocation> getSpecialEffects();
+    
+    void setSpecialEffects(ListTag list);
+    
+    boolean addSpecialEffect(ResourceLocation se);
+    
+    boolean removeSpecialEffect(ResourceLocation se);
+    
+    boolean hasSpecialEffect(ResourceLocation se);
+    
     boolean hasChangedActiveState();
+
     void setHasChangedActiveState(boolean isChanged);
 
-    default void sendChanges(Entity entityIn){
-        if(!entityIn.level().isClientSide && this.hasChangedActiveState()){
+    default void sendChanges(Entity entityIn) {
+        if (!entityIn.level().isClientSide() && this.hasChangedActiveState()) {
             ActiveStateSyncMessage msg = new ActiveStateSyncMessage();
             msg.activeTag = this.getActiveState();
             msg.id = entityIn.getId();
-            NetworkManager.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(()->entityIn), msg);
+            NetworkManager.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entityIn), msg);
 
             this.setHasChangedActiveState(false);
         }
     }
 
-    static void removeActiveState(CompoundTag tag){
-        NBTHelper.getNBTCoupler(tag)
-                .remove("lastActionTime")
-                .remove("TargetEntity")
-                .remove("_onClick")
-                .remove("fallDecreaseRate")
-                .remove("isCharged")
-                .remove("AttackAmplifier")
-                .remove("currentCombo")
-                .remove("lastPosHash")
-                .remove("HasShield")
-
-                .remove("killCount")
-
-                .remove("Damage");
-    }
-
-    default CompoundTag getActiveState(){
+    default CompoundTag getActiveState() {
         CompoundTag tag = new CompoundTag();
 
         NBTHelper.getNBTCoupler(tag)
                 .put("BladeUniqueId", this.getUniqueId())
-
-                .put("lastActionTime" , this.getLastActionTime())
-                .put("TargetEntity", this.getTargetEntityId())
+                .put("lastActionTime", this.getLastActionTime()).put("TargetEntity", this.getTargetEntityId())
                 .put("_onClick", this.onClick())
                 .put("fallDecreaseRate", this.getFallDecreaseRate())
-                .put("isCharged", this.isCharged())
-                .put("AttackAmplifier", this.getAttackAmplifier())
-                .put("currentCombo", this.getComboSeq().getName())
-                .put("lastPosHash", this.getLastPosHash())
-                .put("HasShield", this.hasShield())
-
-                .put("killCount", this.getKillCount())
-
-                .put("Damage", this.getDamage())
-
-                .put("isBroken", this.isBroken());
+                .put("AttackAmplifier", this.getAttackAmplifier()).put("currentCombo", this.getComboSeq().toString())
+                .put("proudSoul", this.getProudSoulCount()).put("killCount", this.getKillCount())
+                .put("Damage", this.getDamage()).put("isBroken", this.isBroken());
 
         return tag;
     }
 
-    default void setActiveState(CompoundTag tag){
+    default void setActiveState(CompoundTag tag) {
         NBTHelper.getNBTCoupler(tag)
-                //.get("BladeUniqueId", this::setUniqueId)
-
+                .get("BladeUniqueId", this::setUniqueId)
                 .get("lastActionTime", this::setLastActionTime)
-                .get("TargetEntity", ((Integer id) -> this.setTargetEntityId(id)))
-                .get("_onClick", this::setOnClick)
-                .get("fallDecreaseRate", this::setFallDecreaseRate)
-                .get("isCharged", this::setCharged)
-                .get("AttackAmplifier", this::setAttackAmplifier)
-                .get("currentCombo", ((String s) -> this.setComboSeq(ComboState.NONE.valueOf(s))))
-                .get("lastPosHash", this::setLastPosHash)
-                .get("HasShield", this::setHasShield)
-
-                .get("killCount", this::setKillCount)
-
-                .get("Damage", this::setDamage)
-
-                .get("isBroken", this::setBroken);
+                .get("TargetEntity", ((Integer id) -> this.setTargetEntityId(id))).get("_onClick", this::setOnClick)
+                .get("fallDecreaseRate", this::setFallDecreaseRate).get("AttackAmplifier", this::setAttackAmplifier)
+                .get("currentCombo", ((String s) -> this.setComboSeq(ResourceLocation.tryParse(s))))
+                .get("proudSoul", this::setProudSoulCount).get("killCount", this::setKillCount)
+                .get("Damage", this::setDamage).get("isBroken", this::setBroken);
 
         this.setHasChangedActiveState(false);
     }

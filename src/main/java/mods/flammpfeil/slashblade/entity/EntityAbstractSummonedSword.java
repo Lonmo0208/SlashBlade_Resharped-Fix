@@ -3,7 +3,6 @@ package mods.flammpfeil.slashblade.entity;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.ability.StunManager;
-import mods.flammpfeil.slashblade.util.CustomDamageSource;
 import mods.flammpfeil.slashblade.util.EnumSetConverter;
 import mods.flammpfeil.slashblade.util.NBTHelper;
 import mods.flammpfeil.slashblade.util.TargetSelector;
@@ -52,41 +51,49 @@ import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-
-import net.minecraft.world.entity.Entity.RemovalReason;
 
 public class EntityAbstractSummonedSword extends Projectile implements IShootable {
-    private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.<Integer>defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> FLAGS = SynchedEntityData.<Integer>defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> HIT_ENTITY_ID = SynchedEntityData.<Integer>defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Float> OFFSET_YAW = SynchedEntityData.<Float>defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> ROLL = SynchedEntityData.<Float>defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Byte> PIERCE = SynchedEntityData.defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.BYTE);
-    private static final EntityDataAccessor<String> MODEL = SynchedEntityData.defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.STRING);
-    private static final EntityDataAccessor<Integer> DELAY = SynchedEntityData.<Integer>defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData
+            .<Integer>defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> FLAGS = SynchedEntityData
+            .<Integer>defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> HIT_ENTITY_ID = SynchedEntityData
+            .<Integer>defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Float> OFFSET_YAW = SynchedEntityData
+            .<Float>defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> ROLL = SynchedEntityData
+            .<Float>defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Byte> PIERCE = SynchedEntityData.defineId(EntityAbstractSummonedSword.class,
+            EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<String> MODEL = SynchedEntityData
+            .defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Integer> DELAY = SynchedEntityData
+            .<Integer>defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.INT);
 
     private int ticksInGround;
     private boolean inGround;
     private BlockState inBlockState;
     private int ticksInAir;
     private double damage = 1.0D;
-    
+
     private IntOpenHashSet alreadyHits;
 
     private Entity hitEntity = null;
 
-    static final int ON_GROUND_LIFE_TIME = 20*5;
+    static final int ON_GROUND_LIFE_TIME = 20 * 5;
 
     private SoundEvent hitEntitySound = SoundEvents.TRIDENT_HIT;
     private SoundEvent hitEntityPlayerSound = SoundEvents.TRIDENT_HIT;
     private SoundEvent hitGroundSound = SoundEvents.TRIDENT_HIT_GROUND;
+
     protected SoundEvent getHitEntitySound() {
         return this.hitEntitySound;
     }
+
     protected SoundEvent getHitEntityPlayerSound() {
         return this.hitEntityPlayerSound;
     }
+
     protected SoundEvent getHitGroundSound() {
         return this.hitGroundSound;
     }
@@ -94,10 +101,10 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
     public EntityAbstractSummonedSword(EntityType<? extends Projectile> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
         this.setNoGravity(true);
-        //this.setGlowing(true);
+        // this.setGlowing(true);
     }
 
-    public static EntityAbstractSummonedSword createInstance(PlayMessages.SpawnEntity packet, Level worldIn){
+    public static EntityAbstractSummonedSword createInstance(PlayMessages.SpawnEntity packet, Level worldIn) {
         return new EntityAbstractSummonedSword(SlashBlade.RegistryEvents.SummonedSword, worldIn);
     }
 
@@ -109,25 +116,19 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
         this.entityData.define(HIT_ENTITY_ID, -1);
         this.entityData.define(OFFSET_YAW, 0f);
         this.entityData.define(ROLL, 0f);
-        this.entityData.define(PIERCE, (byte)0);
+        this.entityData.define(PIERCE, (byte) 0);
         this.entityData.define(MODEL, "");
-        this.entityData.define(DELAY,10);
+        this.entityData.define(DELAY, 10);
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
 
-        NBTHelper.getNBTCoupler(compound)
-                .put("Color", this.getColor())
-                .put("life", (short)this.ticksInGround)
+        NBTHelper.getNBTCoupler(compound).put("Color", this.getColor()).put("life", (short) this.ticksInGround)
                 .put("inBlockState", (this.inBlockState != null ? NbtUtils.writeBlockState(this.inBlockState) : null))
-                .put("inGround", this.inGround)
-                .put("damage", this.damage)
-                .put("crit", this.getIsCritical())
-                .put("clip", this.isNoClip())
-                .put("PierceLevel", this.getPierce())
-                .put("model", this.getModelName())
+                .put("inGround", this.inGround).put("damage", this.damage).put("crit", this.getIsCritical())
+                .put("clip", this.isNoClip()).put("PierceLevel", this.getPierce()).put("model", this.getModelName())
                 .put("Delay", this.getDelay());
     }
 
@@ -135,17 +136,15 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
 
-        NBTHelper.getNBTCoupler(compound)
-                .get("Color", this::setColor)
-                .get("life",((Integer v)->this.ticksInGround = v))
-                .get("inBlockState",((CompoundTag v)->this.inBlockState = NbtUtils.readBlockState(this.level().holderLookup(Registries.BLOCK),v)))
-                .get("inGround",  ((Boolean v)->this.inGround = v))
-                .get("damage",  ((Double v)->this.damage = v), this.damage)
-                .get("crit",this::setIsCritical)
-                .get("clip",this::setNoClip)
-                .get("PierceLevel",this::setPierce)
-                .get("model",this::setModelName)
-                .get("Delay",this::setDelay);
+        NBTHelper.getNBTCoupler(compound).get("Color", this::setColor)
+                .get("life", ((Integer v) -> this.ticksInGround = v))
+                .get("inBlockState",
+                        ((CompoundTag v) -> this.inBlockState = NbtUtils
+                                .readBlockState(this.level().holderLookup(Registries.BLOCK), v)))
+                .get("inGround", ((Boolean v) -> this.inGround = v))
+                .get("damage", ((Double v) -> this.damage = v), this.damage).get("crit", this::setIsCritical)
+                .get("clip", this::setNoClip).get("PierceLevel", this::setPierce).get("model", this::setModelName)
+                .get("Delay", this::setDelay);
     }
 
     @Override
@@ -155,12 +154,16 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
 
     @Override
     public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
-        Vec3 vec3d = (new Vec3(x, y, z)).normalize().add(this.random.nextGaussian() * (double)0.0075F * (double)inaccuracy, this.random.nextGaussian() * (double)0.0075F * (double)inaccuracy, this.random.nextGaussian() * (double)0.0075F * (double)inaccuracy).scale((double)velocity);
+        Vec3 vec3d = (new Vec3(x, y, z)).normalize()
+                .add(this.random.nextGaussian() * (double) 0.0075F * (double) inaccuracy,
+                        this.random.nextGaussian() * (double) 0.0075F * (double) inaccuracy,
+                        this.random.nextGaussian() * (double) 0.0075F * (double) inaccuracy)
+                .scale((double) velocity);
         this.setDeltaMovement(vec3d);
-        float f = Mth.sqrt((float)vec3d.horizontalDistanceSqr());
+        float f = Mth.sqrt((float) vec3d.horizontalDistanceSqr());
         this.setPos(this.position());
-        this.setYRot( (float)(Mth.atan2(vec3d.x, vec3d.z) * (double)(180F / (float)Math.PI)));
-        this.setXRot( (float)(Mth.atan2(vec3d.y, (double)f) * (double)(180F / (float)Math.PI)));
+        this.setYRot((float) (Mth.atan2(vec3d.x, vec3d.z) * (double) (180F / (float) Math.PI)));
+        this.setXRot((float) (Mth.atan2(vec3d.y, (double) f) * (double) (180F / (float) Math.PI)));
         this.yRotO = this.getYRot();
         this.xRotO = this.getXRot();
         this.ticksInGround = 0;
@@ -180,7 +183,8 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void lerpTo(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport) {
+    public void lerpTo(double x, double y, double z, float yaw, float pitch, int posRotationIncrements,
+            boolean teleport) {
         this.setPos(x, y, z);
         this.setRot(yaw, pitch);
     }
@@ -190,9 +194,9 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
     public void lerpMotion(double x, double y, double z) {
         this.setDeltaMovement(x, y, z);
         if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
-            float f = Mth.sqrt((float)(x * x + z * z));
-            this.setXRot((float)(Mth.atan2(y, (double)f) * (double)(180F / (float)Math.PI)));
-            this.setYRot((float)(Mth.atan2(x, z) * (double)(180F / (float)Math.PI)));
+            float f = Mth.sqrt((float) (x * x + z * z));
+            this.setXRot((float) (Mth.atan2(y, (double) f) * (double) (180F / (float) Math.PI)));
+            this.setYRot((float) (Mth.atan2(x, z) * (double) (180F / (float) Math.PI)));
             this.xRotO = this.getXRot();
             this.yRotO = this.getYRot();
             this.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), this.getXRot());
@@ -202,60 +206,61 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
     }
 
     enum FlagsState {
-        Critical,
-        NoClip,
+        Critical, NoClip,
     }
 
-    EnumSet<FlagsState> flags = EnumSet.noneOf(FlagsState.class);
-    int intFlags = 0;
+    protected EnumSet<FlagsState> flags = EnumSet.noneOf(FlagsState.class);
+    protected int intFlags = 0;
 
-    private void setFlags(FlagsState value) {
+    protected void setFlags(FlagsState value) {
         this.flags.add(value);
         refreshFlags();
     }
-    private void removeFlags(FlagsState value){
+
+    protected void removeFlags(FlagsState value) {
         this.flags.remove(value);
         refreshFlags();
     }
 
-    private void refreshFlags(){
-        if(this.level().isClientSide){
+    private void refreshFlags() {
+        if (this.level().isClientSide()) {
             int newValue = this.entityData.get(FLAGS).intValue();
-            if(intFlags != newValue){
+            if (intFlags != newValue) {
                 intFlags = newValue;
                 flags = EnumSetConverter.convertToEnumSet(FlagsState.class, intFlags);
             }
-        }else{
+        } else {
             int newValue = EnumSetConverter.convertToInt(this.flags);
-            if(this.intFlags != newValue) {
+            if (this.intFlags != newValue) {
                 this.entityData.set(FLAGS, newValue);
                 this.intFlags = newValue;
             }
         }
     }
 
-
     public void setIsCritical(boolean value) {
-        if(value)
+        if (value)
             setFlags(FlagsState.Critical);
         else
             removeFlags(FlagsState.Critical);
     }
+
     public boolean getIsCritical() {
         refreshFlags();
         return flags.contains(FlagsState.Critical);
     }
-    
+
     public void setNoClip(boolean value) {
         this.noPhysics = value;
-        if(value)
+        if (value)
             setFlags(FlagsState.NoClip);
         else
             removeFlags(FlagsState.NoClip);
     }
-    //disallowedHitBlock
+
+    // disallowedHitBlock
     public boolean isNoClip() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             return this.noPhysics;
         } else {
             refreshFlags();
@@ -267,19 +272,19 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
     public void tick() {
         super.tick();
 
-        if(getHitEntity() != null){
+        if (getHitEntity() != null) {
             Entity hits = getHitEntity();
 
-            if(!hits.isAlive()){
+            if (!hits.isAlive()) {
                 this.burst();
-            }else{
-                this.setPos(hits.getX(),hits.getY() + hits.getEyeHeight() * 0.5f,hits.getZ());
+            } else {
+                this.setPos(hits.getX(), hits.getY() + hits.getEyeHeight() * 0.5f, hits.getZ());
 
                 int delay = getDelay();
                 delay--;
                 setDelay(delay);
 
-                if(!this.level().isClientSide && delay < 0)
+                if (!this.level().isClientSide() && delay < 0)
                     this.burst();
             }
 
@@ -293,7 +298,7 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
         if (!blockstate.isAir() && !disallowedHitBlock) {
             VoxelShape voxelshape = blockstate.getCollisionShape(this.level(), blockpos);
             if (!voxelshape.isEmpty()) {
-                for(AABB axisalignedbb : voxelshape.toAabbs()) {
+                for (AABB axisalignedbb : voxelshape.toAabbs()) {
                     if (axisalignedbb.move(blockpos).contains(new Vec3(this.getX(), this.getY(), this.getZ()))) {
                         this.inGround = true;
                         break;
@@ -308,49 +313,52 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
 
         if (this.inGround && !disallowedHitBlock) {
             if (this.inBlockState != blockstate && this.level().noCollision(this.getBoundingBox().inflate(0.06D))) {
-                //block breaked
+                // block breaked
                 this.burst();
-            } else if (!this.level().isClientSide) {
-                //onBlock
+            } else if (!this.level().isClientSide()) {
+                // onBlock
                 this.tryDespawn();
             }
         } else {
-            //process pose
+            // process pose
             Vec3 motionVec = this.getDeltaMovement();
             if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
-                float f = Mth.sqrt((float)motionVec.horizontalDistanceSqr());
-                this.setYRot((float)(Mth.atan2(motionVec.x, motionVec.z) * (double)(180F / (float)Math.PI)));
-                this.setXRot((float)(Mth.atan2(motionVec.y, (double)f) * (double)(180F / (float)Math.PI)));
+                float f = Mth.sqrt((float) motionVec.horizontalDistanceSqr());
+                this.setYRot((float) (Mth.atan2(motionVec.x, motionVec.z) * (double) (180F / (float) Math.PI)));
+                this.setXRot((float) (Mth.atan2(motionVec.y, (double) f) * (double) (180F / (float) Math.PI)));
                 this.yRotO = this.getYRot();
                 this.xRotO = this.getXRot();
             }
 
-            //process inAir
+            // process inAir
             ++this.ticksInAir;
             Vec3 positionVec = this.position();
             Vec3 movedVec = positionVec.add(motionVec);
-            HitResult raytraceresult = this.level().clip(new ClipContext(positionVec, movedVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+            HitResult raytraceresult = this.level().clip(
+                    new ClipContext(positionVec, movedVec, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
             if (raytraceresult.getType() != HitResult.Type.MISS) {
                 movedVec = raytraceresult.getLocation();
             }
 
-            while(this.isAlive()) {
-                //todo : replace TargetSelector
+            while (this.isAlive()) {
+                // todo : replace TargetSelector
                 EntityHitResult entityraytraceresult = this.getRayTrace(positionVec, movedVec);
                 if (entityraytraceresult != null) {
                     raytraceresult = entityraytraceresult;
                 }
 
                 if (raytraceresult != null && raytraceresult.getType() == HitResult.Type.ENTITY) {
-                    Entity entity = ((EntityHitResult)raytraceresult).getEntity();
+                    Entity entity = ((EntityHitResult) raytraceresult).getEntity();
                     Entity entity1 = this.getShooter();
-                    if (entity instanceof Player && entity1 instanceof Player && !((Player)entity1).canHarmPlayer((Player)entity)) {
+                    if (entity instanceof Player && entity1 instanceof Player
+                            && !((Player) entity1).canHarmPlayer((Player) entity)) {
                         raytraceresult = null;
                         entityraytraceresult = null;
                     }
                 }
 
-                if (raytraceresult != null && !(disallowedHitBlock && raytraceresult.getType() == HitResult.Type.BLOCK) && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
+                if (raytraceresult != null && !(disallowedHitBlock && raytraceresult.getType() == HitResult.Type.BLOCK)
+                        && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
                     this.onHit(raytraceresult);
                     this.hasImpulse = true;
                 }
@@ -367,58 +375,59 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
             double my = motionVec.y;
             double mz = motionVec.z;
             if (this.getIsCritical()) {
-                for(int i = 0; i < 4; ++i) {
-                    this.level().addParticle(ParticleTypes.CRIT, this.getX() + mx * (double)i / 4.0D, this.getY() + my * (double)i / 4.0D, this.getZ() + mz * (double)i / 4.0D, -mx, -my + 0.2D, -mz);
+                for (int i = 0; i < 4; ++i) {
+                    this.level().addParticle(ParticleTypes.CRIT, this.getX() + mx * (double) i / 4.0D,
+                            this.getY() + my * (double) i / 4.0D, this.getZ() + mz * (double) i / 4.0D, -mx, -my + 0.2D,
+                            -mz);
                 }
             }
 
-            this.setPos(this.getX()+ mx, this.getY()+my, this.getZ()+mz);
-            float f4 = Mth.sqrt((float)motionVec.horizontalDistanceSqr());
+            this.setPos(this.getX() + mx, this.getY() + my, this.getZ() + mz);
+            float f4 = Mth.sqrt((float) motionVec.horizontalDistanceSqr());
             if (disallowedHitBlock) {
-                this.setYRot((float)(Mth.atan2(-mx, -mz) * (double)(180F / (float)Math.PI)));
+                this.setYRot((float) (Mth.atan2(-mx, -mz) * (double) (180F / (float) Math.PI)));
             } else {
-                this.setYRot((float)(Mth.atan2(mx, mz) * (double)(180F / (float)Math.PI)));
+                this.setYRot((float) (Mth.atan2(mx, mz) * (double) (180F / (float) Math.PI)));
             }
 
-            for(this.setXRot((float)(Mth.atan2(my, (double)f4) * (double)(180F / (float)Math.PI))); this.getXRot() - this.xRotO < -180.0F; this.xRotO -= 360.0F) {
+            for (this.setXRot((float) (Mth.atan2(my, (double) f4) * (double) (180F / (float) Math.PI))); this.getXRot()
+                    - this.xRotO < -180.0F; this.xRotO -= 360.0F) {
                 ;
             }
 
-            while(this.getXRot() - this.xRotO >= 180.0F) {
+            while (this.getXRot() - this.xRotO >= 180.0F) {
                 this.xRotO += 360.0F;
             }
 
-            while(this.getYRot() - this.yRotO < -180.0F) {
+            while (this.getYRot() - this.yRotO < -180.0F) {
                 this.yRotO -= 360.0F;
             }
 
-            while(this.getYRot() - this.yRotO >= 180.0F) {
+            while (this.getYRot() - this.yRotO >= 180.0F) {
                 this.yRotO += 360.0F;
             }
 
             this.setXRot(Mth.lerp(0.2F, this.xRotO, this.getXRot()));
             this.setYRot(Mth.lerp(0.2F, this.yRotO, this.getYRot()));
             float f1 = 0.99F;
-            float f2 = 0.05F;
             if (this.isInWater()) {
-                for(int j = 0; j < 4; ++j) {
-                    float f3 = 0.25F;
-                    this.level().addParticle(ParticleTypes.BUBBLE, this.getX() - mx * 0.25D, this.getY() - my * 0.25D, this.getZ() - mz * 0.25D, mx, my, mz);
+                for (int j = 0; j < 4; ++j) {
+                    this.level().addParticle(ParticleTypes.BUBBLE, this.getX() - mx * 0.25D, this.getY() - my * 0.25D,
+                            this.getZ() - mz * 0.25D, mx, my, mz);
                 }
             }
 
-            this.setDeltaMovement(motionVec.scale((double)f1));
+            this.setDeltaMovement(motionVec.scale((double) f1));
             if (!this.isNoGravity() && !disallowedHitBlock) {
                 Vec3 vec3d3 = this.getDeltaMovement();
-                this.setDeltaMovement(vec3d3.x, vec3d3.y - (double)0.05F, vec3d3.z);
+                this.setDeltaMovement(vec3d3.x, vec3d3.y - (double) 0.05F, vec3d3.z);
             }
 
-            //this.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
+            // this.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
             this.checkInsideBlocks();
         }
 
-
-        if(!this.level().isClientSide && ticksInGround <= 0 && 100 < this.tickCount)
+        if (!this.level().isClientSide() && ticksInGround <= 0 && 100 < this.tickCount)
             this.remove(RemovalReason.DISCARDED);
 
     }
@@ -433,15 +442,18 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
 
     protected void onHit(HitResult raytraceResultIn) {
         HitResult.Type type = raytraceResultIn.getType();
-        switch (type){
-            case ENTITY:
-                this.onHitEntity((EntityHitResult)raytraceResultIn);
-                break;
-            case BLOCK:
-                this.onHitBlock((BlockHitResult)raytraceResultIn);
-                break;
+        switch (type) {
+        case ENTITY:
+            this.onHitEntity((EntityHitResult) raytraceResultIn);
+            break;
+        case BLOCK:
+            this.onHitBlock((BlockHitResult) raytraceResultIn);
+            break;
+        default:
+            break;
         }
     }
+
     protected void onHitBlock(BlockHitResult blockraytraceresult) {
         BlockState blockstate = this.level().getBlockState(blockraytraceresult.getBlockPos());
         this.inBlockState = blockstate;
@@ -457,7 +469,7 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
         blockstate.onProjectileHit(this.level(), blockstate, blockraytraceresult, this);
     }
 
-    public void doForceHitEntity(Entity target){
+    public void doForceHitEntity(Entity target) {
         onHitEntity(new EntityHitResult(target));
     }
 
@@ -484,15 +496,15 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
         Entity shooter = this.getShooter();
         DamageSource damagesource;
         if (shooter == null) {
-            damagesource = this.damageSources().indirectMagic( this, this);
+            damagesource = this.damageSources().indirectMagic(this, this);
         } else {
             damagesource = this.damageSources().indirectMagic(this, shooter);
             if (shooter instanceof LivingEntity) {
                 Entity hits = targetEntity;
-                if(targetEntity instanceof PartEntity){
-                    hits = ((PartEntity) targetEntity).getParent();
+                if (targetEntity instanceof PartEntity) {
+                    hits = ((PartEntity<?>) targetEntity).getParent();
                 }
-                ((LivingEntity)shooter).setLastHurtMob(hits);
+                ((LivingEntity) shooter).setLastHurtMob(hits);
             }
         }
 
@@ -501,34 +513,36 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
             targetEntity.setSecondsOnFire(5);
         }
 
-        //todo: attack manager
+        // todo: attack manager
         targetEntity.invulnerableTime = 0;
-        if (targetEntity.hurt(damagesource, (float)i)) {
+        if (targetEntity.hurt(damagesource, (float) i)) {
             Entity hits = targetEntity;
-            if(targetEntity instanceof PartEntity){
-                hits = ((PartEntity) targetEntity).getParent();
+            if (targetEntity instanceof PartEntity) {
+                hits = ((PartEntity<?>) targetEntity).getParent();
             }
 
             if (hits instanceof LivingEntity) {
-                LivingEntity targetLivingEntity = (LivingEntity)hits;
+                LivingEntity targetLivingEntity = (LivingEntity) hits;
 
                 StunManager.setStun(targetLivingEntity);
 
-                if (!this.level().isClientSide && this.getPierce() <= 0) {
+                if (!this.level().isClientSide() && this.getPierce() <= 0) {
                     setHitEntity(hits);
                 }
 
-                if (!this.level().isClientSide && shooter instanceof LivingEntity) {
+                if (!this.level().isClientSide() && shooter instanceof LivingEntity) {
                     EnchantmentHelper.doPostHurtEffects(targetLivingEntity, shooter);
-                    EnchantmentHelper.doPostDamageEffects((LivingEntity)shooter, targetLivingEntity);
+                    EnchantmentHelper.doPostDamageEffects((LivingEntity) shooter, targetLivingEntity);
                 }
 
-                //this.arrowHit(targetLivingEntity);
+                // this.arrowHit(targetLivingEntity);
 
                 affectEntity(targetLivingEntity, getPotionEffects(), 1.0f);
 
-                if (shooter != null && targetLivingEntity != shooter && targetLivingEntity instanceof Player && shooter instanceof ServerPlayer) {
-                    ((ServerPlayer) shooter).playNotifySound(this.getHitEntityPlayerSound(), SoundSource.PLAYERS, 0.18F, 0.45F);
+                if (shooter != null && targetLivingEntity != shooter && targetLivingEntity instanceof Player
+                        && shooter instanceof ServerPlayer) {
+                    ((ServerPlayer) shooter).playNotifySound(this.getHitEntityPlayerSound(), SoundSource.PLAYERS, 0.18F,
+                            0.45F);
                 }
             }
 
@@ -538,46 +552,52 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
             }
         } else {
             targetEntity.setRemainingFireTicks(fireTime);
-            //this.setMotion(this.getMotion().scale(-0.1D));
-            //this.setYRot(this.getYRot() + 180.0F);
-            //this.yRotO += 180.0F;
+            // this.setMotion(this.getMotion().scale(-0.1D));
+            // this.setYRot(this.getYRot() + 180.0F);
+            // this.yRotO += 180.0F;
             this.ticksInAir = 0;
-            if (!this.level().isClientSide && this.getDeltaMovement().lengthSqr() < 1.0E-7D) {
-                if(getPierce() <= 1)
+            if (!this.level().isClientSide() && this.getDeltaMovement().lengthSqr() < 1.0E-7D) {
+                if (getPierce() <= 1)
                     this.burst();
                 else
-                    this.setPierce((byte)(getPierce() - 1));
+                    this.setPierce((byte) (getPierce() - 1));
             }
         }
 
     }
 
-    public int getColor(){
+    public int getColor() {
         return this.getEntityData().get(COLOR);
     }
-    public void setColor(int value){
-        this.getEntityData().set(COLOR,value);
+
+    public void setColor(int value) {
+        this.getEntityData().set(COLOR, value);
     }
 
-    public byte getPierce(){
+    public byte getPierce() {
         return this.getEntityData().get(PIERCE);
     }
-    public void setPierce(byte value){
-        this.getEntityData().set(PIERCE,(byte)value);
+
+    public void setPierce(byte value) {
+        this.getEntityData().set(PIERCE, (byte) value);
     }
 
-    public int getDelay(){
+    public int getDelay() {
         return this.getEntityData().get(DELAY);
     }
-    public void setDelay(int value){
-        this.getEntityData().set(DELAY,value);
+
+    public void setDelay(int value) {
+        this.getEntityData().set(DELAY, value);
     }
 
     @Nullable
     protected EntityHitResult getRayTrace(Vec3 p_213866_1_, Vec3 p_213866_2_) {
-        return ProjectileUtil.getEntityHitResult(this.level(), this, p_213866_1_, p_213866_2_, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), (p_213871_1_) -> {
-            return !p_213871_1_.isSpectator() && p_213871_1_.isAlive() && p_213871_1_.isPickable() && (p_213871_1_ != this.getShooter() || this.ticksInAir >= 5) && (this.alreadyHits == null || !this.alreadyHits.contains(p_213871_1_.getId()));
-        });
+        return ProjectileUtil.getEntityHitResult(this.level(), this, p_213866_1_, p_213866_2_,
+                this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), (entity) -> {
+                    return entity.canBeHitByProjectile()
+                            && (entity != this.getShooter() || this.ticksInAir >= 5)
+                            && (this.alreadyHits == null || !this.alreadyHits.contains(entity.getId()));
+                });
     }
 
     @Nullable
@@ -591,76 +611,71 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
         setOwner(shooter);
     }
 
-    public List<MobEffectInstance> getPotionEffects(){
+    public List<MobEffectInstance> getPotionEffects() {
         List<MobEffectInstance> effects = PotionUtils.getAllEffects(this.getPersistentData());
 
-        if(effects.isEmpty())
+        if (effects.isEmpty())
             effects.add(new MobEffectInstance(MobEffects.POISON, 1, 1));
 
         return effects;
     }
 
-    public void burst(){
+    public void burst() {
         this.playSound(SoundEvents.GLASS_BREAK, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
 
-        if(!this.level().isClientSide){
-            if(this.level() instanceof ServerLevel)
-                ((ServerLevel)this.level()).sendParticles(ParticleTypes.CRIT, this.getX(), this.getY(), this.getZ(), 16, 0.5, 0.5,0.5,0.25f);
+        if (!this.level().isClientSide()) {
+            if (this.level() instanceof ServerLevel)
+                ((ServerLevel) this.level()).sendParticles(ParticleTypes.CRIT, this.getX(), this.getY(), this.getZ(),
+                        16, 0.5, 0.5, 0.5, 0.25f);
 
-            this.burst( getPotionEffects(), null);
+            this.burst(getPotionEffects(), null);
         }
 
         super.remove(RemovalReason.DISCARDED);
     }
 
-
     public void burst(List<MobEffectInstance> effects, @Nullable Entity focusEntity) {
-        AABB axisalignedbb = this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
-        List<Entity> list = TargetSelector.getTargettableEntitiesWithinAABB(
-                this.level(),
-                2,
-                this);
-        //this.world.getEntitiesWithinAABB(LivingEntity.class, axisalignedbb);
+        // AABB axisalignedbb = this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
+        List<Entity> list = TargetSelector.getTargettableEntitiesWithinAABB(this.level(), 2, this);
+        // this.world.getEntitiesWithinAABB(LivingEntity.class, axisalignedbb);
 
-        list.stream()
-                .filter(e -> e instanceof LivingEntity)
-                .map(e -> (LivingEntity) e)
-                .forEach(e -> {
-                    double distanceSq = this.distanceToSqr(e);
-                    if (distanceSq < 9.0D) {
-                        double factor = 1.0D - Math.sqrt(distanceSq) / 4.0D;
-                        if (e == focusEntity) {
-                            factor = 1.0D;
-                        }
+        list.stream().filter(e -> e instanceof LivingEntity).map(e -> (LivingEntity) e).forEach(e -> {
+            double distanceSq = this.distanceToSqr(e);
+            if (distanceSq < 9.0D) {
+                double factor = 1.0D - Math.sqrt(distanceSq) / 4.0D;
+                if (e == focusEntity) {
+                    factor = 1.0D;
+                }
 
-                        affectEntity(e, effects, factor);
-                    }
-                });
+                affectEntity(e, effects, factor);
+            }
+        });
     }
 
-
-    public void affectEntity(LivingEntity focusEntity, List<MobEffectInstance> effects, double factor){
-        for(MobEffectInstance effectinstance : getPotionEffects()) {
+    public void affectEntity(LivingEntity focusEntity, List<MobEffectInstance> effects, double factor) {
+        for (MobEffectInstance effectinstance : getPotionEffects()) {
             MobEffect effect = effectinstance.getEffect();
             if (effect.isInstantenous()) {
-                effect.applyInstantenousEffect(this, this.getShooter(), focusEntity, effectinstance.getAmplifier(), factor);
+                effect.applyInstantenousEffect(this, this.getShooter(), focusEntity, effectinstance.getAmplifier(),
+                        factor);
             } else {
-                int duration = (int)(factor * (double)effectinstance.getDuration() + 0.5D);
+                int duration = (int) (factor * (double) effectinstance.getDuration() + 0.5D);
                 if (duration > 0) {
-                    focusEntity.addEffect(new MobEffectInstance(effect, duration, effectinstance.getAmplifier(), effectinstance.isAmbient(), effectinstance.isVisible()));
+                    focusEntity.addEffect(new MobEffectInstance(effect, duration, effectinstance.getAmplifier(),
+                            effectinstance.isAmbient(), effectinstance.isVisible()));
                 }
             }
         }
     }
 
     public void resetAlreadyHits() {
-        if(this.alreadyHits != null)
+        if (this.alreadyHits != null)
             alreadyHits.clear();
     }
 
     public void setHitEntity(Entity hitEntity) {
-        if(hitEntity != this){
-            this.entityData.set(HIT_ENTITY_ID ,hitEntity.getId());
+        if (hitEntity != this) {
+            this.entityData.set(HIT_ENTITY_ID, hitEntity.getId());
 
             this.entityData.set(OFFSET_YAW, this.random.nextFloat() * 360);
 
@@ -670,23 +685,24 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
 
     @Nullable
     public Entity getHitEntity() {
-        if(hitEntity == null){
+        if (hitEntity == null) {
             int id = this.entityData.get(HIT_ENTITY_ID);
-            if(0 <= id){
+            if (0 <= id) {
                 hitEntity = this.level().getEntity(id);
             }
         }
         return hitEntity;
     }
 
-    public float getOffsetYaw(){
+    public float getOffsetYaw() {
         return this.entityData.get(OFFSET_YAW);
     }
 
-    public float getRoll(){
+    public float getRoll() {
         return this.entityData.get(ROLL);
     }
-    public void setRoll(float value){
+
+    public void setRoll(float value) {
         this.entityData.set(ROLL, value);
     }
 
@@ -699,39 +715,40 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
         return this.damage;
     }
 
-
     private static final String defaultModelName = "slashblade:model/util/ss";
 
-    public void setModelName(String name){
+    public void setModelName(String name) {
         this.entityData.set(MODEL, Optional.ofNullable(name).orElse(defaultModelName));
     }
 
-    public String getModelName(){
+    public String getModelName() {
         String name = this.entityData.get(MODEL);
-        if(name == null || name.length() == 0){
+        if (name == null || name.length() == 0) {
             name = defaultModelName;
         }
         return name;
     }
 
-    private static final ResourceLocation defaultModel =  new ResourceLocation(defaultModelName + ".obj");
-    public LazyOptional<ResourceLocation> modelLoc = LazyOptional.of(() -> new ResourceLocation(getModelName() + ".obj"));
-    private static final ResourceLocation defaultTexture =  new ResourceLocation(defaultModelName + ".png");
-    public LazyOptional<ResourceLocation> textureLoc = LazyOptional.of(() -> new ResourceLocation(getModelName() + ".png"));
+    private static final ResourceLocation defaultModel = new ResourceLocation(defaultModelName + ".obj");
+    public LazyOptional<ResourceLocation> modelLoc = LazyOptional
+            .of(() -> new ResourceLocation(getModelName() + ".obj"));
+    private static final ResourceLocation defaultTexture = new ResourceLocation(defaultModelName + ".png");
+    public LazyOptional<ResourceLocation> textureLoc = LazyOptional
+            .of(() -> new ResourceLocation(getModelName() + ".png"));
 
     public ResourceLocation getModelLoc() {
         return modelLoc.orElse(defaultModel);
     }
+
     public ResourceLocation getTextureLoc() {
         return textureLoc.orElse(defaultTexture);
     }
 
-
     @Override
     public void push(Entity entityIn) {
-        //Suppress velocity change due to collision
-        //super.applyEntityCollision(entityIn);
+        // Suppress velocity change due to collision
+        // super.applyEntityCollision(entityIn);
     }
 
-    //todo: 射撃攻撃との相殺　pierce値＝HPにした近接攻撃との相殺
+    // todo: 射撃攻撃との相殺 pierce値＝HPにした近接攻撃との相殺
 }

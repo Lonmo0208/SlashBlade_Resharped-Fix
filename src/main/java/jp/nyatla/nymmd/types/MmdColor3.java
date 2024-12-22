@@ -37,17 +37,13 @@
  */
 package jp.nyatla.nymmd.types;
 
+public class MmdColor3 {
+    public float r, g, b;
 
-
-public class MmdColor3
-{
-	public float r, g, b;
-	
-	public void setValue(MmdColor4 v)
-	{
-		this.r=v.r;
-		this.g=v.g;
-		this.b=v.b;
-		return;
-	}	
+    public void setValue(MmdColor4 v) {
+        this.r = v.r;
+        this.g = v.g;
+        this.b = v.b;
+        return;
+    }
 }

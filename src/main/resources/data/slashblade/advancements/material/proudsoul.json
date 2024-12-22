@@ -17,9 +17,11 @@
     "BrokenBlade": {
       "trigger": "minecraft:consume_item",
       "conditions": {
-        "item": {
-          "items": ["slashblade:slashblade"]
-        }
+        "items": [
+          {
+            "items": ["slashblade:proudsoul"]
+          }
+        ]
       }
     }
   },

@@ -17,8 +17,8 @@ public class ActiveStateSyncMessage {
     public CompoundTag activeTag;
     public int id;
 
-
-    public ActiveStateSyncMessage(){}
+    public ActiveStateSyncMessage() {
+    }
 
     static public ActiveStateSyncMessage decode(FriendlyByteBuf buf) {
         ActiveStateSyncMessage msg = new ActiveStateSyncMessage();
@@ -35,7 +35,8 @@ public class ActiveStateSyncMessage {
     static public void handle(ActiveStateSyncMessage msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
 
-            if(!msg.activeTag.hasUUID("BladeUniqueId")) return;
+            if (!msg.activeTag.hasUUID("BladeUniqueId"))
+                return;
 
             // Work that needs to be threadsafe (most work)
             ServerPlayer sender = ctx.get().getSender(); // the client that sent this packet
@@ -43,14 +44,17 @@ public class ActiveStateSyncMessage {
             // do stuff
             Entity target = Minecraft.getInstance().level.getEntity(msg.id);
 
-            if(target instanceof LivingEntity){
-                ItemStack stack = ((LivingEntity)target).getItemInHand(InteractionHand.MAIN_HAND);
-                if (stack.isEmpty()) return;
-                if (!(stack.getItem() instanceof ItemSlashBlade)) return;
+            if (target instanceof LivingEntity) {
+            	
+                ItemStack stack = ((LivingEntity) target).getItemInHand(InteractionHand.MAIN_HAND);
+                if (stack.isEmpty())
+                    return;
+                if (!(stack.getItem() instanceof ItemSlashBlade))
+                    return;
 
                 stack.getCapability(ItemSlashBlade.BLADESTATE)
-                        .filter((state)->state.getUniqueId().equals(msg.activeTag.getUUID("BladeUniqueId")))
-                        .ifPresent((state)->state.setActiveState(msg.activeTag));
+                        .filter((state) -> state.getUniqueId().equals(msg.activeTag.getUUID("BladeUniqueId")))
+                        .ifPresent((state) -> state.setActiveState(msg.activeTag));
             }
         });
         ctx.get().setPacketHandled(true);

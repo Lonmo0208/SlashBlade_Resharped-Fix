@@ -32,13 +32,11 @@ public class MobEffectState implements IMobEffectState {
         this.stunLimit = limit;
     }
 
-
     Optional<Long> UntouchableTimeout = Optional.empty();
     int untouchableLimit = 200;
     Set<MobEffect> effectSet = Sets.newHashSet();
     float storedHealth;
     boolean hasWorked;
-
 
     @Override
     public int getUntouchableLimit() {
