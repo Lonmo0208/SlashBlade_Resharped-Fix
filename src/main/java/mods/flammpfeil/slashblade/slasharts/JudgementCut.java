@@ -102,9 +102,8 @@ public class JudgementCut {
 		if (exclude != null)
 			founds.removeAll(exclude);
 		for (Entity entity : founds) {
-			if (!(entity instanceof LivingEntity))
-				founds.remove(entity);
-			else {
+			if (entity instanceof LivingEntity) {
+
 				((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 10));
 				EntityJudgementCut judgementCut = new EntityJudgementCut(SlashBlade.RegistryEvents.JudgementCut, level);
 				judgementCut.setPos(entity.getX(), entity.getY(), entity.getZ());
