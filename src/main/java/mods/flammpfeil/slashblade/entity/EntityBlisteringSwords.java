@@ -62,10 +62,8 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword {
     @Override
     public void tick() {
         if (!itFired()) {
-            if (level().isClientSide()) {
-                if (getVehicle() == null) {
-                    startRiding(this.getOwner(), true);
-                }
+            if (getVehicle() == null) {
+                startRiding(this.getOwner(), true);
             }
         }
 
@@ -107,7 +105,7 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword {
 
                                         boolean isMatch = true;
                                         if (target instanceof LivingEntity)
-                                            isMatch = TargetSelector.lockon.test(sender, (LivingEntity) target);
+                                            isMatch = TargetSelector.test.test(sender, (LivingEntity) target);
 
                                         if (target instanceof IShootable)
                                             isMatch = ((IShootable) target).getShooter() != sender;

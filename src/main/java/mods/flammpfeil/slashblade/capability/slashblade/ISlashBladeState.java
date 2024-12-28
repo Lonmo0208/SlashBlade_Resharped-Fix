@@ -468,7 +468,8 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
                 .put("_onClick", this.onClick())
                 .put("fallDecreaseRate", this.getFallDecreaseRate())
                 .put("AttackAmplifier", this.getAttackAmplifier()).put("currentCombo", this.getComboSeq().toString())
-                .put("proudSoul", this.getProudSoulCount()).put("killCount", this.getKillCount())
+                .put("proudSoul", this.getProudSoulCount())
+                .put("killCount", this.getKillCount())
                 .put("Damage", this.getDamage()).put("isBroken", this.isBroken());
 
         return tag;
@@ -481,7 +482,8 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
                 .get("TargetEntity", ((Integer id) -> this.setTargetEntityId(id))).get("_onClick", this::setOnClick)
                 .get("fallDecreaseRate", this::setFallDecreaseRate).get("AttackAmplifier", this::setAttackAmplifier)
                 .get("currentCombo", ((String s) -> this.setComboSeq(ResourceLocation.tryParse(s))))
-                .get("proudSoul", this::setProudSoulCount).get("killCount", this::setKillCount)
+                .get("proudSoul", this::setProudSoulCount)
+                .get("killCount", this::setKillCount)
                 .get("Damage", this::setDamage).get("isBroken", this::setBroken);
 
         this.setHasChangedActiveState(false);

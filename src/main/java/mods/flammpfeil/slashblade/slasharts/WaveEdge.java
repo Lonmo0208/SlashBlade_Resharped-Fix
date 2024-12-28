@@ -44,8 +44,8 @@ public class WaveEdge {
 			playerIn.level().addFreshEntity(drive);
 			float speed = Mth.randomBetween(drive.level().getRandom(), minSpeed, maxSpeed);
 
-			drive.setPos(pos.x, pos.y, pos.z);
-			drive.setDamage(damage);
+	        drive.setPos(pos.x, pos.y, pos.z);
+	        drive.setDamage(damage);
 			drive.setSpeed(speed);
 			drive.shoot(playerIn.getLookAngle().x, playerIn.getLookAngle().y, playerIn.getLookAngle().z,
 					drive.getSpeed(), 0);

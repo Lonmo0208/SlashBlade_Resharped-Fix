@@ -350,10 +350,11 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
                 if (raytraceresult != null && raytraceresult.getType() == HitResult.Type.ENTITY) {
                     Entity entity = ((EntityHitResult) raytraceresult).getEntity();
                     Entity entity1 = this.getShooter();
-                    if (entity instanceof Player && entity1 instanceof Player
-                            && !((Player) entity1).canHarmPlayer((Player) entity)) {
-                        raytraceresult = null;
-                        entityraytraceresult = null;
+                    if (entity instanceof LivingEntity && entity1 instanceof LivingEntity) {
+                    	if(!TargetSelector.test.test( (LivingEntity) entity1, (LivingEntity) entity) ) {
+	                        raytraceresult = null;
+	                        entityraytraceresult = null;
+                        }
                     }
                 }
 
@@ -594,7 +595,7 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
     protected EntityHitResult getRayTrace(Vec3 p_213866_1_, Vec3 p_213866_2_) {
         return ProjectileUtil.getEntityHitResult(this.level(), this, p_213866_1_, p_213866_2_,
                 this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), (entity) -> {
-                    return entity.canBeHitByProjectile()
+                    return !entity.isSpectator() && entity.canBeHitByProjectile()
                             && (entity != this.getShooter() || this.ticksInAir >= 5)
                             && (this.alreadyHits == null || !this.alreadyHits.contains(entity.getId()));
                 });

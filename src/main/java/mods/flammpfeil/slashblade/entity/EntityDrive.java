@@ -23,6 +23,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -175,7 +176,7 @@ public class EntityDrive extends EntityAbstractSummonedSword {
 
                 // this::onHitEntity ro KnockBackHandler::setCancel
                 List<Entity> hits;
-                if (getShooter()instanceof LivingEntity shooter) {
+                if (getShooter() instanceof LivingEntity shooter) {
                     float ratio = (float) damage * (getIsCritical() ? 1.1f : 1.0f);
                     hits = AttackManager.areaAttack(shooter, this.action.action, ratio, forceHit, false, true,
                             alreadyHits);
@@ -319,7 +320,12 @@ public class EntityDrive extends EntityAbstractSummonedSword {
 
         // todo: attack manager
         targetEntity.invulnerableTime = 0;
-        if (targetEntity.hurt(damagesource, (float) i)) {
+        float damageValue = (float) i;
+        if(this.getOwner() instanceof LivingEntity living) {
+        	damageValue *= living.getAttributeValue(Attributes.ATTACK_DAMAGE);
+        }
+
+		if (targetEntity.hurt(damagesource, damageValue)) {
             Entity hits = targetEntity;
             if (targetEntity instanceof PartEntity) {
                 hits = ((PartEntity<?>) targetEntity).getParent();

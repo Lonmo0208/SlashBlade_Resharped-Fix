@@ -521,12 +521,12 @@ public class ItemSlashBlade extends SwordItem {
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 		stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s -> {
-			this.appendSwordType(stack, worldIn, tooltip, flagIn);
-			this.appendProudSoulCount(tooltip, stack);
-			this.appendKillCount(tooltip, stack);
-			this.appendSlashArt(stack, tooltip, s);
-			this.appendRefineCount(tooltip, stack);
-			this.appendSpecialEffects(tooltip, s);
+			this.appendSwordType(stack, worldIn, tooltip, flagIn); //√
+			this.appendProudSoulCount(tooltip, s);
+			this.appendKillCount(tooltip, s);
+			this.appendSlashArt(stack, tooltip, s); //√
+			this.appendRefineCount(tooltip, s);
+			this.appendSpecialEffects(tooltip, s); //√
 		});
 
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
@@ -542,8 +542,8 @@ public class ItemSlashBlade extends SwordItem {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void appendRefineCount(List<Component> tooltip, @NotNull ItemStack stack) {
-		int refine = stack.getOrCreateTagElement("bladeState").getInt("RepairCounter");
+	public void appendRefineCount(List<Component> tooltip, @NotNull ISlashBladeState s) {
+		int refine = s.getRefine();
 		if (refine > 0) {
 			tooltip.add(Component.translatable("slashblade.tooltip.refine", refine)
 					.withStyle((ChatFormatting) refineColor.get(refine)));
@@ -551,8 +551,8 @@ public class ItemSlashBlade extends SwordItem {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void appendProudSoulCount(List<Component> tooltip, @NotNull ItemStack stack) {
-		int proudsoul = stack.getOrCreateTagElement("bladeState").getInt("proudSoul");
+	public void appendProudSoulCount(List<Component> tooltip, @NotNull ISlashBladeState s) {
+		int proudsoul = s.getProudSoulCount();
 		if (proudsoul > 0) {
 			MutableComponent countComponent = Component
 					.translatable("slashblade.tooltip.proud_soul", proudsoul)
@@ -564,8 +564,8 @@ public class ItemSlashBlade extends SwordItem {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public void appendKillCount(List<Component> tooltip, @NotNull ItemStack stack) {
-		int killCount = stack.getOrCreateTagElement("bladeState").getInt("killCount");
+	public void appendKillCount(List<Component> tooltip, @NotNull ISlashBladeState s) {
+		int killCount = s.getKillCount();
 		if (killCount > 0) {
 			MutableComponent killCountComponent = Component
 					.translatable("slashblade.tooltip.killcount", killCount).withStyle(ChatFormatting.GRAY);

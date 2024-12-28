@@ -70,11 +70,9 @@ public class JudgementCut {
 		}
 
 		Vec3 pos = resultPos.orElseGet(() -> eyePos.add(user.getLookAngle().scale(airReach)));
-
 		EntityJudgementCut jc = new EntityJudgementCut(SlashBlade.RegistryEvents.JudgementCut, worldIn);
 		jc.setPos(pos.x, pos.y, pos.z);
 		jc.setOwner(user);
-
 		stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
 			jc.setColor(state.getColorCode());
 		});

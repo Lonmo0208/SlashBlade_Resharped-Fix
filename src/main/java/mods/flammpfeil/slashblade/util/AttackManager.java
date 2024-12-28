@@ -13,6 +13,7 @@ import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -252,6 +253,12 @@ public class AttackManager {
                     beforeHit.accept(living);
 
                 float baseAmount = (float) owner.getDamage();
+                if(owner.getShooter() instanceof LivingEntity living) {
+                	int powerLevel = living.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
+                	baseAmount += ((float) powerLevel * 0.1F);
+                	baseAmount *= living.getAttributeValue(Attributes.ATTACK_DAMAGE);
+                }
+
                 doAttackWith(owner.damageSources().indirectMagic(owner, owner.getShooter()), baseAmount, entity,
                         forceHit, resetHit);
             }

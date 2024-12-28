@@ -1144,7 +1144,7 @@ public class ComboStateRegistry {
                     .nextOfTimeout(entity -> SlashBlade.prefix("drive_horizontal_end"))
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                             .put(2, (entityIn) -> AttackManager.doSlash(entityIn, -30F, Vec3.ZERO, false, false, 0.1F))
-                            .put(3, (entityIn) -> Drive.doSlash(entityIn, 0F, 10, Vec3.ZERO, false, 7, 2f)).build())
+                            .put(3, (entityIn) -> Drive.doSlash(entityIn, 0F, 10, Vec3.ZERO, false, 1.5f, 2f)).build())
                     .addHitEffect(StunManager::setStun)
                     ::build);
     public static final RegistryObject<ComboState> DRIVE_HORIZONTAL_END = COMBO_STATE.register("drive_horizontal_end",
@@ -1164,7 +1164,7 @@ public class ComboStateRegistry {
             .nextOfTimeout(entity -> SlashBlade.prefix("drive_vertical_end"))
             .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                     .put(2, (entityIn) -> AttackManager.doSlash(entityIn, -80F, Vec3.ZERO, false, false, 0.1F))
-                    .put(3, (entityIn) -> Drive.doSlash(entityIn, -90F, 10, Vec3.ZERO, false, 7, 2f)).build())
+                    .put(3, (entityIn) -> Drive.doSlash(entityIn, -90F, 10, Vec3.ZERO, false, 1.5f, 2f)).build())
             .addHitEffect(StunManager::setStun)
             ::build
     );
@@ -1189,7 +1189,7 @@ public class ComboStateRegistry {
             .nextOfTimeout(entity -> SlashBlade.prefix("drive_vertical_end"))
             .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                      .put(2, (entityIn) -> AttackManager.doSlash(entityIn, -80F, Vec3.ZERO, false, false, 0.1F))
-                     .put(3, (entityIn) -> WaveEdge.doSlash(entityIn, 90F, 20, Vec3.ZERO, false, 7, 0.2f, 1f, 4)).build())
+                     .put(3, (entityIn) -> WaveEdge.doSlash(entityIn, 90F, 20, Vec3.ZERO, false, 0.5F, 0.2f, 1f, 4)).build())
             .addHitEffect(StunManager::setStun)
             ::build
     );
