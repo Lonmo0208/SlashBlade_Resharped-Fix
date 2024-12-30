@@ -34,7 +34,7 @@ public class SlashBladeConfig {
         SUMMON_SWORD_COST = COMMON_BUILDER.comment("Determining the proud soul cost for single summon mirage blade.")
                 .defineInRange("summon_sword_cost", 2, 1, Integer.MAX_VALUE);
         SUMMON_SWORD_ART_COST = COMMON_BUILDER.comment("Determining the proud soul cost for summon blade arts.")
-                .defineInRange("max_proud_soul_got", 20, 1, Integer.MAX_VALUE);
+                .defineInRange("summon_blade_art_cost", 20, 1, Integer.MAX_VALUE);
 
         MAX_PROUD_SOUL_GOT = COMMON_BUILDER.comment("Determining the max proud soul count for single mobs kill.")
                 .defineInRange("max_proud_soul_got", 100, 1, Integer.MAX_VALUE);

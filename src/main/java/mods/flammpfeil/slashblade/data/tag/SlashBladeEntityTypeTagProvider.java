@@ -9,6 +9,7 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -22,7 +23,9 @@ public class SlashBladeEntityTypeTagProvider extends EntityTypeTagsProvider {
 
     @Override
     protected void addTags(Provider lookupProvider) {
-        this.tag(EntityTypeTags.ATTACKABLE_BLACKLIST).add(EntityType.VILLAGER);
+        this.tag(EntityTypeTags.ATTACKABLE_BLACKLIST)
+        .add(EntityType.VILLAGER)
+        .addOptional(new ResourceLocation("touhou_little_maid", "maid"));
     }
 
     public static class EntityTypeTags {

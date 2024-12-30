@@ -25,7 +25,6 @@ import java.util.Optional;
 public class JudgementCut {
 	static public EntityJudgementCut doJudgementCutJust(LivingEntity user) {
 		EntityJudgementCut sa = doJudgementCut(user);
-		sa.setDamage(sa.getDamage() + 1);
 		sa.setIsCritical(true);
 		return sa;
 	}

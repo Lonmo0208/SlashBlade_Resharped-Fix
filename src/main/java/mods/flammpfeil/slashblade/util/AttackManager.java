@@ -7,6 +7,7 @@ import mods.flammpfeil.slashblade.ability.TNTExtinguisher;
 import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRankCapabilityProvider;
 import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank;
 import mods.flammpfeil.slashblade.entity.EntityAbstractSummonedSword;
+import mods.flammpfeil.slashblade.entity.EntityJudgementCut;
 import mods.flammpfeil.slashblade.entity.EntitySlashEffect;
 import mods.flammpfeil.slashblade.entity.IShootable;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
@@ -254,8 +255,10 @@ public class AttackManager {
 
                 float baseAmount = (float) owner.getDamage();
                 if(owner.getShooter() instanceof LivingEntity living) {
-                	int powerLevel = living.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
-                	baseAmount += ((float) powerLevel * 0.1F);
+                	if(!(owner instanceof EntitySlashEffect)) {
+	                	int powerLevel = living.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
+	                	baseAmount += ((float) powerLevel * 0.1F);
+                	}
                 	baseAmount *= living.getAttributeValue(Attributes.ATTACK_DAMAGE);
                 }
 
