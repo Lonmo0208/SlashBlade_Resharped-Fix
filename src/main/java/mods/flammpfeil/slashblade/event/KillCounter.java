@@ -70,5 +70,6 @@ public class KillCounter {
             state.setProudSoulCount(
                     state.getProudSoulCount() + Math.min(SlashBladeConfig.MAX_PROUD_SOUL_GOT.get(), souls));
         });
+        
     }
 }

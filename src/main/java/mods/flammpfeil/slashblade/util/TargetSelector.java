@@ -243,16 +243,17 @@ public class TargetSelector {
 		EnumSet<InputCommand> old = event.getOld();
 		EnumSet<InputCommand> current = event.getCurrent();
 		ServerPlayer sender = event.getEntity();
-
-		// SneakHold & Middle Click
-		if (!(!old.contains(InputCommand.M_DOWN) && current.contains(InputCommand.M_DOWN)
-				&& current.contains(InputCommand.SNEAK)))
-			return;
+		
 
 		ItemStack stack = sender.getMainHandItem();
 		if (stack.isEmpty())
 			return;
 		if (!(stack.getItem() instanceof ItemSlashBlade))
+			return;
+
+		// SneakHold & Middle Click
+		if (!(!old.contains(InputCommand.M_DOWN) && current.contains(InputCommand.M_DOWN)
+				&& current.contains(InputCommand.SNEAK)))
 			return;
 
 		stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s -> {

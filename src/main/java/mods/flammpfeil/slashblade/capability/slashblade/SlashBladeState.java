@@ -217,6 +217,7 @@ public class SlashBladeState implements ISlashBladeState {
     @Override
     public void setRefine(int refine) {
         this.refine = refine;
+        setHasChangedActiveState(true);
     }
 
     @Override

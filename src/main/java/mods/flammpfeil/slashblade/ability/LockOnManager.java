@@ -45,8 +45,7 @@ public class LockOnManager {
 
     @SubscribeEvent
     public void onInputChange(InputCommandEvent event) {
-        if (event.getOld().contains(InputCommand.SNEAK) == event.getCurrent().contains(InputCommand.SNEAK))
-            return;
+
 
         ServerPlayer player = event.getEntity();
         // set target
@@ -57,7 +56,10 @@ public class LockOnManager {
             return;
 
         Entity targetEntity;
-
+        
+        if (event.getOld().contains(InputCommand.SNEAK) == event.getCurrent().contains(InputCommand.SNEAK))
+            return;
+        
         if ((event.getOld().contains(InputCommand.SNEAK) && !event.getCurrent().contains(InputCommand.SNEAK))) {
             // remove target
             targetEntity = null;

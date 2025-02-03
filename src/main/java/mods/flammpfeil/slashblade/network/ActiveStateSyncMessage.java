@@ -51,10 +51,13 @@ public class ActiveStateSyncMessage {
                     return;
                 if (!(stack.getItem() instanceof ItemSlashBlade))
                     return;
-
+                var tag = stack.getOrCreateTag();
                 stack.getCapability(ItemSlashBlade.BLADESTATE)
                         .filter((state) -> state.getUniqueId().equals(msg.activeTag.getUUID("BladeUniqueId")))
-                        .ifPresent((state) -> state.setActiveState(msg.activeTag));
+                        .ifPresent((state) -> {
+                        	state.setActiveState(msg.activeTag);
+                        	tag.put("bladeState", state.serializeNBT());
+                        	});
             }
         });
         ctx.get().setPacketHandled(true);

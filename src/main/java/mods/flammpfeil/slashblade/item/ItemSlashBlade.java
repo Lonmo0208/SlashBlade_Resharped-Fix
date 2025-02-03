@@ -215,8 +215,9 @@ public class ItemSlashBlade extends SwordItem {
 		var cap = stack.getCapability(BLADESTATE).orElseThrow(NullPointerException::new);
 		boolean current = cap.isBroken();
 
-		if (stack.getDamageValue() >= stack.getMaxDamage() - 1) {
+		if (stack.getDamageValue() + amount >= stack.getMaxDamage()) {
 			amount = 0;
+			stack.setDamageValue(stack.getMaxDamage() - 1);
 			cap.setBroken(true);
 		}
 
@@ -543,10 +544,6 @@ public class ItemSlashBlade extends SwordItem {
 	@OnlyIn(Dist.CLIENT)
 	public void appendRefineCount(List<Component> tooltip, @NotNull ItemStack stack) {
 		int refine = stack.getOrCreateTagElement("bladeState").getInt("RepairCounter");
-		@NotNull
-		LazyOptional<ISlashBladeState> capability = stack.getCapability(ItemSlashBlade.BLADESTATE);
-		if(capability.isPresent())
-			refine = capability.orElseThrow(NullPointerException::new).getRefine();
 		if (refine > 0) {
 			tooltip.add(Component.translatable("slashblade.tooltip.refine", refine)
 					.withStyle((ChatFormatting) refineColor.get(refine)));
@@ -556,10 +553,6 @@ public class ItemSlashBlade extends SwordItem {
 	@OnlyIn(Dist.CLIENT)
 	public void appendProudSoulCount(List<Component> tooltip, @NotNull ItemStack stack) {
 		int proudsoul = stack.getOrCreateTagElement("bladeState").getInt("proudSoul");
-		@NotNull
-		LazyOptional<ISlashBladeState> capability = stack.getCapability(ItemSlashBlade.BLADESTATE);
-		if(capability.isPresent())
-			proudsoul = capability.orElseThrow(NullPointerException::new).getProudSoulCount();
 		if (proudsoul > 0) {
 			MutableComponent countComponent = Component
 					.translatable("slashblade.tooltip.proud_soul", proudsoul)
@@ -573,10 +566,6 @@ public class ItemSlashBlade extends SwordItem {
 	@OnlyIn(Dist.CLIENT)
 	public void appendKillCount(List<Component> tooltip, @NotNull ItemStack stack) {
 		int killCount =  stack.getOrCreateTagElement("bladeState").getInt("killCount");
-		@NotNull
-		LazyOptional<ISlashBladeState> capability = stack.getCapability(ItemSlashBlade.BLADESTATE);
-		if(capability.isPresent())
-			killCount = capability.orElseThrow(NullPointerException::new).getKillCount();
 		if (killCount > 0) {
 			MutableComponent killCountComponent = Component
 					.translatable("slashblade.tooltip.killcount", killCount).withStyle(ChatFormatting.GRAY);

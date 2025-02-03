@@ -68,7 +68,7 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
             resultState.setRefine(resultState.getRefine() + ingredientState.getRefine());
             updateEnchantment(result, stack);
         }
-
+        
         return result;
     }
 

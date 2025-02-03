@@ -1,10 +1,10 @@
 package mods.flammpfeil.slashblade.client.renderer.util;
 
-import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import mods.flammpfeil.slashblade.client.renderer.model.obj.Face;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.event.client.RenderOverrideEvent;
@@ -12,9 +12,9 @@ import net.minecraft.Util;
 import net.minecraft.client.renderer.*;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
+
 import org.lwjgl.opengl.GL14;
 
 import java.awt.*;
@@ -106,10 +106,10 @@ public class BladeRenderState extends RenderStateShard {
         event.getModel().tessellateOnly(vb, event.getTarget());
 
         if (stack.hasFoil() && enableEffect) {
-            vb = bufferIn.getBuffer(BladeRenderState.getSlashBladeGlint());
+            vb = bufferIn.getBuffer(BladeRenderState.SLASHBLADE_GLINT);
             event.getModel().tessellateOnly(vb, event.getTarget());
         }
-
+        
         Face.resetMatrix();
         Face.resetLightMap();
         Face.resetCol();
@@ -119,20 +119,6 @@ public class BladeRenderState extends RenderStateShard {
 
         resetCol();
     }
-
-    public static VertexConsumer getBuffer(MultiBufferSource bufferIn, RenderType renderTypeIn, boolean glintIn) {
-        return null;
-    }
-
-    public static final VertexFormat POSITION_TEX = new VertexFormat(ImmutableMap.<String, VertexFormatElement>builder()
-            .put("Position", DefaultVertexFormat.ELEMENT_POSITION).put("UV0", DefaultVertexFormat.ELEMENT_UV0).build());
-    public static final RenderType BLADE_GLINT = RenderType.create("blade_glint", POSITION_TEX,
-            VertexFormat.Mode.TRIANGLES, 256, false, false,
-            RenderType.CompositeState.builder().setShaderState(RenderStateShard.RENDERTYPE_ENTITY_GLINT_SHADER)
-                    .setTextureState(new TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ITEM, true, false))
-                    .setWriteMaskState(COLOR_WRITE).setCullState(NO_CULL).setDepthTestState(EQUAL_DEPTH_TEST)
-                    .setTransparencyState(GLINT_TRANSPARENCY).setTexturingState(ENTITY_GLINT_TEXTURING)
-                    .createCompositeState(false));
 
     public static RenderType getSlashBladeBlend(ResourceLocation p_228638_0_) {
 
@@ -151,29 +137,33 @@ public class BladeRenderState extends RenderStateShard {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
                 .setShaderState(RenderStateShard.RENDERTYPE_ENTITY_CUTOUT_SHADER)
                 .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)
-                .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, false, false))
+                .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, false, true))
                 .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                 .setCullState(NO_CULL)
                 .setLightmapState(LIGHTMAP)
-                .setLayeringState(RenderStateShard.POLYGON_OFFSET_LAYERING)//使用深度偏移叠加，避免Z-fighting
-                .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE).createCompositeState(true);
+                .setOverlayState(OVERLAY)
+                .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
+                .createCompositeState(true);
 
-        return RenderType.create("slashblade_blend", WavefrontObject.POSITION_TEX_LMAP_COL_NORMAL,
+        return RenderType.create("slashblade_blend", DefaultVertexFormat.NEW_ENTITY,
                 VertexFormat.Mode.TRIANGLES, 256, true, false, state);
     }
     
+    public static final RenderType SLASHBLADE_GLINT = BladeRenderState.getSlashBladeGlint();
+    
     public static RenderType getSlashBladeGlint() {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
-        	    .setShaderState(RENDERTYPE_ENTITY_GLINT_SHADER)
-        	    .setTextureState(new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ENTITY, true, false))
+        	    .setShaderState(RENDERTYPE_GLINT_TRANSLUCENT_SHADER)
+        	    .setTextureState(new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ITEM, true, false))
         	    .setWriteMaskState(COLOR_WRITE)
         	    .setCullState(NO_CULL)
         	    .setDepthTestState(EQUAL_DEPTH_TEST)
-        	    .setTransparencyState(LIGHTNING_ADDITIVE_TRANSPARENCY)
+        	    .setTransparencyState(GLINT_TRANSPARENCY)
         	    .setOutputState(ITEM_ENTITY_TARGET)
-        	    .setTexturingState(ENTITY_GLINT_TEXTURING)
+        	    .setOverlayState(OVERLAY)
+        	    .setTexturingState(GLINT_TEXTURING)
         	    .createCompositeState(false);
-        return RenderType.create("slashblade_glint", WavefrontObject.POSITION_TEX_LMAP_COL_NORMAL,
+        return RenderType.create("slashblade_glint", DefaultVertexFormat.POSITION_TEX,
                 VertexFormat.Mode.TRIANGLES, 256, true, false, state);
     }
 
@@ -185,11 +175,10 @@ public class BladeRenderState extends RenderStateShard {
                 .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                 // .setDiffuseLightingState(RenderStateShard.NO_DIFFUSE_LIGHTING)
                 .setLightmapState(LIGHTMAP)
-                // .overlay(OVERLAY_ENABLED)
+                .setOverlayState(OVERLAY)
                 .setWriteMaskState(COLOR_WRITE)
-                .setLayeringState(RenderStateShard.POLYGON_OFFSET_LAYERING)//使用深度偏移叠加，避免Z-fighting
                 .createCompositeState(true);
-        return RenderType.create("slashblade_blend_write_color", WavefrontObject.POSITION_TEX_LMAP_COL_NORMAL,
+        return RenderType.create("slashblade_blend_write_color", DefaultVertexFormat.NEW_ENTITY,
                 VertexFormat.Mode.TRIANGLES, 256, true, false, state);
     }
 
@@ -217,11 +206,11 @@ public class BladeRenderState extends RenderStateShard {
                 .setTransparencyState(LIGHTNING_ADDITIVE_TRANSPARENCY)
                 // .setDiffuseLightingState(RenderStateShard.NO_DIFFUSE_LIGHTING)
                 .setLightmapState(RenderStateShard.LIGHTMAP)
-                // .overlay(OVERLAY_ENABLED)
+                .setOverlayState(OVERLAY)
                 .setWriteMaskState(COLOR_WRITE)
-                .setLayeringState(RenderStateShard.POLYGON_OFFSET_LAYERING)//使用深度偏移叠加，避免Z-fighting
+                
                 .createCompositeState(false);
-        return RenderType.create("slashblade_blend_luminous", WavefrontObject.POSITION_TEX_LMAP_COL_NORMAL,
+        return RenderType.create("slashblade_blend_luminous", DefaultVertexFormat.NEW_ENTITY,
                 VertexFormat.Mode.TRIANGLES, 256, true, false, state);
     }
 
@@ -235,11 +224,11 @@ public class BladeRenderState extends RenderStateShard {
                 .setTransparencyState(LIGHTNING_ADDITIVE_TRANSPARENCY)
                 // .setDiffuseLightingState(RenderStateShard.NO_DIFFUSE_LIGHTING)
                 .setLightmapState(RenderStateShard.LIGHTMAP)
-                // .setOverlayState(OVERLAY)
+                .setOverlayState(OVERLAY)
                 .setWriteMaskState(RenderStateShard.COLOR_WRITE)
-                .setLayeringState(RenderStateShard.POLYGON_OFFSET_LAYERING)//使用深度偏移叠加，避免Z-fighting
+                
                 .createCompositeState(false);
-        return RenderType.create("slashblade_charge_effect", WavefrontObject.POSITION_TEX_LMAP_COL_NORMAL,
+        return RenderType.create("slashblade_charge_effect", DefaultVertexFormat.NEW_ENTITY,
                 VertexFormat.Mode.TRIANGLES, 256, true, false, state);
     }
 
@@ -251,10 +240,10 @@ public class BladeRenderState extends RenderStateShard {
                 .setTransparencyState(LIGHTNING_ADDITIVE_TRANSPARENCY)
                 // .setDiffuseLightingState(RenderStateShard.NO_DIFFUSE_LIGHTING)
                 .setLightmapState(RenderStateShard.LIGHTMAP)
-                // .overlay(OVERLAY_ENABLED)
-                .setLayeringState(RenderStateShard.POLYGON_OFFSET_LAYERING)//使用深度偏移叠加，避免Z-fighting
+                .setOverlayState(OVERLAY)
+                
                 .setWriteMaskState(COLOR_DEPTH_WRITE).createCompositeState(false);
-        return RenderType.create("slashblade_blend_luminous_depth_write", WavefrontObject.POSITION_TEX_LMAP_COL_NORMAL,
+        return RenderType.create("slashblade_blend_luminous_depth_write", DefaultVertexFormat.NEW_ENTITY,
                 VertexFormat.Mode.TRIANGLES, 256, true, false, state);
     }
 
@@ -278,11 +267,11 @@ public class BladeRenderState extends RenderStateShard {
                 .setTransparencyState(LIGHTNING_REVERSE_TRANSPARENCY)
                 // .setDiffuseLightingState(RenderStateShard.NO_DIFFUSE_LIGHTING)
                 .setLightmapState(RenderStateShard.LIGHTMAP)
-                // .overlay(OVERLAY_ENABLED)
+                .setOverlayState(OVERLAY)
                 .setWriteMaskState(COLOR_WRITE)
-                .setLayeringState(RenderStateShard.POLYGON_OFFSET_LAYERING)//使用深度偏移叠加，避免Z-fighting
+                
                 .createCompositeState(false);
-        return RenderType.create("slashblade_blend_reverse_luminous", WavefrontObject.POSITION_TEX_LMAP_COL_NORMAL,
+        return RenderType.create("slashblade_blend_reverse_luminous", DefaultVertexFormat.NEW_ENTITY,
                 VertexFormat.Mode.TRIANGLES, 256, true, false, state);
     }
 

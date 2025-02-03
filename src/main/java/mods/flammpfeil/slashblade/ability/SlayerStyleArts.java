@@ -13,6 +13,7 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
@@ -73,6 +74,12 @@ public class SlayerStyleArts {
         EnumSet<InputCommand> current = event.getCurrent();
         ServerPlayer sender = event.getEntity();
         Level worldIn = sender.level();
+        
+		ItemStack stack = sender.getMainHandItem();
+		if (stack.isEmpty())
+			return;
+		if (!(stack.getItem() instanceof ItemSlashBlade))
+			return;
 
         if (!old.contains(InputCommand.SPRINT)) {
 

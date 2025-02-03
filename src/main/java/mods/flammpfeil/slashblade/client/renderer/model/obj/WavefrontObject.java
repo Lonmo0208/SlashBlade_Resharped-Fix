@@ -1,11 +1,7 @@
 package mods.flammpfeil.slashblade.client.renderer.model.obj;
 
-import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,12 +20,6 @@ import java.util.regex.Pattern;
  * http://en.wikipedia.org/wiki/Wavefront_.obj_file
  */
 public class WavefrontObject {
-    static public VertexFormat POSITION_TEX_LMAP_COL_NORMAL = new VertexFormat(
-            ImmutableMap.<String, VertexFormatElement>builder().put("Position", DefaultVertexFormat.ELEMENT_POSITION)
-                    .put("Color", DefaultVertexFormat.ELEMENT_COLOR).put("UV0", DefaultVertexFormat.ELEMENT_UV0)
-                    .put("UV1",DefaultVertexFormat.ELEMENT_UV1)
-                    .put("UV2", DefaultVertexFormat.ELEMENT_UV2).put("Normal", DefaultVertexFormat.ELEMENT_NORMAL)
-                    .put("Padding", DefaultVertexFormat.ELEMENT_PADDING).build());
 
     private static Pattern vertexPattern = Pattern
             .compile("(v( (\\-){0,1}\\d+(\\.\\d+)?){3,4} *\\n)|(v( (\\-){0,1}\\d+(\\.\\d+)?){3,4} *$)");

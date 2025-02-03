@@ -5,6 +5,7 @@ import mods.flammpfeil.slashblade.SlashBladeConfig;
 import mods.flammpfeil.slashblade.capability.concentrationrank.CapabilityConcentrationRank;
 import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank;
 import mods.flammpfeil.slashblade.capability.inputstate.CapabilityInputState;
+import mods.flammpfeil.slashblade.capability.slashblade.SlashBladeState;
 import mods.flammpfeil.slashblade.entity.*;
 import mods.flammpfeil.slashblade.event.InputCommandEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
@@ -14,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -67,7 +69,21 @@ public class SummonedSwordArts {
         EnumSet<InputCommand> current = event.getCurrent();
         ServerPlayer sender = event.getEntity();
 
+        ItemStack blade = sender.getMainHandItem();
+        var bladeState = blade.getCapability(ItemSlashBlade.BLADESTATE).orElse(new SlashBladeState(blade));
+        
+        if (bladeState.isBroken() || bladeState.isSealed()
+                || !SwordType.from(blade).contains(SwordType.BEWITCHED))
+            return;
+        
+		int powerLevel = blade
+                .getEnchantmentLevel(Enchantments.POWER_ARROWS);
+        if (powerLevel <= 0)
+            return;
+        
         InputCommand targetCommnad = InputCommand.M_DOWN;
+        
+        
 
         boolean onDown = !old.contains(targetCommnad) && current.contains(targetCommnad);
 
@@ -112,13 +128,7 @@ public class SummonedSwordArts {
                         } else {
                             // summon
                             entity.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
-                                if (state.isBroken() || state.isSealed()
-                                        || !SwordType.from(entity.getMainHandItem()).contains(SwordType.BEWITCHED))
-                                    return;
-                                int powerLevel = entity.getMainHandItem()
-                                        .getEnchantmentLevel(Enchantments.POWER_ARROWS);
-                                if (powerLevel <= 0)
-                                    return;
+
                                 if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get())
                                     return;
                                 state.setProudSoulCount(
@@ -186,9 +196,6 @@ public class SummonedSwordArts {
                             Level worldIn = entity.level();
                             Entity target = state.getTargetEntity(worldIn);
 
-                            int powerLevel = entity.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
-                            if (powerLevel <= 0)
-                                return;
                             if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get())
                                 return;
                             state.setProudSoulCount(
@@ -251,12 +258,7 @@ public class SummonedSwordArts {
                         entity.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
 
                             Level worldIn = entity.level();
-                            if (state.isBroken() || state.isSealed()
-                                    || !SwordType.from(entity.getMainHandItem()).contains(SwordType.BEWITCHED))
-                                return;
-                            int powerLevel = entity.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
-                            if (powerLevel <= 0)
-                                return;
+
                             if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get())
                                 return;
                             state.setProudSoulCount(
@@ -320,12 +322,6 @@ public class SummonedSwordArts {
 
                             Level worldIn = entity.level();
                             Entity target = state.getTargetEntity(worldIn);
-                            if (state.isBroken() || state.isSealed()
-                                    || !SwordType.from(entity.getMainHandItem()).contains(SwordType.BEWITCHED))
-                                return;
-                            int powerLevel = entity.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
-                            if (powerLevel <= 0)
-                                return;
                             if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get())
                                 return;
                             state.setProudSoulCount(
@@ -399,13 +395,8 @@ public class SummonedSwordArts {
 
             });
 
-            sender.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
-                if (state.isBroken() || state.isSealed()
-                        || !SwordType.from(sender.getMainHandItem()).contains(SwordType.BEWITCHED))
-                    return;
-                int powerLevel = sender.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
-                if (powerLevel <= 0)
-                    return;
+            blade.getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
+
                 if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_COST.get())
                     return;
                 state.setProudSoulCount(state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_COST.get());
