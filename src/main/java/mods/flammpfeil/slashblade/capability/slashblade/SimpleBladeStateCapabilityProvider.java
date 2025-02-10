@@ -102,7 +102,7 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
 
             // render info
             instance.setCarryType(EnumSetConverter.fromOrdinal(CarryType.values(), tag.getByte("StandbyRenderType"),
-                    CarryType.DEFAULT));
+                    CarryType.PSO2));
             instance.setColorCode(tag.getInt("SummonedSwordColor"));
             instance.setEffectColorInverse(tag.getBoolean("SummonedSwordColorInverse"));
             instance.setAdjust(NBTHelper.getVector3d(tag, "adjustXYZ"));

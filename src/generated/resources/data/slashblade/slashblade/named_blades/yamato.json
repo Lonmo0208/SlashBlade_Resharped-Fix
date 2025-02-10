@@ -21,6 +21,7 @@
     ]
   },
   "render": {
+    "carry_type": "default",
     "model": "slashblade:model/named/yamato.obj",
     "texture": "slashblade:model/named/yamato.png"
   }

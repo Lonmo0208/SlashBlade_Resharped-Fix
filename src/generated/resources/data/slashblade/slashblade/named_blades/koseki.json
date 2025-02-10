@@ -18,6 +18,7 @@
     ]
   },
   "render": {
+    "carry_type": "ninja",
     "model": "slashblade:model/named/dios/dios.obj",
     "summon_sword_color": 3158064,
     "texture": "slashblade:model/named/dios/koseki.png"

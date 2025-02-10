@@ -136,7 +136,7 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
 
         // render info
         this.setCarryType(EnumSetConverter.fromOrdinal(CarryType.values(), tag.getByte("StandbyRenderType"),
-                                                           CarryType.DEFAULT));
+                                                           CarryType.PSO2));
         this.setColorCode(tag.getInt("SummonedSwordColor"));
         this.setEffectColorInverse(tag.getBoolean("SummonedSwordColorInverse"));
         this.setAdjust(NBTHelper.getVector3d(tag, "adjustXYZ"));

@@ -16,7 +16,7 @@ public class RenderDefinition {
             Codec.INT.optionalFieldOf("summon_sword_color", 0xFF3333FF)
                     .forGetter(RenderDefinition::getSummonedSwordColor),
             Codec.BOOL.optionalFieldOf("color_inverse", false).forGetter(RenderDefinition::isSummonedSwordColorInverse),
-            CarryType.CODEC.optionalFieldOf("carry_type", CarryType.DEFAULT)
+            CarryType.CODEC.optionalFieldOf("carry_type", CarryType.PSO2)
                     .forGetter(RenderDefinition::getStandbyRenderType))
             .apply(instance, RenderDefinition::new));
 
