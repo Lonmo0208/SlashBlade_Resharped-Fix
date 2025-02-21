@@ -89,68 +89,46 @@ public class EntitySpiralSwords extends EntityAbstractSummonedSword {
     }
 
     private void hitCheck() {
+        if (this.tickCount % 5 != 0) return; // 每 5 帧检测一次
+
         Vec3 positionVec = this.position();
         Vec3 dirVec = this.getViewVector(1.0f);
-        EntityHitResult raytraceresult = null;
-
-        // todo : replace TargetSelector
-        EntityHitResult entityraytraceresult = this.getRayTrace(positionVec, dirVec);
-        if (entityraytraceresult != null) {
-            raytraceresult = entityraytraceresult;
-        }
+        EntityHitResult raytraceresult = this.getRayTrace(positionVec, dirVec);
 
         if (raytraceresult != null && raytraceresult.getType() == HitResult.Type.ENTITY) {
-            Entity entity = ((EntityHitResult) raytraceresult).getEntity();
-            Entity entity1 = this.getShooter();
-            if (entity instanceof Player && entity1 instanceof Player
-                    && !((Player) entity1).canHarmPlayer((Player) entity)) {
-                raytraceresult = null;
-                entityraytraceresult = null;
-            }
-        }
+            Entity entity = raytraceresult.getEntity();
+            Entity shooter = this.getShooter();
 
-        if (raytraceresult != null && raytraceresult.getType() == HitResult.Type.ENTITY
-                && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
-            this.onHit(raytraceresult);
-            this.resetAlreadyHits();
-            this.hasImpulse = true;
+            if (entity instanceof Player && shooter instanceof Player
+                    && !((Player) shooter).canHarmPlayer((Player) entity)) {
+                return;
+            }
+
+            if (!net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
+                this.onHit(raytraceresult);
+                this.resetAlreadyHits();
+                this.hasImpulse = true;
+            }
         }
     }
 
     private void faceEntityStandby() {
+        if (this.getVehicle() == null) return;
 
         long cycle = 30;
-        long tickOffset = 0;
-        if (this.level().isClientSide())
-            tickOffset = 1;
+        long tickOffset = this.level().isClientSide() ? 1 : 0;
         int ticks = (int) ((this.level().getGameTime() + tickOffset) % cycle);
-        /*
-         * if ((getInterval() - waitTime) < ticks) { ticks = getInterval() - waitTime; }
-         */
 
-        double rotParTick = 360.0 / (double) cycle;
+        double rotParTick = 360.0 / cycle;
         double offset = getDelay();
         double degYaw = (ticks * rotParTick + offset) % 360.0;
         double yaw = Math.toRadians(degYaw);
 
-        Vec3 dir = new Vec3(0, 0, 1);
+        Vec3 dir = new Vec3(0, 0, 1).yRot((float) -yaw).normalize().scale(2);
+        Vec3 targetPos = this.getVehicle().position().add(0, this.getVehicle().getEyeHeight() / 2.0, 0);
 
-        // yaw
-        dir = dir.yRot((float) -yaw);
-        dir = dir.normalize().scale(2);
-
-        if (this.getVehicle() != null) {
-            dir = dir.add(this.getVehicle().position());
-            dir = dir.add(0, this.getVehicle().getEyeHeight() / 2.0, 0);
-        }
-
-        this.xRotO = this.getXRot();
-        this.yRotO = this.getYRot();
-
-        setPos(dir);
-
-        setRot((float) (-degYaw), 0);
-
+        this.setPos(targetPos.add(dir));
+        this.setRot((float) -degYaw, 0);
     }
 
     @Override

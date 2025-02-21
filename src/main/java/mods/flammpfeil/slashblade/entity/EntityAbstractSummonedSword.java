@@ -274,27 +274,23 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
 
         if (getHitEntity() != null) {
             Entity hits = getHitEntity();
-
             if (!hits.isAlive()) {
                 this.burst();
             } else {
                 this.setPos(hits.getX(), hits.getY() + hits.getEyeHeight() * 0.5f, hits.getZ());
-
                 int delay = getDelay();
                 delay--;
                 setDelay(delay);
-
                 if (!this.level().isClientSide() && delay < 0)
                     this.burst();
             }
-
             return;
         }
 
         boolean disallowedHitBlock = this.isNoClip();
-
         BlockPos blockpos = this.getOnPos();
         BlockState blockstate = this.level().getBlockState(blockpos);
+
         if (!blockstate.isAir() && !disallowedHitBlock) {
             VoxelShape voxelshape = blockstate.getCollisionShape(this.level(), blockpos);
             if (!voxelshape.isEmpty()) {
@@ -313,14 +309,11 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
 
         if (this.inGround && !disallowedHitBlock) {
             if (this.inBlockState != blockstate && this.level().noCollision(this.getBoundingBox().inflate(0.06D))) {
-                // block breaked
                 this.burst();
             } else if (!this.level().isClientSide()) {
-                // onBlock
                 this.tryDespawn();
             }
         } else {
-            // process pose
             Vec3 motionVec = this.getDeltaMovement();
             if (this.xRotO == 0.0F && this.yRotO == 0.0F) {
                 float f = Mth.sqrt((float) motionVec.horizontalDistanceSqr());
@@ -330,7 +323,6 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
                 this.xRotO = this.getXRot();
             }
 
-            // process inAir
             ++this.ticksInAir;
             Vec3 positionVec = this.position();
             Vec3 movedVec = positionVec.add(motionVec);
@@ -351,9 +343,9 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
                     Entity entity = ((EntityHitResult) raytraceresult).getEntity();
                     Entity entity1 = this.getShooter();
                     if (entity instanceof LivingEntity && entity1 instanceof LivingEntity) {
-                    	if(!TargetSelector.test.test( (LivingEntity) entity1, (LivingEntity) entity) ) {
-	                        raytraceresult = null;
-	                        entityraytraceresult = null;
+                        if (!TargetSelector.test.test((LivingEntity) entity1, (LivingEntity) entity)) {
+                            raytraceresult = null;
+                            entityraytraceresult = null;
                         }
                     }
                 }
@@ -371,41 +363,12 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
                 raytraceresult = null;
             }
 
-            motionVec = this.getDeltaMovement();
-            double mx = motionVec.x;
-            double my = motionVec.y;
-            double mz = motionVec.z;
-            if (this.getIsCritical()) {
-                for (int i = 0; i < 4; ++i) {
-                    this.level().addParticle(ParticleTypes.CRIT, this.getX() + mx * (double) i / 4.0D,
-                            this.getY() + my * (double) i / 4.0D, this.getZ() + mz * (double) i / 4.0D, -mx, -my + 0.2D,
-                            -mz);
-                }
-            }
-
-            this.setPos(this.getX() + mx, this.getY() + my, this.getZ() + mz);
+            this.setPos(this.getX() + motionVec.x, this.getY() + motionVec.y, this.getZ() + motionVec.z);
             float f4 = Mth.sqrt((float) motionVec.horizontalDistanceSqr());
             if (disallowedHitBlock) {
-                this.setYRot((float) (Mth.atan2(-mx, -mz) * (double) (180F / (float) Math.PI)));
+                this.setYRot((float) (Mth.atan2(-motionVec.x, -motionVec.z) * (double) (180F / (float) Math.PI)));
             } else {
-                this.setYRot((float) (Mth.atan2(mx, mz) * (double) (180F / (float) Math.PI)));
-            }
-
-            for (this.setXRot((float) (Mth.atan2(my, (double) f4) * (double) (180F / (float) Math.PI))); this.getXRot()
-                    - this.xRotO < -180.0F; this.xRotO -= 360.0F) {
-                ;
-            }
-
-            while (this.getXRot() - this.xRotO >= 180.0F) {
-                this.xRotO += 360.0F;
-            }
-
-            while (this.getYRot() - this.yRotO < -180.0F) {
-                this.yRotO -= 360.0F;
-            }
-
-            while (this.getYRot() - this.yRotO >= 180.0F) {
-                this.yRotO += 360.0F;
+                this.setYRot((float) (Mth.atan2(motionVec.x, motionVec.z) * (double) (180F / (float) Math.PI)));
             }
 
             this.setXRot(Mth.lerp(0.2F, this.xRotO, this.getXRot()));
@@ -413,8 +376,9 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
             float f1 = 0.99F;
             if (this.isInWater()) {
                 for (int j = 0; j < 4; ++j) {
-                    this.level().addParticle(ParticleTypes.BUBBLE, this.getX() - mx * 0.25D, this.getY() - my * 0.25D,
-                            this.getZ() - mz * 0.25D, mx, my, mz);
+                    this.level().addParticle(ParticleTypes.BUBBLE, this.getX() - motionVec.x * 0.25D,
+                            this.getY() - motionVec.y * 0.25D, this.getZ() - motionVec.z * 0.25D, motionVec.x, motionVec.y,
+                            motionVec.z);
                 }
             }
 
@@ -424,13 +388,11 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
                 this.setDeltaMovement(vec3d3.x, vec3d3.y - (double) 0.05F, vec3d3.z);
             }
 
-            // this.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
             this.checkInsideBlocks();
         }
 
         if (!this.level().isClientSide() && ticksInGround <= 0 && 100 < this.tickCount)
             this.remove(RemovalReason.DISCARDED);
-
     }
 
     protected void tryDespawn() {
