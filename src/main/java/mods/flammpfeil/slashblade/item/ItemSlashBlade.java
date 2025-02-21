@@ -656,4 +656,5 @@ public class ItemSlashBlade extends SwordItem {
 
 		super.initializeClient(consumer);
 	}
+
 }

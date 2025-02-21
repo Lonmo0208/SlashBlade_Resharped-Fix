@@ -10,32 +10,32 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PlayMessages;
 
 public class EntitySpiralSwords extends EntityAbstractSummonedSword {
-    private static final EntityDataAccessor<Boolean> IT_FIRED = SynchedEntityData.defineId(EntitySpiralSwords.class,
-            EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IT_FIRED = SynchedEntityData.defineId(EntitySpiralSwords.class, EntityDataSerializers.BOOLEAN);
 
     public EntitySpiralSwords(EntityType<? extends Projectile> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
-
         this.setPierce((byte) 5);
     }
 
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-
         this.entityData.define(IT_FIRED, false);
     }
 
     public void doFire() {
-        this.getEntityData().set(IT_FIRED, true);
+        this.entityData.set(IT_FIRED, true);
     }
 
     public boolean itFired() {
-        return this.getEntityData().get(IT_FIRED);
+        return this.entityData.get(IT_FIRED);
     }
 
     public static EntitySpiralSwords createInstance(PlayMessages.SpawnEntity packet, Level worldIn) {
@@ -44,14 +44,9 @@ public class EntitySpiralSwords extends EntityAbstractSummonedSword {
 
     @Override
     public void tick() {
-        if (!itFired()) {
-            if (level().isClientSide()) {
-                if (getVehicle() == null) {
-                    startRiding(this.getOwner(), true);
-                }
-            }
+        if (!itFired() && level().isClientSide() && getVehicle() == null) {
+            startRiding(this.getOwner(), true);
         }
-
         super.tick();
     }
 
@@ -63,33 +58,32 @@ public class EntitySpiralSwords extends EntityAbstractSummonedSword {
             this.stopRiding();
 
             this.tickCount = 0;
-            Vec3 dir = this.getViewVector(1.0f);
+            Vec3 dir = target != null
+                    ? this.position().subtract(target.position()).multiply(1, 0, 1).normalize()
+                    : this.getViewVector(1.0f);
 
-            if (target != null) {
-                dir = this.position().subtract(target.position()).multiply(1, 0, 1).normalize();
-            }
-            ((EntitySpiralSwords) this).shoot(dir.x, dir.y, dir.z, 3.0f, 1.0f);
+            this.shoot(dir.x, dir.y, dir.z, 3.0f, 1.0f);
             return;
         }
 
-        // this.startRiding()
         this.setDeltaMovement(Vec3.ZERO);
-        if (canUpdate())
+        if (canUpdate()) {
             this.baseTick();
+        }
 
         faceEntityStandby();
-        // this.getVehicle().positionRider(this);
 
-        // todo: add lifetime
-        if (200 < this.tickCount)
+        if (this.tickCount > 200) {
             burst();
+        }
 
-        if (!level().isClientSide())
+        if (!level().isClientSide()) {
             hitCheck();
+        }
     }
 
     private void hitCheck() {
-        if (this.tickCount % 5 != 0) return; // 每 5 帧检测一次
+        if (this.tickCount % 5 != 0) return;
 
         Vec3 positionVec = this.position();
         Vec3 dirVec = this.getViewVector(1.0f);
@@ -113,7 +107,8 @@ public class EntitySpiralSwords extends EntityAbstractSummonedSword {
     }
 
     private void faceEntityStandby() {
-        if (this.getVehicle() == null) return;
+        Entity vehicle = this.getVehicle();
+        if (vehicle == null) return;
 
         long cycle = 30;
         long tickOffset = this.level().isClientSide() ? 1 : 0;
@@ -125,25 +120,23 @@ public class EntitySpiralSwords extends EntityAbstractSummonedSword {
         double yaw = Math.toRadians(degYaw);
 
         Vec3 dir = new Vec3(0, 0, 1).yRot((float) -yaw).normalize().scale(2);
-        Vec3 targetPos = this.getVehicle().position().add(0, this.getVehicle().getEyeHeight() / 2.0, 0);
+        Vec3 targetPos = vehicle.position().add(0, vehicle.getEyeHeight() / 2.0, 0);
 
         this.setPos(targetPos.add(dir));
         this.setRot((float) -degYaw, 0);
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult blockraytraceresult) {
+    protected void onHitBlock(BlockHitResult result) {
         burst();
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult p_213868_1_) {
-
-        Entity targetEntity = p_213868_1_.getEntity();
+    protected void onHitEntity(EntityHitResult result) {
+        Entity targetEntity = result.getEntity();
         if (targetEntity instanceof LivingEntity) {
             KnockBacks.cancel.action.accept((LivingEntity) targetEntity);
         }
-
-        super.onHitEntity(p_213868_1_);
+        super.onHitEntity(result);
     }
 }

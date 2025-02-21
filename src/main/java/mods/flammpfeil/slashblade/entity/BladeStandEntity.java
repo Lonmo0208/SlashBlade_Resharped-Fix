@@ -39,8 +39,8 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
 	public Item currentType = null;
 	public ItemStack currentTypeStack = ItemStack.EMPTY;
 
-	public BladeStandEntity(EntityType<? extends BladeStandEntity> p_i50224_1_, Level p_i50224_2_) {
-		super(p_i50224_1_, p_i50224_2_);
+	public BladeStandEntity(EntityType<? extends BladeStandEntity> entityType, Level level) {
+		super(entityType, level);
 	}
 
 	@Override
@@ -51,14 +51,8 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
-		String standTypeStr;
-		if (this.currentType != null) {
-			standTypeStr = ForgeRegistries.ITEMS.getKey(this.currentType).toString();
-		} else {
-			standTypeStr = "";
-		}
+		String standTypeStr = this.currentType != null ? ForgeRegistries.ITEMS.getKey(this.currentType).toString() : "";
 		compound.putString("StandType", standTypeStr);
-
 		compound.putByte("Pose", (byte) this.getPose().ordinal());
 	}
 
@@ -66,7 +60,6 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
 	public void readAdditionalSaveData(CompoundTag compound) {
 		super.readAdditionalSaveData(compound);
 		this.currentType = ForgeRegistries.ITEMS.getValue(new ResourceLocation(compound.getString("StandType")));
-
 		this.setPose(Pose.values()[compound.getByte("Pose") % Pose.values().length]);
 	}
 
@@ -84,13 +77,11 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
 	}
 
 	public static BladeStandEntity createInstanceFromPos(Level worldIn, BlockPos placePos, Direction dir, Item type) {
-		BladeStandEntity e = new BladeStandEntity(SlashBlade.RegistryEvents.BladeStand, worldIn);
-
-		e.pos = placePos;
-		e.setDirection(dir);
-		e.currentType = type;
-
-		return e;
+		BladeStandEntity entity = new BladeStandEntity(SlashBlade.RegistryEvents.BladeStand, worldIn);
+		entity.pos = placePos;
+		entity.setDirection(dir);
+		entity.currentType = type;
+		return entity;
 	}
 
 	public static BladeStandEntity createInstance(PlayMessages.SpawnEntity spawnEntity, Level world) {
@@ -99,44 +90,41 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
 
 	@Nullable
 	@Override
-	public ItemEntity spawnAtLocation(ItemLike iip) {
-		if (iip == Items.ITEM_FRAME) {
-			if (this.currentType == null || this.currentType == Items.AIR)
-				return null;
-
-			iip = this.currentType;
+	public ItemEntity spawnAtLocation(ItemLike item) {
+		if (item == Items.ITEM_FRAME && (this.currentType == null || this.currentType == Items.AIR)) {
+			return null;
 		}
-		return super.spawnAtLocation(iip);
+		if (item == Items.ITEM_FRAME) {
+			item = this.currentType;
+		}
+		return super.spawnAtLocation(item);
 	}
 
 	@Override
-	public boolean hurt(DamageSource damageSource, float cat) {
+	public boolean hurt(DamageSource damageSource, float amount) {
 		ItemStack blade = this.getItem();
-		
-		if (blade.isEmpty())
-			return super.hurt(damageSource, cat);
-		
-		if(!blade.getCapability(ItemSlashBlade.BLADESTATE).isPresent())
-			return super.hurt(damageSource, cat);
-		
-		ISlashBladeState state = blade.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
-		
-		if(MinecraftForge.EVENT_BUS.post(new SlashBladeEvent.BladeStandAttackEvent(blade, state, this, damageSource)))
-			return true;
+		if (blade.isEmpty() || !blade.getCapability(ItemSlashBlade.BLADESTATE).isPresent()) {
+			return super.hurt(damageSource, amount);
+		}
 
-		return super.hurt(damageSource, cat);
+		ISlashBladeState state = blade.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
+		if (MinecraftForge.EVENT_BUS.post(new SlashBladeEvent.BladeStandAttackEvent(blade, state, this, damageSource))) {
+			return true;
+		}
+
+		return super.hurt(damageSource, amount);
 	}
 
 	@Override
 	public InteractionResult interact(Player player, InteractionHand hand) {
-		InteractionResult result = InteractionResult.PASS;
 		if (!this.level().isClientSide() && hand == InteractionHand.MAIN_HAND) {
 			ItemStack itemstack = player.getItemInHand(hand);
+
 			if (player.isShiftKeyDown() && !this.getItem().isEmpty()) {
 				Pose current = this.getPose();
 				int newIndex = (current.ordinal() + 1) % Pose.values().length;
 				this.setPose(Pose.values()[newIndex]);
-				result = InteractionResult.SUCCESS;
+				return InteractionResult.SUCCESS;
 			} else if ((!itemstack.isEmpty() && itemstack.getItem() instanceof ItemSlashBlade)
 					|| (itemstack.isEmpty() && !this.getItem().isEmpty())) {
 
@@ -147,30 +135,25 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
 							itemstack.shrink(1);
 						}
 						this.playSound(SoundEvents.ITEM_FRAME_ADD_ITEM, 1.0F, 1.0F);
-						result = InteractionResult.SUCCESS;
+						return InteractionResult.SUCCESS;
 					}
 				} else {
 					ItemStack displayed = this.getItem().copy();
-
 					this.setItem(itemstack);
 					player.setItemInHand(hand, displayed);
-
 					this.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM, 1.0F, 1.0F);
-					result = InteractionResult.SUCCESS;
-
+					return InteractionResult.SUCCESS;
 				}
-
 			} else {
 				this.playSound(SoundEvents.ITEM_FRAME_ROTATE_ITEM, 1.0F, 1.0F);
 				this.setRotation(this.getRotation() + 1);
-				result = InteractionResult.SUCCESS;
+				return InteractionResult.SUCCESS;
 			}
 		}
-		return result;
+		return InteractionResult.PASS;
 	}
 
 	protected ItemStack getFrameItemStack() {
 		return new ItemStack(currentType);
 	}
-
 }

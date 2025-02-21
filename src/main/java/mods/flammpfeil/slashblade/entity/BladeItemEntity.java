@@ -24,13 +24,11 @@ import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.network.NetworkHooks;
 
 public class BladeItemEntity extends ItemEntity {
-    private static final EntityDataAccessor<String> DATA_MODEL = SynchedEntityData.defineId(BladeItemEntity.class,
-            EntityDataSerializers.STRING);
-    private static final EntityDataAccessor<String> DATA_TEXTURE = SynchedEntityData.defineId(BladeItemEntity.class,
-            EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> DATA_MODEL = SynchedEntityData.defineId(BladeItemEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> DATA_TEXTURE = SynchedEntityData.defineId(BladeItemEntity.class, EntityDataSerializers.STRING);
 
-    public BladeItemEntity(EntityType<? extends BladeItemEntity> p_i50217_1_, Level p_i50217_2_) {
-        super(p_i50217_1_, p_i50217_2_);
+    public BladeItemEntity(EntityType<? extends BladeItemEntity> entityType, Level level) {
+        super(entityType, level);
     }
 
     @Override
@@ -58,7 +56,6 @@ public class BladeItemEntity extends ItemEntity {
 
     public void init() {
         this.setInvulnerable(true);
-
         CompoundTag compoundnbt = this.saveWithoutId(new CompoundTag());
         compoundnbt.remove("Dimension");
         compoundnbt.putShort("Health", (short) 100);
@@ -70,6 +67,7 @@ public class BladeItemEntity extends ItemEntity {
         return new BladeItemEntity(SlashBlade.RegistryEvents.BladeItem, worldIn);
     }
 
+    @Override
     public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
@@ -88,31 +86,26 @@ public class BladeItemEntity extends ItemEntity {
         if (this.level().isClientSide()) {
             if (random.nextInt(5) == 0 && getAirSupply() < 0) {
                 Direction direction = Direction.UP;
-                double d0 = (double) this.getX() - (double) (random.nextFloat() * 0.1F);
-                double d1 = (double) this.getY() - (double) (random.nextFloat() * 0.1F);
-                double d2 = (double) this.getZ() - (double) (random.nextFloat() * 0.1F);
-                double d3 = (double) (0.4F - (random.nextFloat() + random.nextFloat()) * 0.4F);
-                this.level().addParticle(ParticleTypes.PORTAL, d0 + (double) direction.getStepX() * d3,
-                        d1 + 2 + (double) direction.getStepY() * d3, d2 + (double) direction.getStepZ() * d3,
+                double d0 = this.getX() - random.nextFloat() * 0.1F;
+                double d1 = this.getY() - random.nextFloat() * 0.1F;
+                double d2 = this.getZ() - random.nextFloat() * 0.1F;
+                double d3 = 0.4F - (random.nextFloat() + random.nextFloat()) * 0.4F;
+                this.level().addParticle(ParticleTypes.PORTAL, d0 + direction.getStepX() * d3,
+                        d1 + 2 + direction.getStepY() * d3, d2 + direction.getStepZ() * d3,
                         random.nextGaussian() * 0.005D, -2, random.nextGaussian() * 0.005D);
             }
 
             if (!this.onGround() && !this.isInWater() && random.nextInt(3) == 0) {
                 Direction direction = Direction.UP;
-                double d0 = (double) this.getX() - (double) (random.nextFloat() * 0.1F);
-                double d1 = (double) this.getY() - (double) (random.nextFloat() * 0.1F);
-                double d2 = (double) this.getZ() - (double) (random.nextFloat() * 0.1F);
-                double d3 = (double) (0.4F - (random.nextFloat() + random.nextFloat()) * 0.4F);
-                this.level().addParticle(ParticleTypes.END_ROD, d0 + (double) direction.getStepX() * d3,
-                        d1 + (double) direction.getStepY() * d3, d2 + (double) direction.getStepZ() * d3,
+                double d0 = this.getX() - random.nextFloat() * 0.1F;
+                double d1 = this.getY() - random.nextFloat() * 0.1F;
+                double d2 = this.getZ() - random.nextFloat() * 0.1F;
+                double d3 = 0.4F - (random.nextFloat() + random.nextFloat()) * 0.4F;
+                this.level().addParticle(ParticleTypes.END_ROD, d0 + direction.getStepX() * d3,
+                        d1 + direction.getStepY() * d3, d2 + direction.getStepZ() * d3,
                         random.nextGaussian() * 0.005D, random.nextGaussian() * 0.005D, random.nextGaussian() * 0.005D);
             }
         }
-    }
-
-    @Override
-    public boolean isOnFire() {
-        return super.isOnFire();
     }
 
     @Override
@@ -123,12 +116,10 @@ public class BladeItemEntity extends ItemEntity {
         if (i > 0) {
             this.playSound(SoundEvents.GENERIC_BIG_FALL, 1.0F, 1.0F);
             this.hurt(this.level().damageSources().fall(), (float) i);
-            int j = Mth.floor(this.getX());
-            int k = Mth.floor(this.getY() - (double) 0.2F);
-            int l = Mth.floor(this.getZ());
-            BlockState blockstate = this.level().getBlockState(new BlockPos(j, k, l));
+            BlockPos pos = new BlockPos(Mth.floor(this.getX()), Mth.floor(this.getY() - 0.2F), Mth.floor(this.getZ()));
+            BlockState blockstate = this.level().getBlockState(pos);
             if (!blockstate.isAir()) {
-                SoundType soundtype = blockstate.getSoundType(level(), new BlockPos(j, k, l), this);
+                SoundType soundtype = blockstate.getSoundType(level(), pos, this);
                 this.playSound(soundtype.getFallSound(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
             }
 
@@ -140,11 +131,8 @@ public class BladeItemEntity extends ItemEntity {
         return false;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public float getLightLevelDependentMagicValue() {
-        if (getAirSupply() < 0)
-            return 15728880;
-        return super.getLightLevelDependentMagicValue();
+        return getAirSupply() < 0 ? 15728880 : super.getLightLevelDependentMagicValue();
     }
 }

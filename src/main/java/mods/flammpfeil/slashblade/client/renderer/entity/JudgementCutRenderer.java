@@ -41,6 +41,7 @@ public class JudgementCutRenderer<T extends EntityJudgementCut> extends EntityRe
     @Override
     public void render(T entity, float entityYaw, float partialTicks, PoseStack matrixStackIn,
             MultiBufferSource bufferIn, int packedLightIn) {
+        int seed = entity.getSeed();
 
         try (MSAutoCloser msac = MSAutoCloser.pushMatrix(matrixStackIn)) {
 
@@ -59,7 +60,6 @@ public class JudgementCutRenderer<T extends EntityJudgementCut> extends EntityRe
                     / deathTime);
             baseAlpha = -Math.pow(baseAlpha - 1, 4.0) + 1.0;
 
-            int seed = entity.getSeed();
 
             matrixStackIn.mulPose(Axis.YP.rotationDegrees(seed));
 

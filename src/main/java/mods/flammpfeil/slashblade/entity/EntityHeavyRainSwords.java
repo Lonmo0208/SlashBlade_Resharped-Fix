@@ -19,53 +19,46 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PlayMessages;
 
 public class EntityHeavyRainSwords extends EntityAbstractSummonedSword {
-    private static final EntityDataAccessor<Boolean> IT_FIRED = SynchedEntityData.defineId(EntityHeavyRainSwords.class,
-            EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IT_FIRED = SynchedEntityData.defineId(EntityHeavyRainSwords.class, EntityDataSerializers.BOOLEAN);
+
+    private static final MobEffectInstance SLOW_EFFECT = new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 10);
+    private static final int ON_GROUND_LIFE_TIME = 20;
+    private int ticksInGround = 0;
+    private long fireTime = -1;
 
     public EntityHeavyRainSwords(EntityType<? extends Projectile> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
-
         this.setPierce((byte) 5);
 
         CompoundTag compoundtag = this.getPersistentData();
         ListTag listtag = compoundtag.getList("CustomPotionEffects", 9);
-        MobEffectInstance mobeffectinstance = new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 20, 10);
-        listtag.add(mobeffectinstance.save(new CompoundTag()));
+        listtag.add(SLOW_EFFECT.save(new CompoundTag()));
         this.getPersistentData().put("CustomPotionEffects", listtag);
-
     }
 
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-
         this.entityData.define(IT_FIRED, false);
     }
 
     public void doFire() {
-        this.getEntityData().set(IT_FIRED, true);
+        this.entityData.set(IT_FIRED, true);
     }
 
     public boolean itFired() {
-        return this.getEntityData().get(IT_FIRED);
+        return this.entityData.get(IT_FIRED);
     }
 
     public static EntityHeavyRainSwords createInstance(PlayMessages.SpawnEntity packet, Level worldIn) {
         return new EntityHeavyRainSwords(SlashBlade.RegistryEvents.HeavyRainSwords, worldIn);
     }
 
-    long fireTime = -1;
-
     @Override
     public void tick() {
-        if (!itFired()) {
-            if (level().isClientSide()) {
-                if (getVehicle() == null) {
-                    startRiding(this.getOwner(), true);
-                }
-            }
+        if (!itFired() && level().isClientSide() && getVehicle() == null) {
+            startRiding(this.getOwner(), true);
         }
-
         super.tick();
     }
 
@@ -73,47 +66,38 @@ public class EntityHeavyRainSwords extends EntityAbstractSummonedSword {
     public void rideTick() {
         if (itFired() && fireTime <= tickCount) {
             faceEntityStandby();
-
             this.stopRiding();
 
             Vec3 dir = new Vec3(0, -1, 0);
             this.shoot(dir.x, dir.y, dir.z, 4.0f, 2.0f);
 
             this.tickCount = 0;
-
             return;
         }
 
-        // this.startRiding()
         this.setDeltaMovement(Vec3.ZERO);
-        if (canUpdate())
+        if (canUpdate()) {
             this.baseTick();
+        }
 
         faceEntityStandby();
-        // this.getVehicle().positionRider(this);
 
-        // lifetime check
         if (!itFired()) {
             int basedelay = 10;
             fireTime = tickCount + basedelay + getDelay();
             doFire();
         }
 
-        /*
-         * if(!level().isClientSide()) hitCheck();
-         */
+        tryDespawn();
     }
 
     private void faceEntityStandby() {
         setPos(this.position());
-
         setRot(this.getYRot(), -90);
-
     }
 
     public void setSpread(Vec3 basePos) {
         double areaSize = 2.5;
-
         double offsetX = (this.random.nextDouble() * 2.0 - 1.0) * areaSize;
         double offsetZ = (this.random.nextDouble() * 2.0 - 1.0) * areaSize;
 
@@ -121,25 +105,18 @@ public class EntityHeavyRainSwords extends EntityAbstractSummonedSword {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult p_213868_1_) {
-
-        Entity targetEntity = p_213868_1_.getEntity();
+    protected void onHitEntity(EntityHitResult result) {
+        Entity targetEntity = result.getEntity();
         if (targetEntity instanceof LivingEntity) {
             KnockBacks.cancel.action.accept((LivingEntity) targetEntity);
             StunManager.setStun((LivingEntity) targetEntity);
         }
-
-        super.onHitEntity(p_213868_1_);
+        super.onHitEntity(result);
     }
 
-    int ON_GROUND_LIFE_TIME = 20;
-    int ticksInGround = 0;
-
     protected void tryDespawn() {
-        ++this.ticksInGround;
-        if (ON_GROUND_LIFE_TIME <= this.ticksInGround) {
+        if (++this.ticksInGround >= ON_GROUND_LIFE_TIME) {
             this.burst();
         }
-
     }
 }
