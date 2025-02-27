@@ -27,8 +27,8 @@ public class BladeItemEntity extends ItemEntity {
     private static final EntityDataAccessor<String> DATA_MODEL = SynchedEntityData.defineId(BladeItemEntity.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<String> DATA_TEXTURE = SynchedEntityData.defineId(BladeItemEntity.class, EntityDataSerializers.STRING);
 
-    public BladeItemEntity(EntityType<? extends BladeItemEntity> entityType, Level level) {
-        super(entityType, level);
+    public BladeItemEntity(EntityType<? extends BladeItemEntity> p_i50217_1_, Level p_i50217_2_) {
+        super(p_i50217_1_, p_i50217_2_);
     }
 
     @Override

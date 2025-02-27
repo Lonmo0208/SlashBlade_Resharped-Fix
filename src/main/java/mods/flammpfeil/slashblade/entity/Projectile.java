@@ -11,8 +11,8 @@ import org.jetbrains.annotations.Nullable;
 public abstract class Projectile extends net.minecraft.world.entity.projectile.Projectile {
     private static final EntityDataAccessor<Integer> OWNERID = SynchedEntityData.defineId(Projectile.class, EntityDataSerializers.INT);
 
-    protected Projectile(EntityType<? extends net.minecraft.world.entity.projectile.Projectile> entityType, Level level) {
-        super(entityType, level);
+    protected Projectile(EntityType<? extends net.minecraft.world.entity.projectile.Projectile> p_37248_, Level p_37249_) {
+        super(p_37248_, p_37249_);
     }
 
     @Override
@@ -25,22 +25,22 @@ public abstract class Projectile extends net.minecraft.world.entity.projectile.P
     public Entity getOwner() {
         int id = this.entityData.get(OWNERID);
         if (id >= 0) {
-            Entity owner = this.level().getEntity(id);
-            if (owner != null && super.getOwner() != owner) {
-                this.setOwner(owner);
+            Entity p_37263_ = this.level().getEntity(id);
+            if (p_37263_ != null && super.getOwner() != p_37263_) {
+                this.setOwner(p_37263_);
             }
-            return owner;
+            return p_37263_;
         }
         return null;
     }
 
     @Override
-    public void setOwner(@Nullable Entity owner) {
-        if (owner != null) {
-            this.entityData.set(OWNERID, owner.getId());
+    public void setOwner(@Nullable Entity p_37263_) {
+        if (p_37263_  != null) {
+            this.entityData.set(OWNERID, p_37263_.getId());
         } else {
             this.entityData.set(OWNERID, -1);
         }
-        super.setOwner(owner);
+        super.setOwner(p_37263_);
     }
 }

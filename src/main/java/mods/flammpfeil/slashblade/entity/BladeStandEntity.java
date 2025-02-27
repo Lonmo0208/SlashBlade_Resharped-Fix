@@ -39,8 +39,8 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
 	public Item currentType = null;
 	public ItemStack currentTypeStack = ItemStack.EMPTY;
 
-	public BladeStandEntity(EntityType<? extends BladeStandEntity> entityType, Level level) {
-		super(entityType, level);
+	public BladeStandEntity(EntityType<? extends BladeStandEntity> p_i50224_1_, Level p_i50224_2_) {
+		super(p_i50224_1_, p_i50224_2_);
 	}
 
 	@Override
