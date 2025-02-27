@@ -61,170 +61,109 @@ public abstract class MmdMotionPlayer {
     public Map<String, Integer> boneNameToIndex = Maps.newHashMap();
 
     public int getBoneIndexByName(String name) {
-        Integer result = boneNameToIndex.get(name);
-        return result == null ? -1 : result;
-        /*
-         * for(int i = 0; i < this._ref_pmd_model.getBoneArray().length; i++){
-         * if(this._ref_pmd_model.getBoneArray()[i].getName().equals(name)){ return i; }
-         * } return -1;
-         */
+        return boneNameToIndex.getOrDefault(name, -1);
     }
 
     public PmdBone getBoneByName(String name) {
         int idx = getBoneIndexByName(name);
-        if (idx < 0)
-            return null;
-        else
-            return this._ref_pmd_model.getBoneArray()[idx];
-
-        /*
-         * for(PmdBone bone : this._ref_pmd_model.getBoneArray()){
-         * if(bone.getName().equals(name)){ return bone; } } return null;
-         */
+        return idx < 0 ? null : this._ref_pmd_model.getBoneArray()[idx];
     }
 
-    private PmdBone m_pNeckBone; // 首のボーン
+    private PmdBone m_pNeckBone;
 
-    public MmdMotionPlayer() {
-        return;
-    }
+    public MmdMotionPlayer() {}
 
     public void setPmd(MmdPmdModel_BasicClass i_pmd_model) throws MmdException {
         this._ref_pmd_model = i_pmd_model;
         PmdBone[] bone_array = i_pmd_model.getBoneArray();
-        // スキニング用のmatrix
         this._skinning_mat = MmdMatrix.createArray(bone_array.length);
 
         boneNameToIndex.clear();
-        IntStream.range(0, bone_array.length).forEach(value -> boneNameToIndex.put(bone_array[value].getName(), value));
+        for (int i = 0; i < bone_array.length; i++) {
+            boneNameToIndex.put(bone_array[i].getName(), i);
+        }
 
         // 首^H頭のボーンを探しておく
         this.m_pNeckBone = null;
-        Integer headIdx = boneNameToIndex.get("頭");
-        if (headIdx != null) {
+        int headIdx = boneNameToIndex.getOrDefault("頭", -1);
+        if (headIdx >= 0 && headIdx < bone_array.length) {
             this.m_pNeckBone = bone_array[headIdx];
         }
-        /*
-         * for(int i=0;i<bone_array.length;i++){
-         * if(bone_array[i].getName().equals("頭")){ this.m_pNeckBone = bone_array[i];
-         * break; } }
-         */
 
         // PMD/VMDが揃った？
         if (this._ref_vmd_motion != null) {
             makeBoneFaceList();
         }
-        return;
     }
 
     public void setVmd(MmdVmdMotion_BasicClass i_vmd_model) throws MmdException {
-        if (this._ref_vmd_motion == i_vmd_model) {
-            // It already set the same.
-            return;
+        if (this._ref_vmd_motion != i_vmd_model) {
+            this._ref_vmd_motion = i_vmd_model;
+            if (this._ref_pmd_model != null) {
+                makeBoneFaceList();
+            }
         }
-
-        this._ref_vmd_motion = i_vmd_model;
-        // 操作対象ボーンのポインタを設定する
-        MotionData[] pMotionDataList = i_vmd_model.refMotionDataArray();
-        this.m_ppBoneList = new PmdBone[pMotionDataList.length];
-        // 操作対象表情のポインタを設定する
-        FaceData[] pFaceDataList = i_vmd_model.refFaceDataArray();
-        this.m_ppFaceList = new PmdFace[pFaceDataList.length];
-        // PMD/VMDが揃った？
-        if (this._ref_pmd_model != null) {
-            makeBoneFaceList();
-        }
-        return;
     }
 
     private void makeBoneFaceList() {
-        MmdPmdModel_BasicClass pmd_model = this._ref_pmd_model;
-        MmdVmdMotion_BasicClass vmd_model = this._ref_vmd_motion;
-
-        // 操作対象ボーンのポインタを設定する
-        MotionData[] pMotionDataList = vmd_model.refMotionDataArray();
+        MotionData[] pMotionDataList = _ref_vmd_motion.refMotionDataArray();
         this.m_ppBoneList = new PmdBone[pMotionDataList.length];
         for (int i = 0; i < pMotionDataList.length; i++) {
-            this.m_ppBoneList[i] = pmd_model.getBoneByName(pMotionDataList[i].szBoneName);
+            this.m_ppBoneList[i] = _ref_pmd_model.getBoneByName(pMotionDataList[i].szBoneName);
         }
-        // 操作対象表情のポインタを設定する
-        FaceData[] pFaceDataList = vmd_model.refFaceDataArray();
+
+        FaceData[] pFaceDataList = _ref_vmd_motion.refFaceDataArray();
         this.m_ppFaceList = new PmdFace[pFaceDataList.length];
         for (int i = 0; i < pFaceDataList.length; i++) {
-            this.m_ppFaceList[i] = pmd_model.getFaceByName(pFaceDataList[i].szFaceName);
+            this.m_ppFaceList[i] = _ref_pmd_model.getFaceByName(pFaceDataList[i].szFaceName);
         }
-        return;
     }
 
-    /**
-     * VMDの再生時間長を返します。
-     * 
-     * @return ms単位の再生時間
-     */
     public float getTimeLength() {
         return (float) (this._ref_vmd_motion.getMaxFrame() * (100.0 / 3));
     }
 
-    /**
-     * 指定した時刻のモーションに更新します。
-     * 
-     * @param i_position_in_msec モーションの先頭からの時刻をms単位で指定します。
-     * @throws MmdException
-     */
     public void updateMotion(float i_position_in_msec) throws MmdException {
         final PmdIK[] ik_array = this._ref_pmd_model.getIKArray();
         final PmdBone[] bone_array = this._ref_pmd_model.getBoneArray();
         assert i_position_in_msec >= 0;
-        // 描画するフレームを計算する。
+
         float frame = (float) (i_position_in_msec / (100.0 / 3));
-        // 範囲外を除外
         if (frame > this._ref_vmd_motion.getMaxFrame()) {
             frame = this._ref_vmd_motion.getMaxFrame();
         }
+
         this.updateFace(frame);
 
-        // 累積IK反映値初期化
         for (PmdBone bone : bone_array) {
             bone.reset();
         }
 
-        // モーション更新
         this.updateBone(frame);
 
-        eventBus.post(new UpdateBoneEvent.Pre(this._ref_pmd_model.getBoneArray(), this));
+        eventBus.post(new UpdateBoneEvent.Pre(bone_array, this));
 
-        // ボーン行列の更新
-        for (int i = 0; i < bone_array.length; i++) {
-            bone_array[i].updateMatrix();
+        for (PmdBone bone : bone_array) {
+            bone.updateMatrix();
         }
 
-        // IKの更新
-        for (int i = 0; i < ik_array.length; i++) {
-            ik_array[i].update();
+        for (PmdIK ik : ik_array) {
+            ik.update();
         }
 
-        eventBus.post(new UpdateBoneEvent.Pre(this._ref_pmd_model.getBoneArray(), this));
-        // ボーン行列の更新
-        for (int i = 0; i < bone_array.length; i++) {
-            bone_array[i].updateMatrix();
-        }
+        eventBus.post(new UpdateBoneEvent.Post(bone_array, this));
 
-        // Lookme!
         if (this._lookme_enabled) {
             this.updateNeckBone();
         }
-        //
-        // スキニング用行列の更新
+
         for (int i = 0; i < bone_array.length; i++) {
             bone_array[i].updateSkinningMat(this._skinning_mat[i]);
         }
         this.onUpdateSkinningMatrix(this._skinning_mat);
-        return;
     }
 
     protected abstract void onUpdateSkinningMatrix(MmdMatrix[] i_skinning_mat) throws MmdException;
-
-    // programmable bone control -----------
 
     public final EventBus eventBus = new EventBus();
 
@@ -250,7 +189,8 @@ public abstract class MmdMotionPlayer {
         }
     }
 
-    // pbc end -----------
+    private MmdVector3 _looktarget = new MmdVector3();
+    private boolean _lookme_enabled = false;
 
     public void setLookVector(float i_x, float i_y, float i_z) {
         this._looktarget.x = i_x;
@@ -262,118 +202,57 @@ public abstract class MmdMotionPlayer {
         this._lookme_enabled = i_enable;
     }
 
-    private MmdVector3 _looktarget = new MmdVector3();
-    private boolean _lookme_enabled = false;
-
-    /**
-     * look me
-     * 
-     * @param pvec3LookTarget
-     */
     private void updateNeckBone() {
-        if (this.m_pNeckBone == null) {
-            return;
-        }
-        this.m_pNeckBone.lookAt(this._looktarget);
-
-        PmdBone[] bone_array = this._ref_pmd_model.getBoneArray();
-        int i;
-        for (i = 0; i < bone_array.length; i++) {
-            if (this.m_pNeckBone == bone_array[i]) {
-                break;
+        if (this.m_pNeckBone != null) {
+            this.m_pNeckBone.lookAt(this._looktarget);
+            for (PmdBone bone : this._ref_pmd_model.getBoneArray()) {
+                bone.updateMatrix();
             }
         }
-        for (; i < bone_array.length; i++) {
-            bone_array[i].updateMatrix();
-        }
-        return;
     }
 
     private void updateBone(float i_frame) throws MmdException {
-        // ---------------------------------------------------------
-        // 指定フレームのデータでボーンを動かす
-        final PmdBone[] ppBone = this.m_ppBoneList;
-
         MotionData[] pMotionDataList = _ref_vmd_motion.refMotionDataArray();
         for (int i = 0; i < pMotionDataList.length; i++) {
-            if (ppBone[i] == null) {
-                continue;
+            if (this.m_ppBoneList[i] != null) {
+                pMotionDataList[i].getMotionPosRot(i_frame, this.m_ppBoneList[i]);
             }
-            pMotionDataList[i].getMotionPosRot(i_frame, ppBone[i]);
-//			ppBone[i].m_vec3Position.setValue(vec3Position);
-            // 補間あり
-            // Vector3Lerp( &((*pBone)->m_vec3Position), &((*pBone)->m_vec3Position),
-            // &vec3Position, fLerpValue );
-            // QuaternionSlerp( &((*pBone)->m_vec4Rotate), &((*pBone)->m_vec4Rotate),
-            // &vec4Rotate, fLerpValue );
         }
-        return;
     }
 
-    /**
-     * 指定フレームのデータで表情を変形する
-     * 
-     * @param i_frame
-     * @throws MmdException
-     */
     private void updateFace(float i_frame) throws MmdException {
-        final MmdVector3[] position_array = this._ref_pmd_model.getPositionArray();
-        PmdFace[] ppFace = this.m_ppFaceList;
+        MmdVector3[] position_array = this._ref_pmd_model.getPositionArray();
         FaceData[] pFaceDataList = _ref_vmd_motion.refFaceDataArray();
         for (int i = 0; i < pFaceDataList.length; i++) {
-            final float fFaceRate = getFaceRate(pFaceDataList[i], i_frame);
-            if (ppFace[i] == null) {
-                continue;
-            }
-            if (fFaceRate == 1.0f) {
-                ppFace[i].setFace(position_array);
-            } else if (0.001f < fFaceRate) {
-                ppFace[i].blendFace(position_array, fFaceRate);
+            float fFaceRate = getFaceRate(pFaceDataList[i], i_frame);
+            if (this.m_ppFaceList[i] != null && fFaceRate > 0.001f) {
+                this.m_ppFaceList[i].blendFace(position_array, fFaceRate);
             }
         }
-        return;
     }
 
     private float getFaceRate(FaceData pFaceData, float fFrame) {
-        int i;
         int ulNumKeyFrame = pFaceData.ulNumKeyFrames;
-
-        // 最終フレームを過ぎていた場合
         if (fFrame > pFaceData.pKeyFrames[ulNumKeyFrame - 1].fFrameNo) {
             fFrame = pFaceData.pKeyFrames[ulNumKeyFrame - 1].fFrameNo;
         }
 
-        // 現在の時間がどのキー近辺にあるか
-        for (i = 0; i < ulNumKeyFrame; i++) {
-            if (fFrame <= pFaceData.pKeyFrames[i].fFrameNo) {
-                break;
-            }
+        int i = 0;
+        while (i < ulNumKeyFrame && fFrame > pFaceData.pKeyFrames[i].fFrameNo) {
+            i++;
         }
 
-        // 前後のキーを設定
-        int lKey0 = i - 1;
-        int lKey1 = i;
+        int lKey0 = Math.max(i - 1, 0);
+        int lKey1 = i == ulNumKeyFrame ? ulNumKeyFrame - 1 : i;
 
-        if (lKey0 <= 0) {
-            lKey0 = 0;
-        }
-        if (i == ulNumKeyFrame) {
-            lKey1 = ulNumKeyFrame - 1;
-        }
-
-        // 前後のキーの時間
         float fTime0 = pFaceData.pKeyFrames[lKey0].fFrameNo;
         float fTime1 = pFaceData.pKeyFrames[lKey1].fFrameNo;
 
-        // 前後のキーの間でどの位置にいるか
-        float fLerpValue;
         if (lKey0 != lKey1) {
-            fLerpValue = (fFrame - fTime0) / (fTime1 - fTime0);
-            return (pFaceData.pKeyFrames[lKey0].fRate * (1.0f - fLerpValue))
-                    + (pFaceData.pKeyFrames[lKey1].fRate * fLerpValue);
+            float fLerpValue = (fFrame - fTime0) / (fTime1 - fTime0);
+            return pFaceData.pKeyFrames[lKey0].fRate * (1.0f - fLerpValue) + pFaceData.pKeyFrames[lKey1].fRate * fLerpValue;
         } else {
             return pFaceData.pKeyFrames[lKey0].fRate;
         }
     }
-
 }
